@@ -26,10 +26,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; 
+public class User extends Base{
+   
 
     @Column(name = "username", nullable = false, updatable= true)
     private String username;
@@ -38,8 +36,7 @@ public class User {
     private String password; 
 
     @Column(name = "email", nullable = false, updatable= true)
-    private String email;
-
+    private String email;    
     @NotEmpty
     @CreationTimestamp
     @Column(name = "registration", updatable = false, nullable = false)
