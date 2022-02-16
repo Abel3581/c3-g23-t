@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class ImageProfile extends Image{
-    
+    Image image;
 }
