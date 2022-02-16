@@ -1,21 +1,18 @@
 package com.estore.ecomerce.domain;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import org.hibernate.annotations.CreationTimestamp;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,19 +21,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; 
+    private Long id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "username", nullable = false, updatable= true)
+    private String username;
 
     @Column(name = "password", nullable = false, updatable= true)
     private String password;
@@ -45,18 +38,17 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @NotEmpty
     @CreationTimestamp
-    @Column(name = "registration", updatable = false, nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime registration = LocalDateTime.now();
+    private Timestamp timestamp;
 
     @Column(name = "soft_deleted")
-    private boolean softDeleted;
+    private boolean softDeleted = Boolean.FALSE;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @Column(name = "roles_id")
     private List<Role> roles;
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -89,4 +81,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return !this.softDeleted;
     }
+
+
 }
