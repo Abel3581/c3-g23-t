@@ -20,8 +20,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class Client extends User{
