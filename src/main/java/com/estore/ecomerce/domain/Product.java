@@ -25,33 +25,29 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 public class Product {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     
-    @NotEmpty
     @Column(name = "name", nullable = false, updatable = true)
     private String name;
     
-    @NotEmpty
     @Column(name = "price", nullable = false, updatable = true)
     private Double price;
 
-    @NotEmpty
     @Column(name = "description", nullable = false, updatable = true)
     private String description;
 
-    @NotEmpty
     @Column(name = "stock", nullable = false, updatable = true)
     private int stock = 0;
     
@@ -59,12 +55,11 @@ public class Product {
     private String content;
 
     @Column(name = "rating", nullable = false, updatable = true)
-    private double rating = 0.0;
+    private double rating;
 
     @Column(name = "discount", nullable = true, updatable = true)
     private double discount = 0.0;
 
-    @NotEmpty
     @CreationTimestamp
     @Column(name = "registration", updatable = false, nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -85,7 +80,7 @@ public class Product {
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)
     private Client client;
 
-    @OneToOne
+    @OneToOne(cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH})
     @JoinColumn(name="imageProfile")
     private ImageProfile imageProfile;
 

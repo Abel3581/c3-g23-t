@@ -3,13 +3,15 @@ package com.estore.ecomerce.domain;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class ImagePost extends Image{
+
+    public ImagePost(String originalFilename, String contentType, byte[] bytes) {
+        this.setName(originalFilename);
+        this.setFileType(contentType);
+        this.setFileData(bytes);
+    }
     
 }
