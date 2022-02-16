@@ -11,6 +11,7 @@ import com.estore.ecomerce.service.ProductService;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -21,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductService productService;
     private final FileUploadService fileUploadService;
@@ -40,4 +41,12 @@ public class ProductController {
 
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
+
+    
+    @GetMapping
+    public ResponseEntity<?> getMovies(){
+        ResponseEntity<?> response = productService.getProduct();
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
 }

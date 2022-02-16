@@ -1,8 +1,5 @@
 package com.estore.ecomerce.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +13,11 @@ import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.domain.Product;
+import com.estore.ecomerce.dto.ModelListProducts;
 import com.estore.ecomerce.repository.CategoryRepository;
 import com.estore.ecomerce.repository.ClientRepository;
 import com.estore.ecomerce.repository.ProductRepository;
+import com.estore.ecomerce.utils.build.BuilderGetProductsImpl;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -136,11 +135,11 @@ public class ProductServiceImpl implements ProductService{
     }
 
     private void setTheFieldsByDefault(Product product){
-        double newPrice;
+        /*double newPrice;
         if(product.getDiscount() != 0.0){
-            newPrice = product.getPrice()-((product.getPrice()*product.getDiscount())/100);
+            newPrice = product.getPrice()-((product.getPrice()*(product.getDiscount()/100)));
             product.setPrice(newPrice);
-        }
+        }*/
         product.setRating(0.0);  
     }
 
@@ -160,6 +159,42 @@ public class ProductServiceImpl implements ProductService{
             discount < 0.0  
         )? true : false;
     }
+
+    @Transactional
+    @Override
+    public ResponseEntity<?> getProduct() {
+        ArrayList<Product> listProducts = 
+        (ArrayList<Product>) productRepository.findAll();
+
+        return (listProducts.size() > 0)?
+        new ResponseEntity<>(constructorGetProducts(listProducts), HttpStatus.OK):
+        new ResponseEntity<>("No exists products", HttpStatus.NOT_FOUND);
+        
+    }
+
+    private ArrayList<ModelListProducts> constructorGetProducts(ArrayList<Product> listProducts) {
+        BuilderGetProductsImpl builder = new BuilderGetProductsImpl();
+        
+        ArrayList<ModelListProducts> requestProducts = 
+        new ArrayList<ModelListProducts>();
+
+        for (Product product : listProducts) {
+            requestProducts.add(
+                builder.setId(product.getId())
+                       .setTitle(product.getName())
+                       .setDiscount(product.getDiscount())
+                       .setPrice(product.getPrice(), product.getDiscount())
+                       .setImage(product.getImageProfile())
+                       .setRating(product.getRating())
+                       .ModelListProducts()
+                       
+            );
+        }
+        return requestProducts;
+    }
+
+    
+
 
     
 }

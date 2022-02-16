@@ -13,4 +13,6 @@ public interface ProductService {
         Product product,
         ArrayList<ImagePost> postImage,
         ImageProfile image);
+
+    ResponseEntity<?> getProduct();
 }
