@@ -15,5 +15,7 @@ public interface ProductService {
         ImageProfile image);
 
     ResponseEntity<?> getProduct();
+    ResponseEntity<?> getDetailProductById(Long id);
     ResponseEntity<?> getProductById(Long id);
+    ResponseEntity<?> deleteProduct(Long id);
 }

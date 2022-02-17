@@ -35,7 +35,6 @@ public class ProductServiceImpl implements ProductService{
     private final ClientRepository clientRepository;
     private final CategoryRepository categoryRepository;
 
-
     @Override
     public ResponseEntity<?> saveProduct(Product product,
                                ArrayList<ImagePost> postImage,
@@ -194,18 +193,17 @@ public class ProductServiceImpl implements ProductService{
         }
         return requestProducts;
     }
+
     @Transactional
     @Override
-    public ResponseEntity<?> getProductById(Long id) {
+    public ResponseEntity<?> getDetailProductById(Long id) {
         final ResponseEntity<?> messageProductNotExists = 
         new ResponseEntity<>("The product not exists", 
         HttpStatus.NOT_FOUND);
         //Optional<Product> product = productRepository.findById(id);
-        ArrayList<Product> listProducts = 
-        (ArrayList<Product>) productRepository.findAll();
-        
-        Product product = 
-        listProducts.stream().filter(p -> p.getId() == id).collect(Collectors.toList()).get(0);
+
+        // TODO ELIMINAR EL SIGUIENTE METODO Y HACER LA CONSULTA POR REPOSITORY. 
+        Product product = temporalMethodOfRequestProductById(id);
         
         if(product != null){
             System.out.println(product);
@@ -238,6 +236,58 @@ public class ProductServiceImpl implements ProductService{
                         .modelDetailProduct();
         return requestProduct;
     }
+
+    private Product temporalMethodOfRequestProductById(Long id) {
+        ArrayList<Product> listProducts = 
+        (ArrayList<Product>) productRepository.findAll();
+        
+        if(listProducts.stream().filter(p -> p.getId() == id).collect(Collectors.toList()).size() > 0){
+            Product product = 
+            listProducts.stream().filter(p -> p.getId() == id).collect(Collectors.toList()).get(0);
+            return product;
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> deleteProduct(Long id) {
+        ResponseEntity<?> request = getProductById(id);
+        
+        if(request.getStatusCodeValue() == 200){
+            Product product = (Product) request.getBody();
+            productRepository.delete(product);
+
+            return new ResponseEntity<>("Product deleted",HttpStatus.OK);
+        }else{
+            return request;
+        }
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<?> getProductById(Long id) {
+        final ResponseEntity<?> messageProductNotExists = 
+        new ResponseEntity<>("The product not exists", 
+        HttpStatus.NOT_FOUND);
+        //Optional<Product> product = productRepository.findById(id);
+
+        // TODO ELIMINAR EL SIGUIENTE METODO Y HACER LA CONSULTA POR REPOSITORY. 
+        Product product = temporalMethodOfRequestProductById(id);
+        
+        if(product != null){
+            System.out.println(product);
+            return new ResponseEntity<>(product,HttpStatus.OK);
+        }else{
+            return messageProductNotExists;
+        }
+    }
+
+    
+
+    
+
+    
 
 
 
