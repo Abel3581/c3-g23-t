@@ -4,13 +4,20 @@ import com.estore.ecomerce.common.JwtUtil;
 import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.Role;
 import com.estore.ecomerce.domain.User;
+import com.estore.ecomerce.dto.UserAuthenticatedRequest;
+import com.estore.ecomerce.dto.UserAuthenticatedResponse;
 import com.estore.ecomerce.dto.UserRegisterRequest;
 import com.estore.ecomerce.dto.UserRegisterResponse;
 import com.estore.ecomerce.mapper.UserMapper;
 import com.estore.ecomerce.repository.IClientRepository;
 import com.estore.ecomerce.repository.IUserRepository;
 import com.estore.ecomerce.security.ApplicationRole;
+import com.estore.ecomerce.service.abstraction.IAuthenticationService;
+import com.estore.ecomerce.service.abstraction.IRegisterUserService;
+import com.estore.ecomerce.service.abstraction.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserDetailsService,IRegisterUserService{
+public class UserServiceImpl implements UserDetailsService, IRegisterUserService, IAuthenticationService {
 
     private static final String USER_NOT_FOUND_MESSAGE = "User not found.";
     private static final String USER_EMAIL_ERROR = "Email address is already used.";
@@ -44,6 +51,9 @@ public class UserServiceImpl implements UserDetailsService,IRegisterUserService{
 
     @Autowired
     private IClientRepository clientRepository;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Override
     public UserRegisterResponse register(UserRegisterRequest request) {
@@ -80,5 +90,12 @@ public class UserServiceImpl implements UserDetailsService,IRegisterUserService{
             throw new UsernameNotFoundException(USER_NOT_FOUND_MESSAGE);
         }
         return user;
+    }
+
+    @Override
+    public UserAuthenticatedResponse authentication(UserAuthenticatedRequest request) {
+        User user = getUser(request.getEmail());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
+        return new UserAuthenticatedResponse(jwtUtil.generateToken(user), user.getEmail());
     }
 }

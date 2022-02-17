@@ -19,20 +19,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", nullable = false, updatable= true)
+    @Column(name = "username", nullable = false, updatable = true)
     private String username;
 
-    @Column(name = "password", nullable = false, updatable= true)
+    @Column(name = "password", nullable = false, updatable = true)
     private String password;
 
-
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, updatable = true)
     private String email;
 
     @CreationTimestamp
@@ -44,7 +45,6 @@ public class User implements UserDetails {
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @Column(name = "roles_id")
     private List<Role> roles;
-
 
 
     @Override
@@ -79,5 +79,5 @@ public class User implements UserDetails {
         return !this.softDeleted;
     }
 
-
 }
+

@@ -1,4 +1,4 @@
-package com.estore.ecomerce.service;
+package com.estore.ecomerce.service.abstraction;
 
 import com.estore.ecomerce.domain.Role;
 

@@ -1,8 +1,11 @@
 package com.estore.ecomerce.controller;
 
+import com.estore.ecomerce.dto.UserAuthenticatedRequest;
+import com.estore.ecomerce.dto.UserAuthenticatedResponse;
 import com.estore.ecomerce.dto.UserRegisterRequest;
 import com.estore.ecomerce.dto.UserRegisterResponse;
-import com.estore.ecomerce.service.IRegisterUserService;
+import com.estore.ecomerce.service.abstraction.IAuthenticationService;
+import com.estore.ecomerce.service.abstraction.IRegisterUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +23,19 @@ public class AuthenticationController {
     @Autowired
     private IRegisterUserService registerUserService;
 
+    @Autowired
+    private IAuthenticationService authenticationService;
+
     @PostMapping("/register")
     public ResponseEntity<UserRegisterResponse> register(@Valid @RequestBody UserRegisterRequest request) {
         UserRegisterResponse userRegisterResponse = registerUserService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(userRegisterResponse);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserAuthenticatedResponse> login(@Valid @RequestBody UserAuthenticatedRequest request){
+        UserAuthenticatedResponse response = authenticationService.authentication(request);
+        return ResponseEntity.ok(response);
+    }
+
 }
