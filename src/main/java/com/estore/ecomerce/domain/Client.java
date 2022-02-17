@@ -18,6 +18,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE Client SET soft_delete = true WHERE id=?")
+@Where(clause = "soft_delete = false")
 @Entity
 @PrimaryKeyJoinColumn(name = "id")
 public class Client extends User  {

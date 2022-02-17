@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +20,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 
+@Entity
 @Table(name = "users")
 public class User implements UserDetails {
 

@@ -47,10 +47,7 @@ public class AuthenticationController {
         return new ResponseEntity<>(userService.getInfoUser(), HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> delete(@PathVariable Long id)throws EntityNotFoundException{
-        userService.delete(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+
 
 
 }
