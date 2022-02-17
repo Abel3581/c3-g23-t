@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 @RestController
@@ -45,5 +46,8 @@ public class AuthenticationController {
     public ResponseEntity<User> userLogged() throws NotFoundException{
         return new ResponseEntity<>(userService.getInfoUser(), HttpStatus.OK);
     }
+
+
+
 
 }

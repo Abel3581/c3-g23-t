@@ -113,4 +113,11 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
         }
         return userRepository.findByEmail(principal.toString());
     }
+
+    @Override
+    public void delete(Long id) throws EntityNotFoundException {
+        Client user = getUser(id);
+        user.setSoftDeleted(true);
+        clientRepository.save(user);
+    }
 }
