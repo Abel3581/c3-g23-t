@@ -64,11 +64,6 @@ public class Product {
     @Column(name = "discount", nullable = true, updatable = true)
     private double discount = 0.0;
 
-    @NotEmpty
-    @CreationTimestamp
-    @Column(name = "registration", updatable = false, nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime registration = LocalDateTime.now();
 
     /*Relationsip!!!*/
 
@@ -83,7 +78,7 @@ public class Product {
     //REFERENCIA AL DUEÑO DEL PRODUCTO
     @JsonBackReference
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)
-    private Client client;
+    private User client;
 
     @OneToOne
     @JoinColumn(name="imageProfile")
