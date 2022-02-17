@@ -15,4 +15,5 @@ public interface ProductService {
         ImageProfile image);
 
     ResponseEntity<?> getProduct();
+    ResponseEntity<?> getProductById(Long id);
 }

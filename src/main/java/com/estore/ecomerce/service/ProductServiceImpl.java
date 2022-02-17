@@ -13,10 +13,12 @@ import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.domain.Product;
+import com.estore.ecomerce.dto.ModelDetailProduct;
 import com.estore.ecomerce.dto.ModelListProducts;
 import com.estore.ecomerce.repository.CategoryRepository;
 import com.estore.ecomerce.repository.ClientRepository;
 import com.estore.ecomerce.repository.ProductRepository;
+import com.estore.ecomerce.utils.build.BuilderGetProductByIdImpl;
 import com.estore.ecomerce.utils.build.BuilderGetProductsImpl;
 
 import org.springframework.http.HttpStatus;
@@ -192,6 +194,52 @@ public class ProductServiceImpl implements ProductService{
         }
         return requestProducts;
     }
+    @Transactional
+    @Override
+    public ResponseEntity<?> getProductById(Long id) {
+        final ResponseEntity<?> messageProductNotExists = 
+        new ResponseEntity<>("The product not exists", 
+        HttpStatus.NOT_FOUND);
+        //Optional<Product> product = productRepository.findById(id);
+        ArrayList<Product> listProducts = 
+        (ArrayList<Product>) productRepository.findAll();
+        
+        Product product = 
+        listProducts.stream().filter(p -> p.getId() == id).collect(Collectors.toList()).get(0);
+        
+        if(product != null){
+            System.out.println(product);
+            return new ResponseEntity<>(
+                                         constructorGetProductById(product), 
+                                         HttpStatus.OK);
+        }else{
+            return messageProductNotExists;
+        }
+    }
+
+    private ModelDetailProduct constructorGetProductById(Product product) {
+        BuilderGetProductByIdImpl builder = new BuilderGetProductByIdImpl();
+        ModelDetailProduct requestProduct = new ModelDetailProduct();
+   
+        requestProduct = builder.setId(product.getId())
+                        .setName(product.getName())
+                        .setPrice(product.getPrice(), product.getDiscount())
+                        .setDescription(product.getDescription())
+                        .setStock(product.getStock())
+                        .setContent(product.getContent())
+                        .setRating(product.getRating())
+                        .setDiscount(product.getDiscount())
+                        .setRegistration(product.getRegistration())
+                        .setCategories(product.getCategories())
+                        .setClient(product.getClient())
+                        .setImage(product.getImageProfile())
+                        .setPostImages(product.getImagePost())
+                        .setQuantitySold(product.getListReports())
+                        .modelDetailProduct();
+        return requestProduct;
+    }
+
+
 
     
 

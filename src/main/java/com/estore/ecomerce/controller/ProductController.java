@@ -12,6 +12,7 @@ import com.estore.ecomerce.service.ProductService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -44,9 +45,17 @@ public class ProductController {
 
     
     @GetMapping
-    public ResponseEntity<?> getMovies(){
+    public ResponseEntity<?> getProducts(){
         ResponseEntity<?> response = productService.getProduct();
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable(name = "id") Long id){
+        System.out.println("Todo bien pro aca");
+        ResponseEntity<?> response = productService.getProductById(id);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+    
 
 }
