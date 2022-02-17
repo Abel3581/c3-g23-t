@@ -15,9 +15,12 @@ import com.estore.ecomerce.security.ApplicationRole;
 import com.estore.ecomerce.service.abstraction.IAuthenticationService;
 import com.estore.ecomerce.service.abstraction.IRegisterUserService;
 import com.estore.ecomerce.service.abstraction.IRoleService;
+import com.estore.ecomerce.service.abstraction.IUserService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserDetailsService, IRegisterUserService, IAuthenticationService {
+public class UserServiceImpl implements UserDetailsService, IRegisterUserService, IAuthenticationService, IUserService {
 
     private static final String USER_NOT_FOUND_MESSAGE = "User not found.";
     private static final String USER_EMAIL_ERROR = "Email address is already used.";
@@ -97,5 +100,17 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
         User user = getUser(request.getEmail());
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
         return new UserAuthenticatedResponse(jwtUtil.generateToken(user), user.getEmail());
+    }
+
+
+    @Override
+    public User getInfoUser() throws NotFoundException {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(principal instanceof User){
+            String username = ((User)principal).getUsername();
+        }else{
+            String username = principal.toString();
+        }
+        return userRepository.findByEmail(principal.toString());
     }
 }
