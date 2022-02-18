@@ -24,7 +24,7 @@ public class Category extends Base{
    
     @NotEmpty(message = "Nombre Obligatorio")
     @Column(name = "name", nullable = false, updatable = true, unique = true)
-    @Pattern(message = "Solo mayusculas", regexp = "[A-Z]")
+   // @Pattern(message = "Solo mayusculas", regexp = "[A-Z]")
     private String name;
     @Column(name = "decription")
     private String description;
