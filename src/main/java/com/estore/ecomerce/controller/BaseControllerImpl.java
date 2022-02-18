@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-public abstract class BaseControllerImpl<E extends Base, S extends BaseServiceImpl <E,String>> implements BaseController<E, String> {
+public abstract class BaseControllerImpl<E extends Base, S extends BaseServiceImpl <E,Long>> implements BaseController<E, Long> {
     @Autowired
     protected  S service;
 
@@ -29,7 +29,7 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseServiceIm
 
     @Override
     @GetMapping("/{id}") 
-    public ResponseEntity<?> findById(@PathVariable String id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
          try {
             return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
         } catch (Exception e) {
@@ -50,7 +50,7 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseServiceIm
 
     @Override
      @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable String id, @RequestBody E entity) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody E entity) {
          try {
             return ResponseEntity.status(HttpStatus.OK).body(service.update(id, entity));
         } catch (Exception e) {
@@ -59,7 +59,7 @@ public abstract class BaseControllerImpl<E extends Base, S extends BaseServiceIm
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
       try {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(service.delete(id));
         } catch (Exception e) {
