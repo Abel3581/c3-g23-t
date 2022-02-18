@@ -55,7 +55,7 @@ public class Cart {
     //REFERENCIA AL DUEÑO DEL CARRITO
     @JsonBackReference
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)
-    private User buyer;
+    private Client buyer;
 
     //REFERENCIA A LA LINEAS DE PRODUCTOS
     @JsonManagedReference
