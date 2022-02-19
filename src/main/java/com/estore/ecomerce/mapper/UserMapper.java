@@ -1,7 +1,6 @@
 package com.estore.ecomerce.mapper;
 
 import com.estore.ecomerce.domain.Client;
-import com.estore.ecomerce.domain.User;
 import com.estore.ecomerce.dto.UserRegisterRequest;
 import com.estore.ecomerce.dto.UserRegisterResponse;
 import org.springframework.stereotype.Component;
