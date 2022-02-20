@@ -4,6 +4,7 @@ import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.domain.Role;
 import com.estore.ecomerce.domain.User;
+import com.estore.ecomerce.repository.IClientRepository;
 import com.estore.ecomerce.repository.IUserRepository;
 import com.estore.ecomerce.service.abstraction.IRoleService;
 import org.assertj.core.util.Lists;
@@ -24,7 +25,7 @@ public abstract class AbstractBaseIntegrationTest {
     protected HttpHeaders headers = new HttpHeaders();
 
     @MockBean
-    protected IUserRepository userRepository;
+    protected IClientRepository userRepository;
     @MockBean
     protected AuthenticationManager authenticationManager;
 
@@ -49,5 +50,19 @@ public abstract class AbstractBaseIntegrationTest {
         return role;
     }
 
+
+    protected Client stubUser(String role){
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        return new Client(
+                USER_ID,
+                "John",
+                "123456789",
+                "johnny@gmail.com",
+                Timestamp.from(Instant.now()),
+                false,
+                Lists.list(stubRole(role)),
+                "Abel"
+        );
+    }
 
 }

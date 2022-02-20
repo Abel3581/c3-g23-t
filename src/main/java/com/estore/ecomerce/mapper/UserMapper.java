@@ -23,7 +23,7 @@ public class UserMapper {
         user.setSurname(request.getSurname());
         user.setState(request.getState());
         user.setPassword(request.getPassword());
-        user.setImageProfile(service.getImageProfile(request.getImageProfileId()));
+        //user.setImageProfile(service.getImageProfile(request.getImageProfileId()));
         return user;
     }
 
@@ -32,7 +32,7 @@ public class UserMapper {
         userRegisterResponse.setUsername(user.getUsername());
         userRegisterResponse.setId(user.getId());
         userRegisterResponse.setEmail(user.getEmail());
-        userRegisterResponse.setImageProfile(user.getImageProfile());
+        //userRegisterResponse.setImageProfile(user.getImageProfile());
         return userRegisterResponse;
     }
 }

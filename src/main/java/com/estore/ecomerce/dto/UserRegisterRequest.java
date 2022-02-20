@@ -49,7 +49,7 @@ public class UserRegisterRequest {
     private String state;
 
     //@NotNull(message = "El id de la imagen no puede ser null")
-    private String imageProfileId;
+   // private String imageProfileId;
 
 
 }

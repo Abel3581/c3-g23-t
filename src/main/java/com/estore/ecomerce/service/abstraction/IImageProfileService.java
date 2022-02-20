@@ -9,4 +9,6 @@ public interface IImageProfileService {
     ImageProfile getImageProfile(String imageProfileId);
 
     ImageProfile getImage(ImageProfile imageProfile);
+
+
 }

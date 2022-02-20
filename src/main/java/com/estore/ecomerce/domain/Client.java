@@ -40,6 +40,11 @@ public class Client extends User  {
     @Column(name = "state", nullable = false, updatable = true)
     private String state;
 
+    // Constructor para Test de cliente
+    public Client(Long id, String username, String password, String email, Timestamp timestamp, boolean softDeleted, List<Role> roles,
+                  String name) {
+        super(id, username, password, email, timestamp, softDeleted, roles);
+    }
 
     /*Relationsip!!!*/
     @OneToOne
