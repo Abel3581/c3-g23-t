@@ -36,4 +36,7 @@ public class Image {
     @Lob
     @Column(name = "fileData", nullable = false, updatable = true)
     private byte[] fileData;
+
+    @Column(name = "soft_delete")
+    private boolean softDelete = Boolean.FALSE;
 }

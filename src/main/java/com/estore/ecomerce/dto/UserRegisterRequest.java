@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ public class UserRegisterRequest {
     @Column(name = "state", nullable = false, updatable = true)
     private String state;
 
+    //@NotNull(message = "El id de la imagen no puede ser null")
+   // private String imageProfileId;
 
 
 }

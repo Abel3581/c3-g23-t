@@ -10,6 +10,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,12 @@ public class Client extends User  {
     @Column(name = "state", nullable = false, updatable = true)
     private String state;
 
+    // Constructor para Test de cliente
+    public Client(Long id, String username, String password, String email, Timestamp timestamp, boolean softDeleted, List<Role> roles,
+                  String name) {
+        super(id, username, password, email, timestamp, softDeleted, roles);
+    }
+
     /*Relationsip!!!*/
     @OneToOne
     @JoinColumn(name = "profile_image")
@@ -51,6 +58,7 @@ public class Client extends User  {
     @JsonManagedReference
     @OneToMany(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH}, orphanRemoval = true)
     private List<Product> product = new ArrayList<Product>();
+
 
 
 }
