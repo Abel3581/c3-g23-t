@@ -3,11 +3,9 @@ import java.util.List;
 
 import com.estore.ecomerce.domain.Image;
 import com.estore.ecomerce.domain.ImagePost;
-import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.repository.ImageRepository;
 
-import org.apache.coyote.http11.filters.VoidInputFilter;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;

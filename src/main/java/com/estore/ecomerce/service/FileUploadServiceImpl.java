@@ -49,6 +49,8 @@ public class FileUploadServiceImpl implements FileUploadService{
                         image.getBytes()
                     )
                     );
+                    System.out.println(image.getOriginalFilename() + " " +
+                    image.getContentType() + " " + image.getBytes());
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -71,6 +73,37 @@ public class FileUploadServiceImpl implements FileUploadService{
             imageRepository.delete(element);
         }
         
+    }
+
+    @Override
+    public ArrayList<ImagePost> updateImagesPostToDB(ArrayList<MultipartFile> postImage) {
+        if(postImage != null && postImage.size()>0){
+            ArrayList<ImagePost> Images = new ArrayList<ImagePost>();
+            for (MultipartFile image : postImage) {
+                try {
+                    Images.add(
+                    new ImagePost(
+                        image.getOriginalFilename(),
+                        image.getContentType(),
+                        image.getBytes()
+                    )
+                    );
+                    System.out.println(image.getOriginalFilename() + " " +
+                    image.getContentType() + " " + image.getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+            
+            for (ImagePost post_image : Images) {
+                imageRepository.save(post_image);
+            }
+            
+            return Images;
+        }else{
+            return null;
+        }
     }
     
 }

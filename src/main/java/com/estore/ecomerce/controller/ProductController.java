@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
-import com.estore.ecomerce.domain.Product;
+import com.estore.ecomerce.dto.forms.FormProduct;
 import com.estore.ecomerce.service.FileUploadService;
 import com.estore.ecomerce.service.ImageService;
 import com.estore.ecomerce.service.ProductService;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +36,7 @@ public class ProductController {
     public ResponseEntity<?> createProduct(
         @RequestPart(value="profileimage",required=false) MultipartFile image,
         @RequestPart(value="postimages",required=false)  ArrayList<MultipartFile> postImage,
-        @RequestPart(value="product", required=true) Product product)
+        @RequestPart(value="product", required=true) FormProduct product)
     throws URISyntaxException{
         ArrayList<ImagePost> postImages = fileUploadService.uploadImagePostToDB(postImage);
         ImageProfile profileImage = fileUploadService.uploadImageProfileToDB(image);
@@ -63,6 +64,23 @@ public class ProductController {
     public ResponseEntity<?> deleteProduct(@PathVariable(name = "id") Long id){
         imageService.deleteImageByProduct(productService.getProductById(id));
         ResponseEntity<?> response = productService.deleteProduct(id);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable(name = "id") Long id,
+        @RequestPart(value="profileimage",required=false) MultipartFile image,
+        @RequestPart(value="postimages",required=false)  ArrayList<MultipartFile> postImage,
+        @RequestPart(value="product", required=true) FormProduct product)
+        throws URISyntaxException{
+        
+        ArrayList<ImagePost> postImages = fileUploadService.updateImagesPostToDB(postImage);
+        ImageProfile profileImage = fileUploadService.uploadImageProfileToDB(image);
+        System.out.println("\n ahora va afuera de file upload");
+        System.out.println(postImages.get(0).getFileData());
+        System.out.println(postImages.get(1).getFileData());
+
+        ResponseEntity<?> response = productService.updateProduct(product, id, postImages, profileImage);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
     

@@ -4,13 +4,20 @@ import java.util.ArrayList;
 
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
-import com.estore.ecomerce.domain.Product;
+import com.estore.ecomerce.dto.forms.FormProduct;
 
 import org.springframework.http.ResponseEntity;
 
 public interface ProductService {
     ResponseEntity<?> saveProduct(
-        Product product,
+        FormProduct product,
+        ArrayList<ImagePost> postImage,
+        ImageProfile image);
+
+    ResponseEntity<?> updateProduct(
+        
+        FormProduct product,
+        Long id,
         ArrayList<ImagePost> postImage,
         ImageProfile image);
 
