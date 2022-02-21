@@ -1,4 +1,4 @@
-package com.estore.ecomerce.integration;
+package com.estore.ecomerce.integration.user;
 
 
 import com.estore.ecomerce.common.AbstractBaseIntegrationTest;

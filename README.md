@@ -31,4 +31,4 @@ the email is a number from 0 to 10 per role. All the users have "tienda1234" as 
 | 1  |  ROLE_USER   |  USER   |
 | 2  |  ROLE_ADMIN  |  ADMIN  | 
 
-
+### Link Swagger: http://localhost:8080/swagger-ui/index.html
