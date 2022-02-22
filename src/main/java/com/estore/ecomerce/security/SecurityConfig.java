@@ -44,6 +44,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    private static final String[] publicEndpoint = {
+            "/swagger-resources/**",
+            "/swagger-ui/**", "/v2/api-docs",
+            "/v3/api-docs",
+            "/api/docs",
+            "/api/docs/**",
+            "/api/docs/swagger-ui",
+            "/swagger-ui.html",
+            "/**/swagger-ui/**",
+            "/swagger-ui"
+    };
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
@@ -69,6 +81,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/api/v1/products").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/v1/products/{id}").permitAll()
                 .antMatchers(HttpMethod.DELETE,"/api/v1/products/{id}").permitAll()
+                .antMatchers(publicEndpoint).permitAll()
+
                 .anyRequest()
                 .authenticated()
                 .and()
