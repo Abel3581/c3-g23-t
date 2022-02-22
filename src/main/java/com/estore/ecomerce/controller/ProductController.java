@@ -77,9 +77,6 @@ public class ProductController {
         
         ArrayList<ImagePost> postImages = fileUploadService.updateImagesPostToDB(postImage);
         ImageProfile profileImage = fileUploadService.uploadImageProfileToDB(image);
-        System.out.println("\n ahora va afuera de file upload");
-        System.out.println(postImages.get(0).getFileData());
-        System.out.println(postImages.get(1).getFileData());
 
         ResponseEntity<?> response = productService.updateProduct(product, id, postImages, profileImage);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());

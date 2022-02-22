@@ -170,11 +170,6 @@ public class ProductServiceImpl implements ProductService{
         List<Category> categoriesReturn = new ArrayList<Category>();
         for (Category element : product.getCategories()) {
             Optional<Category> cat = categoryRepository.findById(element.getId());
-
-            System.out.println(cat.get().getId());
-            System.out.println(cat.get().getName());
-            System.out.println(cat.get().getDescription());
-
             categoriesReturn.add(cat.get());
             //Añadir producto a la lista de categoria
             cat.get().getProducts().add(product);
@@ -319,7 +314,8 @@ public class ProductServiceImpl implements ProductService{
             return messageProductNotExists;
         }
     }
-
+    
+    @Transactional
     @Override
     public ResponseEntity<?> updateProduct(FormProduct productUpdated, 
                                             Long id,

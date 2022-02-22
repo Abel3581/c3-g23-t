@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> implements CategoryService{
     @Autowired 
     private  CategoryRepository categoryRepository;  
+    
     public  CategoryServiceImpl(BaseRepository<Category,Long> baseRepository){
         super(baseRepository);
     }

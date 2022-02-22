@@ -2,6 +2,7 @@
 package com.estore.ecomerce.service;
 
 import com.estore.ecomerce.domain.Base;
+import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.repository.BaseRepository;
 import java.io.Serializable;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> implements BaseService<E, ID> {
     protected BaseRepository<E,ID> baseRepository;
+
     public BaseServiceImpl(BaseRepository<E,ID> baseRepository){
         this.baseRepository=baseRepository;
     }
