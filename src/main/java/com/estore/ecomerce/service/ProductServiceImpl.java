@@ -128,7 +128,7 @@ public class ProductServiceImpl implements ProductService{
         categoriesRequest = categoriesRequest.stream()
         .filter(condition)
         .collect(Collectors.toList());
-
+        
         return categoriesRequest;
     }
 
@@ -147,6 +147,8 @@ public class ProductServiceImpl implements ProductService{
     private Product constructorProduct(FormProduct productForm){
         //TODO ENCONTRAR LA MANERA DE OBTENER EL USUARIO LOGUEADO Y ASIGNARSELO AL PRODUCTO                
         Product product = new Product();
+        product.setCategories(productForm.getCategories());
+
         product.setClient(null);
         product.setName(productForm.getName());
         product.setContent(productForm.getContent());
@@ -159,10 +161,12 @@ public class ProductServiceImpl implements ProductService{
         product.setStock(productForm.getStock());
         product.setRating(0.0);  
         System.out.println("Tamaño categoria : "+product.getCategories().size());
+        System.out.println("Tamaño categoria : "+product.getCategories());
         return product;
     }
 
     private List<Category> returnCategories(Product product){
+        /*Mapeamos los ids de las categorias por los objetos categoria*/
         List<Category> categoriesReturn = new ArrayList<Category>();
         for (Category element : product.getCategories()) {
             Optional<Category> cat = categoryRepository.findById(element.getId());
