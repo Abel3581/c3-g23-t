@@ -1,15 +1,16 @@
 package com.estore.ecomerce.controller;
 
+import com.estore.ecomerce.dto.UserRegisterRequest;
+import com.estore.ecomerce.dto.UserUpdateResponse;
 import com.estore.ecomerce.service.abstraction.IUserService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/user")
@@ -23,4 +24,12 @@ public class UserController {
         userService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserUpdateResponse> update(@PathVariable Long id, @ModelAttribute UserRegisterRequest request) throws NotFoundException {
+        UserUpdateResponse result = userService.update(id, request);
+        return ResponseEntity.ok().body(result);
+
+    }
+
 }

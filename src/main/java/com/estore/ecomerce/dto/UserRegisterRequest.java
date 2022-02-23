@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
@@ -48,8 +49,7 @@ public class UserRegisterRequest {
     @Column(name = "state", nullable = false, updatable = true)
     private String state;
 
-    //@NotNull(message = "El id de la imagen no puede ser null")
-   // private String imageProfileId;
+    private MultipartFile imageProfile;
 
 
 }
