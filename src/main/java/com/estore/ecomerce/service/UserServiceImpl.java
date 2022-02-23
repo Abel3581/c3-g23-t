@@ -5,10 +5,8 @@ import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.domain.Role;
 import com.estore.ecomerce.domain.User;
-import com.estore.ecomerce.dto.UserAuthenticatedRequest;
-import com.estore.ecomerce.dto.UserAuthenticatedResponse;
-import com.estore.ecomerce.dto.UserRegisterRequest;
-import com.estore.ecomerce.dto.UserRegisterResponse;
+import com.estore.ecomerce.dto.*;
+import com.estore.ecomerce.exception.ParamNotFound;
 import com.estore.ecomerce.mapper.UserMapper;
 import com.estore.ecomerce.repository.IClientRepository;
 import com.estore.ecomerce.repository.IUserRepository;
@@ -121,5 +119,18 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
         Client user = getUser(id);
         user.setSoftDeleted(true);
         clientRepository.save(user);
+    }
+
+    @Override
+    public UserUpdateResponse update(Long id, UserRegisterRequest request) throws NotFoundException {
+        Optional<Client> entity = clientRepository.findById(id);
+        if(!entity.isPresent()){
+            throw new ParamNotFound("error: id de Cliente no valido");
+        }
+        userMapper.clientEntityRefreshValues(entity.get(), request);
+
+        Client entitySaved = clientRepository.save(entity.get());
+        UserUpdateResponse result = userMapper.userEntity2DtoRefresh(entitySaved);
+        return result;
     }
 }

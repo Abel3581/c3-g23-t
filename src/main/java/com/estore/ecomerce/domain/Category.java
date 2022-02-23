@@ -23,7 +23,7 @@ public class Category extends Base{
     @NotEmpty(message = "Nombre Obligatorio")
     @Column(name = "name", nullable = false, updatable = true, unique = true)  
     private String name;
-    @Column(name = "decription")
+    @Column(name = "description")
     private String description;
  
   
