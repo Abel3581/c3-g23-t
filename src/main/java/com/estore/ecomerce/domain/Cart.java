@@ -48,7 +48,7 @@ public class Cart {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime registration = LocalDateTime.now();
 
-    //TO-DO El total no se guarda, crearemos un objeto en dto.
+    //TODO El total no se guarda, crearemos un objeto en dto.
 
     /*--Relationship--!!*/
     
