@@ -2,20 +2,16 @@ package com.estore.ecomerce.service;
 
 import com.estore.ecomerce.common.JwtUtil;
 import com.estore.ecomerce.domain.Client;
+import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.domain.Role;
 import com.estore.ecomerce.domain.User;
-import com.estore.ecomerce.dto.UserAuthenticatedRequest;
-import com.estore.ecomerce.dto.UserAuthenticatedResponse;
-import com.estore.ecomerce.dto.UserRegisterRequest;
-import com.estore.ecomerce.dto.UserRegisterResponse;
+import com.estore.ecomerce.dto.*;
+import com.estore.ecomerce.exception.ParamNotFound;
 import com.estore.ecomerce.mapper.UserMapper;
 import com.estore.ecomerce.repository.IClientRepository;
 import com.estore.ecomerce.repository.IUserRepository;
 import com.estore.ecomerce.security.ApplicationRole;
-import com.estore.ecomerce.service.abstraction.IAuthenticationService;
-import com.estore.ecomerce.service.abstraction.IRegisterUserService;
-import com.estore.ecomerce.service.abstraction.IRoleService;
-import com.estore.ecomerce.service.abstraction.IUserService;
+import com.estore.ecomerce.service.abstraction.*;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,6 +54,9 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private IImageProfileService imageProfileService;
+
     @Override
     public UserRegisterResponse register(UserRegisterRequest request) {
         if(userRepository.findByEmail(request.getEmail()) != null){
@@ -68,6 +67,7 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
         List<Role> roles = new ArrayList<>();
         roles.add(roleService.findBy(ApplicationRole.USER.getFullRoleName()));
         user.setRoles(roles);
+
         Client userCreate = clientRepository.save(user);
         UserRegisterResponse userRegisterResponse = userMapper.userEntity2Dto(userCreate);
         userRegisterResponse.setToken(jwtUtil.generateToken(userCreate));
@@ -119,5 +119,18 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
         Client user = getUser(id);
         user.setSoftDeleted(true);
         clientRepository.save(user);
+    }
+
+    @Override
+    public UserUpdateResponse update(Long id, UserRegisterRequest request) throws NotFoundException {
+        Optional<Client> entity = clientRepository.findById(id);
+        if(!entity.isPresent()){
+            throw new ParamNotFound("error: id de Cliente no valido");
+        }
+        userMapper.clientEntityRefreshValues(entity.get(), request);
+
+        Client entitySaved = clientRepository.save(entity.get());
+        UserUpdateResponse result = userMapper.userEntity2DtoRefresh(entitySaved);
+        return result;
     }
 }

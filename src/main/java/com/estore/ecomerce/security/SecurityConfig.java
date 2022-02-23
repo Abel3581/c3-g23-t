@@ -44,6 +44,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    private static final String[] publicEndpoint = {
+            "/swagger-resources/**",
+            "/swagger-ui/**", "/v2/api-docs",
+            "/v3/api-docs",
+            "/api/docs",
+            "/api/docs/**",
+            "/api/docs/swagger-ui",
+            "/swagger-ui.html",
+            "/**/swagger-ui/**",
+            "/swagger-ui"
+    };
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
@@ -57,11 +69,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/auth/register").permitAll()
                 .antMatchers(HttpMethod.POST,"/auth/login").permitAll()
                 .antMatchers(HttpMethod.GET,"/auth/me").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/category").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/category").permitAll()
-                .antMatchers(HttpMethod.PUT,"/api/category").permitAll()
-                .antMatchers(HttpMethod.DELETE,"/api/category").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/v1/category").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/v1/category/{id}").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/v1/category").permitAll()
+                .antMatchers(HttpMethod.PUT,"/api/v1/category").permitAll()
+                .antMatchers(HttpMethod.DELETE,"/api/v1/category").permitAll()
                 .antMatchers(HttpMethod.DELETE,"/user/{id}").permitAll()
+                .antMatchers(HttpMethod.PUT,"/user/{id}").permitAll()
+                .antMatchers(HttpMethod.POST,"/imageProfile").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/v1/products").permitAll()
+                .antMatchers(HttpMethod.PUT,"/api/v1/products/{id}").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/v1/products").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/v1/products/{id}").permitAll()
+                .antMatchers(HttpMethod.DELETE,"/api/v1/products/{id}").permitAll()
+                .antMatchers(publicEndpoint).permitAll()
+
                 .anyRequest()
                 .authenticated()
                 .and()

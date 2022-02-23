@@ -1,6 +1,5 @@
 package com.estore.ecomerce.dto;
 
-import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.ImageProfile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,15 +8,18 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserRegisterResponse {
+@NoArgsConstructor
+public class UserUpdateResponse {
 
-    private Long id;
+
     private String username;
     private String email;
-    private String token;
+    private String password;
     private String name;
-    //private ImageProfile imageProfile;
-
+    private String surname;
+    private String city;
+    private String country;
+    private String state;
+    private ImageProfile imageProfile;
 }
