@@ -1,32 +1,136 @@
 package com.estore.ecomerce.service;
 
-
 import com.estore.ecomerce.domain.Category;
-import com.estore.ecomerce.repository.BaseRepository;
+import com.estore.ecomerce.dto.CategoryRequest;
+import com.estore.ecomerce.dto.CategoryResponse;
+import com.estore.ecomerce.mapper.CategoryMapper;
 import com.estore.ecomerce.repository.CategoryRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-//implementacion de servicios Categoria
+
 @Service
-public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> implements CategoryService{
-    @Autowired 
-    private  CategoryRepository categoryRepository;  
-    public  CategoryServiceImpl(BaseRepository<Category,Long> baseRepository){
-        super(baseRepository);
-    }
-    
-   
+public class CategoryServiceImpl implements CategoryService {
+
+    private static final String ERROR_FIND_ID = "No se econtro la categoria";
+    private static final String ERROR_CONECTION = "Error al intentar conectar con la BD";
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
+
     @Transactional
     @Override
-    public Category save(Category entity) throws Exception{
-         try {
-        entity.setName(entity.getName().toUpperCase());
-        categoryRepository.save(entity);
-       return entity;
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
+    public CategoryResponse addCategory(CategoryRequest entity) {
+        try {
+            Category newCategory = categoryMapper.categoryDtoEntity(entity);
+            categoryRepository.save(newCategory);
+            CategoryResponse responseCategory = categoryMapper.categoryEntityDto(newCategory);
+            return responseCategory;
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(ERROR_CONECTION);
         }
-        
     }
+
+    @Transactional
+    @Override
+    public List<CategoryResponse> findAll() {
+        try {
+            List<CategoryResponse> listResponse = new ArrayList<>();
+            List<Category> entities = categoryRepository.findAll();
+            for (Category entity : entities) {
+                listResponse.add(categoryMapper.categoryEntityDto(entity));
+            }
+            return listResponse;
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(ERROR_CONECTION);
+        }
+
+    }
+
+    @Override
+    public CategoryResponse update(Long id, CategoryRequest entity) {
+        try {
+            Optional<Category> entityById = categoryRepository.findById(id);
+            if (entityById.isPresent()) {
+                CategoryResponse entityResponse = categoryMapper.categoryEntityDto(entityById.get());
+                Category newCategory = categoryMapper.categoryDtoEntity(entity);
+                entityResponse = categoryMapper.categoryEntityDto(newCategory);
+                newCategory = categoryRepository.save(newCategory);
+                return entityResponse;
+            } else {
+                throw new EntityNotFoundException(ERROR_FIND_ID);
+            }
+
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(ERROR_CONECTION);
+        }
+
+    }
+
+    @Override
+    public CategoryResponse deleteCategory(Long id) {
+        try {
+            Optional<Category> entityById = categoryRepository.findById(id);
+            if (entityById.isPresent()) {
+                CategoryResponse entityResponse = categoryMapper.categoryEntityDto(entityById.get());
+                Category newCategory = categoryMapper.categoryDtoEntityResponse(entityResponse);
+                categoryRepository.save(newCategory);
+                return entityResponse;
+            } else {
+                throw new EntityNotFoundException(ERROR_FIND_ID);
+            }
+
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(ERROR_CONECTION);
+        }
+    }
+
+    @Override
+    public CategoryResponse findById(Long id) {
+        try {
+            Optional<Category> entityById = categoryRepository.findById(id);
+            if (entityById.isPresent()) {
+                CategoryResponse entityResponse = categoryMapper.categoryEntityDto(entityById.get());
+                return entityResponse;
+            } else {
+                throw new EntityNotFoundException(ERROR_FIND_ID);
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(ERROR_CONECTION);
+        }
+    }
+
+    @Override
+    public List<CategoryResponse> listCategoryActive() {
+        try {
+            List<CategoryResponse> listResponse = new ArrayList<>();
+            List<Category> entities = categoryRepository.listCategoryActive();
+            for (Category entity : entities) {
+                listResponse.add(categoryMapper.categoryEntityDto(entity));
+            }
+            return listResponse;
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(ERROR_CONECTION);
+        }
+    }
+
+    @Override
+    public List<CategoryResponse> listCategoryInactive() {
+      try {
+            List<CategoryResponse> listResponse = new ArrayList<>();
+            List<Category> entities = categoryRepository.listCategoryInactive();
+            for (Category entity : entities) {
+                listResponse.add(categoryMapper.categoryEntityDto(entity));
+            }
+            return listResponse;
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException(ERROR_CONECTION);
+        }   }
+
 }
