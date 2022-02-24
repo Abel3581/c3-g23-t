@@ -2,7 +2,6 @@ package com.estore.ecomerce.service;
 
 import com.estore.ecomerce.common.JwtUtil;
 import com.estore.ecomerce.domain.Client;
-import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.domain.Role;
 import com.estore.ecomerce.domain.User;
 import com.estore.ecomerce.dto.*;
@@ -133,4 +132,12 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
         UserUpdateResponse result = userMapper.userEntity2DtoRefresh(entitySaved);
         return result;
     }
+
+    @Override
+    public ClientResponse getById(Long id) {
+        Client client = getUser(id);
+        return userMapper.convertTo(client);
+    }
+
+
 }
