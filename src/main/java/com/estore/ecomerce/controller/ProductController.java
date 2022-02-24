@@ -60,6 +60,12 @@ public class ProductController {
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
+    @GetMapping("/{idCategory}")
+    public ResponseEntity<?> getProductByCategory(@PathVariable(name = "idCategory") Long idCategory){
+        ResponseEntity<?> response = productService.getProductByCategory(idCategory);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(name = "id") Long id){
         imageService.deleteImageByProduct(productService.getProductById(id));
