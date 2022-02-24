@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/imageProfile")
 public class ImageProfileController {
-    
+
     @Autowired
     private FileUploadService fileUploadService;
 
