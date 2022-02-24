@@ -9,11 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import com.estore.ecomerce.domain.Category;
-import com.estore.ecomerce.domain.Client;
-import com.estore.ecomerce.domain.ImagePost;
-import com.estore.ecomerce.domain.ImageProfile;
-import com.estore.ecomerce.domain.Product;
+import com.estore.ecomerce.domain.*;
+import com.estore.ecomerce.dto.ClientResponse;
 import com.estore.ecomerce.dto.ModelDetailProduct;
 import com.estore.ecomerce.dto.ModelListProducts;
 import com.estore.ecomerce.dto.forms.FormProduct;
@@ -21,9 +18,12 @@ import com.estore.ecomerce.repository.CategoryRepository;
 import com.estore.ecomerce.repository.ClientRepository;
 import com.estore.ecomerce.repository.ImageRepository;
 import com.estore.ecomerce.repository.ProductRepository;
+import com.estore.ecomerce.service.abstraction.IUserService;
 import com.estore.ecomerce.utils.build.BuilderGetProductByIdImpl;
 import com.estore.ecomerce.utils.build.BuilderGetProductsImpl;
 
+import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,6 +38,8 @@ public class ProductServiceImpl implements ProductService{
     private final ClientRepository clientRepository;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
+    @Autowired
+    private IUserService userService;
 
     @Override
     public ResponseEntity<?> saveProduct(FormProduct product,
@@ -145,12 +147,12 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    private Product constructorProduct(FormProduct productForm){
+    private Product constructorProduct(FormProduct productForm) throws NotFoundException {
         //TODO ENCONTRAR LA MANERA DE OBTENER EL USUARIO LOGUEADO Y ASIGNARSELO AL PRODUCTO                
         Product product = new Product();
+        User client = userService.getInfoUser();
         product.setCategories(productForm.getCategories());
-
-        product.setClient(null);
+        product.setClient(client);
         product.setName(productForm.getName());
         product.setContent(productForm.getContent());
         product.setCategories(returnCategories(product));
@@ -160,7 +162,8 @@ public class ProductServiceImpl implements ProductService{
         product.setImageProfile(productForm.getImageProfile());
         product.setImagePost(productForm.getImagePost());
         product.setStock(productForm.getStock());
-        product.setRating(0.0);  
+        product.setRating(0.0);
+
         System.out.println("Tamaño categoria : "+product.getCategories().size());
         System.out.println("Tamaño categoria : "+product.getCategories());
         return product;
@@ -260,7 +263,7 @@ public class ProductServiceImpl implements ProductService{
                         .setDiscount(product.getDiscount())
                         .setRegistration(product.getRegistration())
                         .setCategories(product.getCategories())
-                        .setClient(product.getClient())
+                        .setClient((Client) product.getClient())
                         .setImage(product.getImageProfile())
                         .setPostImages(product.getImagePost())
                         .setQuantitySold(product.getListReports())

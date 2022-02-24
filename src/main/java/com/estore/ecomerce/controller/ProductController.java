@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.dto.forms.FormProduct;
+import com.estore.ecomerce.dto.forms.ProductDetailResponse;
 import com.estore.ecomerce.service.FileUploadService;
 import com.estore.ecomerce.service.ImageService;
 import com.estore.ecomerce.service.ProductService;
