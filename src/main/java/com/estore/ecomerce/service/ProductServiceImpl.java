@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -421,6 +422,20 @@ public class ProductServiceImpl implements ProductService{
         }
         productRequest.setCategories(categoriesUpdated);
         return false;
+    }
+
+    @Override
+    public ResponseEntity<?> getProductByCategory(Long id) {
+        List<Category> categories = categoryRepository.findAll();
+        categories = categories.stream().filter(c -> c.getId() == id).collect(Collectors.toList());
+        
+        if(categories.size() > 0){
+            ArrayList<ModelListProducts> products = 
+            constructorGetProducts((ArrayList<Product>) categories.get(0).getProducts());
+            return new ResponseEntity<>(products,HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Category not found",HttpStatus.NOT_FOUND);
+        }
     }
 
 

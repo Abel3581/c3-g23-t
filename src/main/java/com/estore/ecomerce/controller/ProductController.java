@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,6 +58,12 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable(name = "id") Long id){
         ResponseEntity<?> response = productService.getDetailProductById(id);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<?> getProductByCategory(@RequestParam(value="category", required = false) Long idCategory){
+        ResponseEntity<?> response = productService.getProductByCategory(idCategory);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
