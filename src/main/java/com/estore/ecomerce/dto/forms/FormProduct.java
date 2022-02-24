@@ -24,5 +24,7 @@ public class FormProduct {
     private List<Category> categories = new ArrayList<Category>();
     private ImageProfile imageProfile;
     private List<ImagePost> imagePost = new ArrayList<ImagePost>();
+
+    private Long clientId;
     
 }
