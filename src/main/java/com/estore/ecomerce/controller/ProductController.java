@@ -61,7 +61,7 @@ public class ProductController {
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
-    @GetMapping
+    @GetMapping("/category")
     public ResponseEntity<?> getProductByCategory(@RequestParam(value="category", required = false) Long idCategory){
         ResponseEntity<?> response = productService.getProductByCategory(idCategory);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
