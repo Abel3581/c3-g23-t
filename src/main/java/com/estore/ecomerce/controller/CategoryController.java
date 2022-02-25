@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "/api/v1/category")
@@ -60,13 +62,12 @@ public class CategoryController {
         }
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(service.deleteCategory(id));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long id)throws EntityNotFoundException {
+        service.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+
     }
 
      @GetMapping("/active")
