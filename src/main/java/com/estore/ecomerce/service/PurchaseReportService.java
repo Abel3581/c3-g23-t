@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface PurchaseReportService {
      List<ModelPurchaseReport> findAll();
-     void savePurchaseReport(Integer quantity, PurchaseReportRequest report);
+     void savePurchaseReport(Integer quantity);
 }

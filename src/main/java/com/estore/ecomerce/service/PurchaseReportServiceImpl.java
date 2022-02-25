@@ -42,12 +42,12 @@ public class PurchaseReportServiceImpl implements PurchaseReportService {
     }
     @Transactional
     @Override
-    public void savePurchaseReport(Integer quantity, PurchaseReportRequest purchaseReport) {
+    public void savePurchaseReport(Integer quantity) {
         try {
             
-            PurchaseReport newReport = mapperPurchase.PurchaseReportDtoEntity(purchaseReport);
-            newReport.setQuantity(quantity);
-            purchaseRepository.save(newReport);            
+            PurchaseReportRequest newReport = mapperPurchase.PurchaseReportRequest(quantity); 
+            PurchaseReport report= mapperPurchase.purchaseReportDtoEntity(newReport);
+            purchaseRepository.save(report);            
            
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException(ERROR_CONECTION);
