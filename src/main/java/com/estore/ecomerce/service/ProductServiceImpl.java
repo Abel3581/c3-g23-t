@@ -426,17 +426,39 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ResponseEntity<?> getProductByCategory(Long id) {
-        List<Category> categories = categoryRepository.findAll();
-        categories = categories.stream().filter(c -> c.getId() == id).collect(Collectors.toList());
+        Optional<Category> category = categoryRepository.findById(id);
         
-        if(categories.size() > 0){
-            ArrayList<ModelListProducts> products = 
-            constructorGetProducts((ArrayList<Product>) categories.get(0).getProducts());
-            return new ResponseEntity<>(products,HttpStatus.OK);
+        if(category.isPresent()){
+            List<Product> products = category.get().getProducts();
+            
+            ArrayList<ModelListProducts> productsResponse = 
+            constructorGetProducts((ArrayList<Product>) products);
+            return new ResponseEntity<>(productsResponse,HttpStatus.OK);
         }else{
             return new ResponseEntity<>("Category not found",HttpStatus.NOT_FOUND);
         }
     }
+
+    @Override
+    public ResponseEntity<?> getProductsPopularsByCategory(Long id) {
+        Optional<Category> category = categoryRepository.findById(id);
+       
+       if(category.isPresent()){
+            List<Product> products = category.get().getProducts();
+            products = products.stream()
+            .filter(p -> p.getRating() >= 4.00)
+            .collect(Collectors.toList());
+
+            ArrayList<ModelListProducts> productsResponse = 
+            constructorGetProducts((ArrayList<Product>) products);
+
+            return new ResponseEntity<>(productsResponse,HttpStatus.OK);
+       }else{
+            return new ResponseEntity<>("Category not found",HttpStatus.NOT_FOUND);
+       }
+    }
+
+    
 
 
 
