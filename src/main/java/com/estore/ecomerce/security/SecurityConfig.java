@@ -73,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/api/v1/category/{id}").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/v1/category").permitAll()
                 .antMatchers(HttpMethod.PUT,"/api/v1/category").permitAll()
-                .antMatchers(HttpMethod.DELETE,"/api/v1/category").permitAll()
+                .antMatchers(HttpMethod.DELETE,"/api/v1/category/{id}").permitAll()
                 .antMatchers(HttpMethod.DELETE,"/user/{id}").permitAll()
                 .antMatchers(HttpMethod.PUT,"/user/{id}").permitAll()
                 .antMatchers(HttpMethod.GET,"/user/{id}").permitAll()
