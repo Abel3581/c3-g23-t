@@ -23,7 +23,7 @@ public class CategoryMapper {
         categoryResponse.setId(category.getId());
         categoryResponse.setName(category.getName());
         categoryResponse.setDescription(category.getDescription());
-        categoryResponse.setStatus(category.getStatus());
+        categoryResponse.setStatus(category.getStatus());      
         categoryResponse.setProducts(category.getProducts());
         return categoryResponse;
     }
