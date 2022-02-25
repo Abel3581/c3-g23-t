@@ -24,6 +24,7 @@ public interface ProductService {
     ResponseEntity<?> getProduct();
     ResponseEntity<?> getDetailProductById(Long id);
     ResponseEntity<?> getProductByCategory(Long id);
+    ResponseEntity<?> getProductsPopularsByCategory(Long id);
     ResponseEntity<?> getProductById(Long id);
     ResponseEntity<?> deleteProduct(Long id);
 }

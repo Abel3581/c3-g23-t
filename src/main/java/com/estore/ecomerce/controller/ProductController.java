@@ -68,6 +68,12 @@ public class ProductController {
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
+    @GetMapping("popular/category")
+    public ResponseEntity<?> getProductsPopularsByCategory(@RequestParam(value="category", required = false) Long idCategory){
+        ResponseEntity<?> response = productService.getProductsPopularsByCategory(idCategory);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(name = "id") Long id){
         imageService.deleteImageByProduct(productService.getProductById(id));
