@@ -12,12 +12,11 @@ public interface CategoryService {
 
     public CategoryResponse update(Long id, CategoryRequest categoryRequest);
 
-    public CategoryResponse deleteCategory(Long id);
-
     public CategoryResponse findById(Long id);
     
     public List<CategoryResponse> listCategoryActive();
     
     public List<CategoryResponse> listCategoryInactive();
 
+    void delete(Long id);
 }

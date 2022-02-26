@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.dto.forms.FormProduct;
+import com.estore.ecomerce.dto.forms.ProductDetailResponse;
 import com.estore.ecomerce.service.FileUploadService;
 import com.estore.ecomerce.service.ImageService;
 import com.estore.ecomerce.service.ProductService;
@@ -61,9 +62,15 @@ public class ProductController {
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
-    @GetMapping
+    @GetMapping("/category")
     public ResponseEntity<?> getProductByCategory(@RequestParam(value="category", required = false) Long idCategory){
         ResponseEntity<?> response = productService.getProductByCategory(idCategory);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
+    @GetMapping("popular/category")
+    public ResponseEntity<?> getProductsPopularsByCategory(@RequestParam(value="category", required = false) Long idCategory){
+        ResponseEntity<?> response = productService.getProductsPopularsByCategory(idCategory);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
