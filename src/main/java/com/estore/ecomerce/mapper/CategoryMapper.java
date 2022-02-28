@@ -8,13 +8,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class CategoryMapper {
 
-    public Category categoryDtoEntity(CategoryRequest request) {
+    public Category categoryDtoEntity(CategoryResponse request) {
         Category category = new Category();
         category.setId(request.getId());
         category.setName(request.getName().toUpperCase());
         category.setDescription(request.getDescription());
         category.setStatus(Boolean.TRUE);
         category.setProducts(request.getProducts());
+        category.setImageProfile(request.getImageProfile());
         return category;
     }
 

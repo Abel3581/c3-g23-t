@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryDataBaseSeeders {
-    private static final String NAME_CATEGORY = "TIENDA";
+    private static final String categories[]= {"Calzado", "Ropa", "Hogar", "Electro","Perfume"};
 
     @Autowired
     private CategoryRepository categoryRepository ;
@@ -26,12 +26,12 @@ public class CategoryDataBaseSeeders {
     }
     
     private void createCategory() {           
-           // List <Product> products=new ArrayList<>();
-            for (int index = 0; index < 5; index++) {
+            for (int index = 0; index<categories.length; index++) {
             Category category = new Category();
-            category.setName(NAME_CATEGORY+index);
-            category.setDescription("Descripción de "+NAME_CATEGORY+index);
+            category.setName( categories[index].toUpperCase());
+            category.setDescription("Descripción de "+categories[index]);
             category.setProducts(null);
+            category.setImageProfile(null);
             category.setStatus(Boolean.TRUE);            
             categoryRepository.save(category);
         }

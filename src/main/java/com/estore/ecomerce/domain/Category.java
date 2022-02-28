@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotEmpty;
 import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,9 +35,13 @@ public class Category extends Base {
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "categories")
     private List<Product> products;
 
+    @OneToOne(cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH})
+    @JoinColumn(name="imageProfile")
+    private ImageProfile imageProfile;
+    
     @Column(name = "soft_deleted")
     private boolean softDeleted = Boolean.FALSE;
-
+    
 
     public boolean isEnabled() {
         return !this.softDeleted;

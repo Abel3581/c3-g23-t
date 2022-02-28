@@ -1,7 +1,15 @@
 package com.estore.ecomerce.controller;
 
+import com.estore.ecomerce.domain.ImagePost;
+import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.dto.CategoryRequest;
+import com.estore.ecomerce.dto.CategoryResponse;
+import com.estore.ecomerce.dto.forms.FormProduct;
 import com.estore.ecomerce.service.CategoryService;
+import com.estore.ecomerce.service.FileUploadService;
+import com.estore.ecomerce.service.ImageService;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,23 +24,47 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 @RequestMapping(path = "/api/v1/category")
 public class CategoryController {
 
     @Autowired
     private CategoryService service;
+    private final FileUploadService fileUploadService;
+    private final ImageService imageService;
+   
+    
+    @PostMapping(consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createCategory(
+        @RequestPart(value="image",required=false) MultipartFile image,            
+        @RequestPart(value="category", required=true) CategoryResponse category)
+    throws URISyntaxException{
+       //mapea imagen
+        ImageProfile profileImage = fileUploadService.uploadImageProfileToDB(image);
+        
+        ResponseEntity<?> response = service.addCategory(category,profileImage);
+                                    
 
-    @PostMapping("")
-    public ResponseEntity<?> save(@RequestBody CategoryRequest entity) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.addCategory(entity));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
-        }
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
+    
+    
+    
+
+//    @PostMapping("")
+//    public ResponseEntity<?> save(@RequestBody CategoryRequest entity) {
+//        try {
+//            return ResponseEntity.status(HttpStatus.OK).body(service.addCategory(entity));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
+//        }
+//    }
 
     @GetMapping("")
     public ResponseEntity<?> findAll() {
@@ -54,7 +86,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody CategoryRequest entity) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody CategoryResponse entity) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(service.update(id, entity));
         } catch (Exception e) {

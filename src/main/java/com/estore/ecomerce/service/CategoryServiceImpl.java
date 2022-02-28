@@ -1,9 +1,12 @@
 package com.estore.ecomerce.service;
 
 import com.estore.ecomerce.domain.Category;
+import com.estore.ecomerce.domain.ImagePost;
+import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.dto.CategoryRequest;
 import com.estore.ecomerce.dto.CategoryResponse;
+import com.estore.ecomerce.dto.forms.FormProduct;
 import com.estore.ecomerce.mapper.CategoryMapper;
 import com.estore.ecomerce.repository.CategoryRepository;
 import java.util.ArrayList;
@@ -12,6 +15,8 @@ import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 import com.estore.ecomerce.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,17 +35,46 @@ public class CategoryServiceImpl implements CategoryService {
     private IProductRepository productRepository;
 
     @Transactional
-    @Override
-    public CategoryResponse addCategory(CategoryRequest entity) {
+    @Override    
+     public ResponseEntity<?> addCategory(
+                               CategoryResponse category,
+                               ImageProfile image) {
+        ResponseEntity<?> controlFieldsEmpty = controlFieldsEmpty(category);
+        if(controlFieldsEmpty != null) return controlFieldsEmpty;
+        
+        category.setImageProfile(image);
         try {
-            Category newCategory = categoryMapper.categoryDtoEntity(entity);
-            categoryRepository.save(newCategory);
-            CategoryResponse responseCategory = categoryMapper.categoryEntityDto(newCategory);
-            return responseCategory;
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(ERROR_CONECTION);
-        }
+            categoryRepository.save(categoryMapper.categoryDtoEntity(category));
+            return new ResponseEntity<>("Category created succesfully!", 
+            HttpStatus.OK);    
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Ups something was wrong..!", 
+            HttpStatus.CONFLICT);
+        }                      
     }
+     
+     private ResponseEntity<?> controlFieldsEmpty(CategoryResponse category){
+        final ResponseEntity<?> messageFieldsEmpty = 
+        new ResponseEntity<>("The fields Name, Price or Description can't be empty", 
+        HttpStatus.NOT_ACCEPTABLE); 
+        return (
+            category.getName()== null || 
+            category.getName().trim().isEmpty() 
+            
+        )? messageFieldsEmpty : null;
+    } 
+     
+//    public CategoryResponse addCategory(CategoryResponse entity, ImageProfile) {
+//        try {
+//            Category newCategory = categoryMapper.categoryDtoEntity(entity);
+//            categoryRepository.save(newCategory);
+//            CategoryResponse responseCategory = categoryMapper.categoryEntityDto(newCategory);
+//            return responseCategory;
+//        } catch (EntityNotFoundException e) {
+//            throw new EntityNotFoundException(ERROR_CONECTION);
+//        }
+//    }
 
     @Transactional
     @Override
@@ -59,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse update(Long id, CategoryRequest entity) {
+    public CategoryResponse update(Long id, CategoryResponse  entity) {
         try {
             Optional<Category> entityById = categoryRepository.findById(id);
             if (entityById.isPresent()) {
