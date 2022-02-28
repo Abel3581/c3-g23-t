@@ -53,8 +53,7 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private IImageProfileService imageProfileService;
+
 
     @Override
     public UserRegisterResponse register(UserRegisterRequest request) {

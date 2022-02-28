@@ -8,20 +8,14 @@ import com.estore.ecomerce.dto.UserRegisterResponse;
 import com.estore.ecomerce.dto.UserUpdateResponse;
 import com.estore.ecomerce.service.FileUploadService;
 import com.estore.ecomerce.service.ImageService;
-import com.estore.ecomerce.service.abstraction.IImageProfileService;
-import com.estore.ecomerce.service.abstraction.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class UserMapper {
 
-    @Autowired
-    private IImageProfileService service;
+
 
     @Autowired
     private FileUploadService fileUploadService;
