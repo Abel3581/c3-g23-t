@@ -44,7 +44,7 @@ public class CategoryController {
     public ResponseEntity<?> createCategory(
         @RequestPart(value="image",required=false) MultipartFile image,            
         @RequestPart(value="category", required=true) CategoryResponse category)
-    throws URISyntaxException{
+    throws URISyntaxException{        
        //mapea imagen
         ImageProfile profileImage = fileUploadService.uploadImageProfileToDB(image);
         

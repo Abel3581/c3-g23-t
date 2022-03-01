@@ -1,14 +1,20 @@
 package com.estore.ecomerce.mapper;
 
 import com.estore.ecomerce.domain.Category;
-import com.estore.ecomerce.dto.CategoryRequest;
+import com.estore.ecomerce.domain.ImageProfile;
+import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.dto.CategoryResponse;
+import com.estore.ecomerce.service.FileUploadService;
+import java.util.ArrayList;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class CategoryMapper {
-
-    public Category categoryDtoEntity(CategoryResponse request) {
+    
+    private FileUploadService fileUploadService;
+    
+    public Category categoryDtoEntity(CategoryResponse request)  {
         Category category = new Category();
         category.setId(request.getId());
         category.setName(request.getName().toUpperCase());
@@ -20,12 +26,16 @@ public class CategoryMapper {
     }
 
     public CategoryResponse categoryEntityDto(Category category) {
+       
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setId(category.getId());
         categoryResponse.setName(category.getName());
         categoryResponse.setDescription(category.getDescription());
-        categoryResponse.setStatus(category.getStatus());      
-        categoryResponse.setProducts(category.getProducts());
+        categoryResponse.setStatus(category.getStatus());          
+        categoryResponse.setProducts(new ArrayList<Product>());
+      //  ImageProfile imageProfile = fileUploadService.uploadImageProfileToDB((MultipartFile) category.getImageProfile());
+
+        categoryResponse.setImageProfile(category.getImageProfile());
         return categoryResponse;
     }
 

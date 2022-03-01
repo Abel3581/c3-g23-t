@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
-import com.estore.ecomerce.repository.IProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private static final String ERROR_FIND_ID = "No se econtro la categoria";
@@ -29,10 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private CategoryMapper categoryMapper;
-
-    @Autowired
-    private IProductRepository productRepository;
+    private CategoryMapper categoryMapper; 
 
     @Transactional
     @Override    

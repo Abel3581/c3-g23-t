@@ -1,8 +1,10 @@
 
 package com.estore.ecomerce.dto;
 
+import com.estore.ecomerce.domain.Category;
 import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.domain.Product;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
