@@ -15,7 +15,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotEmpty;
 
 import com.estore.ecomerce.utils.enums.EnumState;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -37,12 +36,10 @@ public class Cart {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
     @Column(name = "state", nullable = false, updatable = true)
     @Enumerated(value = EnumType.STRING)
     private EnumState enumState;
 
-    @NotEmpty
     @CreationTimestamp
     @Column(name = "registration", updatable = false, nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -160,8 +160,6 @@ public class ProductServiceImpl implements ProductService{
         product.setImagePost(productForm.getImagePost());
         product.setStock(productForm.getStock());
         product.setRating(0.0);  
-        System.out.println("Tamaño categoria : "+product.getCategories().size());
-        System.out.println("Tamaño categoria : "+product.getCategories());
         return product;
     }
 
