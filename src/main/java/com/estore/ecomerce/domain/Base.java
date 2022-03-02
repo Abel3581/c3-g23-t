@@ -24,7 +24,7 @@ public class Base implements Serializable{
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "satus")
+    @Column(name = "status")
     private Boolean status;
 
 

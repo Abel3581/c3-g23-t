@@ -40,9 +40,8 @@ public class Category extends Base {
     private ImageProfile imageProfile;
     
     @Column(name = "soft_deleted")
-    private boolean softDeleted = Boolean.FALSE;
-    
-
+    private boolean softDeleted = Boolean.FALSE;    
+ 
     public boolean isEnabled() {
         return !this.softDeleted;
     }

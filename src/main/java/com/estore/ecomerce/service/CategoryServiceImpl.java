@@ -1,12 +1,8 @@
 package com.estore.ecomerce.service;
 
 import com.estore.ecomerce.domain.Category;
-import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
-import com.estore.ecomerce.domain.Product;
-import com.estore.ecomerce.dto.CategoryRequest;
 import com.estore.ecomerce.dto.CategoryResponse;
-import com.estore.ecomerce.dto.forms.FormProduct;
 import com.estore.ecomerce.mapper.CategoryMapper;
 import com.estore.ecomerce.repository.CategoryRepository;
 import java.util.ArrayList;
@@ -30,49 +26,37 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private CategoryMapper categoryMapper; 
+    private CategoryMapper categoryMapper;
 
     @Transactional
-    @Override    
-     public ResponseEntity<?> addCategory(
-                               CategoryResponse category,
-                               ImageProfile image) {
+    @Override
+    public ResponseEntity<?> addCategory(
+            CategoryResponse category,
+            ImageProfile image) {
         ResponseEntity<?> controlFieldsEmpty = controlFieldsEmpty(category);
-        if(controlFieldsEmpty != null) return controlFieldsEmpty;
-        
+        if (controlFieldsEmpty != null) {
+            return controlFieldsEmpty;
+        }
+
         category.setImageProfile(image);
         try {
             categoryRepository.save(categoryMapper.categoryDtoEntity(category));
-            return new ResponseEntity<>("Category created succesfully!", 
-            HttpStatus.OK);    
+            return new ResponseEntity<>("Category created succesfully!",
+                    HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Ups something was wrong..!", 
-            HttpStatus.CONFLICT);
-        }                      
+            return new ResponseEntity<>("Ups something was wrong..!",
+                    HttpStatus.CONFLICT);
+        }
     }
-     
-     private ResponseEntity<?> controlFieldsEmpty(CategoryResponse category){
-        final ResponseEntity<?> messageFieldsEmpty = 
-        new ResponseEntity<>("The fields Name, Price or Description can't be empty", 
-        HttpStatus.NOT_ACCEPTABLE); 
-        return (
-            category.getName()== null || 
-            category.getName().trim().isEmpty() 
-            
-        )? messageFieldsEmpty : null;
-    } 
-     
-//    public CategoryResponse addCategory(CategoryResponse entity, ImageProfile) {
-//        try {
-//            Category newCategory = categoryMapper.categoryDtoEntity(entity);
-//            categoryRepository.save(newCategory);
-//            CategoryResponse responseCategory = categoryMapper.categoryEntityDto(newCategory);
-//            return responseCategory;
-//        } catch (EntityNotFoundException e) {
-//            throw new EntityNotFoundException(ERROR_CONECTION);
-//        }
-//    }
+
+    private ResponseEntity<?> controlFieldsEmpty(CategoryResponse category) {
+        final ResponseEntity<?> messageFieldsEmpty
+                = new ResponseEntity<>("The fields Name can't be empty",
+                        HttpStatus.NOT_ACCEPTABLE);
+        return (category.getName() == null
+                || category.getName().trim().isEmpty()) ? messageFieldsEmpty : null;
+    }
 
     @Transactional
     @Override
@@ -91,7 +75,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse update(Long id, CategoryResponse  entity) {
+    public CategoryResponse update(Long id, CategoryResponse entity) {
         try {
             Optional<Category> entityById = categoryRepository.findById(id);
             if (entityById.isPresent()) {
@@ -127,9 +111,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponse> listCategoryActive() {
-        try {
+        try {   
             List<CategoryResponse> listResponse = new ArrayList<>();
             List<Category> entities = categoryRepository.listCategoryActive();
+              if(entities.isEmpty()){
+           System.out.println("LLEGA HASTA ACA");
+           }
             for (Category entity : entities) {
                 listResponse.add(categoryMapper.categoryEntityDto(entity));
             }
@@ -141,27 +128,33 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryResponse> listCategoryInactive() {
-      try {
+        try {
             List<CategoryResponse> listResponse = new ArrayList<>();
+           
             List<Category> entities = categoryRepository.listCategoryInactive();
+           if(entities.isEmpty()){
+           System.out.println("LLEGA HASTA ACA");
+           }
             for (Category entity : entities) {
                 listResponse.add(categoryMapper.categoryEntityDto(entity));
             }
             return listResponse;
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException(ERROR_CONECTION);
-        }   }
+        }
+    }
 
     @Override
-    public void delete(Long id)throws EntityNotFoundException {
+    public void delete(Long id) throws EntityNotFoundException {
         Category category = getCategory(id);
         category.setSoftDeleted(true);
+        category.setStatus(Boolean.FALSE);
         categoryRepository.save(category);
     }
 
-    private Category getCategory(Long id){
+    private Category getCategory(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
-        if(category.isEmpty() || category.get().isSoftDeleted()){
+        if (category.isEmpty() || category.get().isSoftDeleted()) {
             throw new EntityNotFoundException(ERROR_FIND_ID);
         }
         return category.get();
