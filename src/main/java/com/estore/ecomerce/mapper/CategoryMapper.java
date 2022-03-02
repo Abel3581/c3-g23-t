@@ -33,7 +33,7 @@ public class CategoryMapper {
         category.setId(response.getId());
         category.setName(response.getName());
         category.setDescription(response.getDescription());
-        category.setStatus(Boolean.FALSE);
+        category.setStatus(Boolean.TRUE);
         category.setProducts(response.getProducts());
         return category;
     }
