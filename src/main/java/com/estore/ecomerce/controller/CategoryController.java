@@ -38,7 +38,7 @@ public class CategoryController {
             @RequestPart(value = "image", required = false) MultipartFile image,
             @RequestPart(value = "category", required = true) CategoryResponse category)
             throws URISyntaxException {
-            
+           
         ResponseEntity<?> response = service.addCategory(category, fileUploadService.uploadImageProfileToDB(image));
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }

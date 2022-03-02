@@ -4,6 +4,7 @@ import com.estore.ecomerce.domain.Category;
 import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.dto.CategoryResponse;
 import com.estore.ecomerce.service.FileUploadService;
+import com.estore.ecomerce.service.ImageProfileServiceImpl;
 import java.util.ArrayList;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class CategoryMapper {
     
     private FileUploadService fileUploadService;
+    private ImageProfileServiceImpl imageService;
     
     public Category categoryDtoEntity(CategoryResponse request)  {
         Category category = new Category();
@@ -32,6 +34,16 @@ public class CategoryMapper {
         categoryResponse.setDescription(category.getDescription());
         categoryResponse.setStatus(category.getStatus());          
         categoryResponse.setProducts(new ArrayList<Product>());
+        categoryResponse.setImageProfile(category.getImageProfile());        
+        return categoryResponse;
+    }
+    public CategoryResponse categoryListEntityDto(Category category) {
+       //uso
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setId(category.getId());
+        categoryResponse.setName(category.getName());
+        categoryResponse.setDescription(category.getDescription());
+        categoryResponse.setStatus(category.getStatus()); 
         categoryResponse.setImageProfile(category.getImageProfile());        
         return categoryResponse;
     }

@@ -73,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
     }
-
+    @Transactional
     @Override
     public CategoryResponse update(Long id, CategoryResponse entity) {
         try {
@@ -93,7 +93,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
     }
-
+    @Transactional
     @Override
     public CategoryResponse findById(Long id) {
         try {
@@ -108,33 +108,28 @@ public class CategoryServiceImpl implements CategoryService {
             throw new EntityNotFoundException(ERROR_CONECTION);
         }
     }
-
+    @Transactional
     @Override
     public List<CategoryResponse> listCategoryActive() {
         try {   
             List<CategoryResponse> listResponse = new ArrayList<>();
             List<Category> entities = categoryRepository.listCategoryActive();
-              if(entities.isEmpty()){
-           System.out.println("LLEGA HASTA ACA");
-           }
+             
             for (Category entity : entities) {
-                listResponse.add(categoryMapper.categoryEntityDto(entity));
+                listResponse.add(categoryMapper.categoryListEntityDto(entity));
             }
             return listResponse;
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException(ERROR_CONECTION);
         }
     }
-
+    @Transactional
     @Override
     public List<CategoryResponse> listCategoryInactive() {
         try {
             List<CategoryResponse> listResponse = new ArrayList<>();
            
-            List<Category> entities = categoryRepository.listCategoryInactive();
-           if(entities.isEmpty()){
-           System.out.println("LLEGA HASTA ACA");
-           }
+            List<Category> entities = categoryRepository.listCategoryInactive();          
             for (Category entity : entities) {
                 listResponse.add(categoryMapper.categoryEntityDto(entity));
             }
@@ -143,7 +138,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new EntityNotFoundException(ERROR_CONECTION);
         }
     }
-
+    @Transactional
     @Override
     public void delete(Long id) throws EntityNotFoundException {
         Category category = getCategory(id);
