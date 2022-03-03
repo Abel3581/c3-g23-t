@@ -18,6 +18,6 @@ public class UserRegisterResponse {
     private String email;
     private String token;
     private String name;
-    //private ImageProfile imageProfile;
+
 
 }
