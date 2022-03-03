@@ -6,27 +6,21 @@ import java.util.ArrayList;
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.dto.forms.FormProduct;
+import com.estore.ecomerce.dto.forms.ProductDetailResponse;
 import com.estore.ecomerce.service.FileUploadService;
 import com.estore.ecomerce.service.ImageService;
 import com.estore.ecomerce.service.ProductService;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductService productService;
@@ -61,9 +55,15 @@ public class ProductController {
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
-    @GetMapping
+    @GetMapping("/category")
     public ResponseEntity<?> getProductByCategory(@RequestParam(value="category", required = false) Long idCategory){
         ResponseEntity<?> response = productService.getProductByCategory(idCategory);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
+    @GetMapping("popular/category")
+    public ResponseEntity<?> getProductsPopularsByCategory(@RequestParam(value="category", required = false) Long idCategory){
+        ResponseEntity<?> response = productService.getProductsPopularsByCategory(idCategory);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 

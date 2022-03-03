@@ -1,18 +1,17 @@
 package com.estore.ecomerce.service;
 
-import com.estore.ecomerce.dto.CategoryRequest;
+import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.dto.CategoryResponse;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 public interface CategoryService {
 
-    public CategoryResponse addCategory(CategoryRequest categoryResquest);
+    public ResponseEntity<?> addCategory(CategoryResponse category,ImageProfile profileImage );
 
     public List<CategoryResponse> findAll();
 
-    public CategoryResponse update(Long id, CategoryRequest categoryRequest);
-
-    public CategoryResponse deleteCategory(Long id);
+    public ResponseEntity<?> update(Long id, CategoryResponse category,ImageProfile profileImage);
 
     public CategoryResponse findById(Long id);
     
@@ -20,4 +19,5 @@ public interface CategoryService {
     
     public List<CategoryResponse> listCategoryInactive();
 
+    void delete(Long id);
 }

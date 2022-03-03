@@ -1,6 +1,7 @@
 package com.estore.ecomerce.service.abstraction;
 
 import com.estore.ecomerce.domain.User;
+import com.estore.ecomerce.dto.ClientResponse;
 import com.estore.ecomerce.dto.UserRegisterRequest;
 import com.estore.ecomerce.dto.UserUpdateResponse;
 import javassist.NotFoundException;
@@ -13,4 +14,7 @@ public interface IUserService {
     void delete(Long id)throws EntityNotFoundException;
 
     UserUpdateResponse update(Long id, UserRegisterRequest request)throws NotFoundException;
+
+
+    ClientResponse getById(Long id);
 }

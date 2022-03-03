@@ -75,7 +75,7 @@ public class Product {
     //REFERENCIA AL DUEÑO DEL PRODUCTO
     @JsonBackReference
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)
-    private Client client;
+    private User client;
 
     @OneToOne(cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH})
     @JoinColumn(name="imageProfile")

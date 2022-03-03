@@ -1,20 +1,22 @@
 package com.estore.ecomerce.dto.forms;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.estore.ecomerce.domain.Category;
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
-
+import com.estore.ecomerce.dto.ClientResponse;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
 @NoArgsConstructor
-public class FormProduct {
+@AllArgsConstructor
+public class ProductDetailResponse {
     private String name;
     private Double price;
     private String description;
@@ -25,6 +27,5 @@ public class FormProduct {
     private ImageProfile imageProfile;
     private List<ImagePost> imagePost = new ArrayList<ImagePost>();
 
-    private Long clientId;
-    
+    private ClientResponse clientResponse;
 }
