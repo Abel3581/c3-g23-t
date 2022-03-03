@@ -4,7 +4,6 @@ import com.estore.ecomerce.domain.Category;
 import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.dto.CategoryResponse;
 import com.estore.ecomerce.service.FileUploadService;
-import com.estore.ecomerce.service.ImageProfileServiceImpl;
 import java.util.ArrayList;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 public class CategoryMapper {
     
     private FileUploadService fileUploadService;
-    private ImageProfileServiceImpl imageService;
     
     public Category categoryDtoEntity(CategoryResponse request)  {
         Category category = new Category();
