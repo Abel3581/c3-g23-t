@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -62,13 +61,16 @@ public class CategoryController {
 
     }
 
+   
+    
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody CategoryResponse entity) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.update(id, entity));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
-        }
+    public ResponseEntity<?> update(@PathVariable Long id, 
+             @RequestPart(value="image",required=false) MultipartFile image,
+             @RequestPart(value="category", required=true) CategoryResponse entity) 
+            throws URISyntaxException{
+      
+        ResponseEntity<?> response = service.update( id,entity,fileUploadService.uploadImageProfileToDB(image));
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
     @DeleteMapping("/{id}")

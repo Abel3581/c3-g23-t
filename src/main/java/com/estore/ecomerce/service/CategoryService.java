@@ -11,7 +11,7 @@ public interface CategoryService {
 
     public List<CategoryResponse> findAll();
 
-    public CategoryResponse update(Long id, CategoryResponse category);
+    public ResponseEntity<?> update(Long id, CategoryResponse category,ImageProfile profileImage);
 
     public CategoryResponse findById(Long id);
     

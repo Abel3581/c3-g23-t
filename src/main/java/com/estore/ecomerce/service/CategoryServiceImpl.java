@@ -73,26 +73,29 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
     }
+
     @Transactional
     @Override
-    public CategoryResponse update(Long id, CategoryResponse entity) {
-        try {
-            Optional<Category> entityById = categoryRepository.findById(id);
-            if (entityById.isPresent()) {
-                CategoryResponse entityResponse = categoryMapper.categoryEntityDto(entityById.get());
-                Category newCategory = categoryMapper.categoryDtoEntity(entity);
-                entityResponse = categoryMapper.categoryEntityDto(newCategory);
-                newCategory = categoryRepository.save(newCategory);
-                return entityResponse;
-            } else {
-                throw new EntityNotFoundException(ERROR_FIND_ID);
+    public ResponseEntity<?> update(Long id, CategoryResponse entity, ImageProfile image) {
+        Optional<Category> entityById = categoryRepository.findById(id);
+        if (entityById.isPresent()) {
+            ResponseEntity<?> controlFieldsEmpty = controlFieldsEmpty(entity);
+            if (controlFieldsEmpty != null) {
+                return controlFieldsEmpty;
             }
-
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(ERROR_CONECTION);
         }
-
+        entity.setImageProfile(image);
+        try {
+            categoryRepository.save(categoryMapper.categoryDtoEntity(entity));
+            return new ResponseEntity<>("Category updated succesfully!",
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Ups something was wrong..!",
+                    HttpStatus.CONFLICT);
+        }
     }
+
     @Transactional
     @Override
     public CategoryResponse findById(Long id) {
@@ -108,13 +111,14 @@ public class CategoryServiceImpl implements CategoryService {
             throw new EntityNotFoundException(ERROR_CONECTION);
         }
     }
+
     @Transactional
     @Override
     public List<CategoryResponse> listCategoryActive() {
-        try {   
+        try {
             List<CategoryResponse> listResponse = new ArrayList<>();
             List<Category> entities = categoryRepository.listCategoryActive();
-             
+
             for (Category entity : entities) {
                 listResponse.add(categoryMapper.categoryListEntityDto(entity));
             }
@@ -123,13 +127,14 @@ public class CategoryServiceImpl implements CategoryService {
             throw new EntityNotFoundException(ERROR_CONECTION);
         }
     }
+
     @Transactional
     @Override
     public List<CategoryResponse> listCategoryInactive() {
         try {
             List<CategoryResponse> listResponse = new ArrayList<>();
-           
-            List<Category> entities = categoryRepository.listCategoryInactive();          
+
+            List<Category> entities = categoryRepository.listCategoryInactive();
             for (Category entity : entities) {
                 listResponse.add(categoryMapper.categoryEntityDto(entity));
             }
@@ -138,6 +143,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new EntityNotFoundException(ERROR_CONECTION);
         }
     }
+
     @Transactional
     @Override
     public void delete(Long id) throws EntityNotFoundException {
