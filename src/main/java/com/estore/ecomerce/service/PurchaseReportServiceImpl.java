@@ -1,9 +1,7 @@
 package com.estore.ecomerce.service;
 
-import com.estore.ecomerce.domain.Category;
 import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.domain.PurchaseReport;
-import com.estore.ecomerce.dto.CategoryResponse;
 import com.estore.ecomerce.dto.ModelPurchaseReport;
 import com.estore.ecomerce.dto.PurchaseReportRequest;
 import com.estore.ecomerce.mapper.PurchaseReportMapper;
@@ -12,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,10 +39,10 @@ public class PurchaseReportServiceImpl implements PurchaseReportService {
     }
     @Transactional
     @Override
-    public void savePurchaseReport(Integer quantity) {
+    public void savePurchaseReport(Integer quantity, Product product)  {
         try {
             
-            PurchaseReportRequest newReport = mapperPurchase.PurchaseReportRequest(quantity); 
+            PurchaseReportRequest newReport = mapperPurchase.PurchaseReportRequest(quantity, product); 
             PurchaseReport report= mapperPurchase.purchaseReportDtoEntity(newReport);
             purchaseRepository.save(report);            
            
