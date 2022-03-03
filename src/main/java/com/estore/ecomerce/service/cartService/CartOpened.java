@@ -4,20 +4,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.estore.ecomerce.domain.Cart;
+import com.estore.ecomerce.domain.Invoice;
 import com.estore.ecomerce.domain.LineProduct;
+import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.dto.ModelDetailCart;
+import com.estore.ecomerce.repository.LineRepository;
 import com.estore.ecomerce.utils.build.BuilderGetCartByIdImpl;
 import com.estore.ecomerce.utils.enums.EnumState;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 @Service
 public class CartOpened implements ICartState{
 
+    @Autowired
+    private LineRepository lineRepository;
 
     @Override
-    public void closeCart(Cart cart) {
+    public ResponseEntity<?> closeCart(Cart cart) {
+        //TODO añadir el reporte de cada cliente y su producto
         cart.setEnumState(EnumState.CLOSED);
         discountStockOfProducts(cart);
+        confirmLineOfCart(cart);
+        generateInvoice(cart);
+        return new ResponseEntity<>(generateInvoice(cart), 
+        HttpStatus.OK);
     }
 
     @Override
@@ -41,10 +54,43 @@ public class CartOpened implements ICartState{
         }
     }  
 
+    private Invoice generateInvoice(Cart cart){
+        Invoice invoice = new Invoice();
+        invoice.setCart(cart);
+        invoice.setObservation("Default Observation");
+        return invoice;
+    }
+
+    private void confirmLineOfCart(Cart cart){
+        List<LineProduct> listLineProducts = cart.getLineProducts();
+        List<LineProduct> newListLineProducts = new ArrayList<LineProduct>();
+
+        for (LineProduct line : listLineProducts) {
+            newListLineProducts.add(
+               new LineProduct(line.getAmount(), new Product(
+                   line.getProduct().getName(),
+                   line.getProduct().getPrice(),
+                   line.getProduct().getDescription(),
+                   line.getProduct().getStock(),
+                   null,
+                   line.getProduct().getRating(),
+                   line.getProduct().getDiscount(),
+                   line.getProduct().getRegistration(),
+                   line.getProduct().getCategories(),
+                   line.getProduct().getClient(),
+                   null,
+                   null,
+                   null
+               ), cart)
+           );             
+        }
+        lineRepository.deleteAll(listLineProducts);
+    }
 
     private void discountStockOfProducts(Cart cart){
+        int stock = 0;
         for (LineProduct line : cart.getLineProducts()){
-            int stock = line.getProduct().getStock();
+            stock = line.getProduct().getStock();
             stock = stock - line.getProduct().getStock();
             line.getProduct().setStock(stock);
         }
