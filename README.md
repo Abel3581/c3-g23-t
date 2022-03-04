@@ -1,6 +1,8 @@
 # GC3-G23-T
 
-Back-End con java, Spring boot para una tienda de ventas.
+### Tienda de Ventas.
+
+Api rest desarrollada con Java, Spring Boot y Angular.
 Version: En desarrollo.
 
 
@@ -9,7 +11,11 @@ Version: En desarrollo.
 - Postman
 - Maven
 - JDK 11
-- PostgreSQL
+- PostgresSQL
+- Angular
+- Html5
+- Css3
+- Javascript
 
 
 
