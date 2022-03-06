@@ -2,6 +2,7 @@ package com.estore.ecomerce.service;
 
 import com.estore.ecomerce.domain.Category;
 import com.estore.ecomerce.domain.ImageProfile;
+import com.estore.ecomerce.dto.CategoryImage;
 import com.estore.ecomerce.dto.CategoryResponse;
 import com.estore.ecomerce.mapper.CategoryMapper;
 import com.estore.ecomerce.repository.CategoryRepository;
@@ -60,12 +61,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public List<CategoryResponse> findAll() {
+    public List<CategoryImage> findAll() {
         try {
-            List<CategoryResponse> listResponse = new ArrayList<>();
+            List<CategoryImage> listResponse = new ArrayList<>();
             List<Category> entities = categoryRepository.findAll();
             for (Category entity : entities) {
-                listResponse.add(categoryMapper.categoryEntityDto(entity));
+                listResponse.add(categoryMapper.categoryImageEntityDto(entity));
             }
             return listResponse;
         } catch (EntityNotFoundException e) {
