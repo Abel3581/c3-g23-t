@@ -14,11 +14,11 @@ public interface CategoryService {
 
     public ResponseEntity<?> update(Long id, CategoryResponse category,ImageProfile profileImage);
 
-    public CategoryResponse findById(Long id);
+    public CategoryImage findById(Long id);
     
-    public List<CategoryResponse> listCategoryActive();
+    public List<CategoryImage> listCategoryActive();
     
-    public List<CategoryResponse> listCategoryInactive();
+    public List<CategoryImage> listCategoryInactive();
 
     void delete(Long id);
 }
