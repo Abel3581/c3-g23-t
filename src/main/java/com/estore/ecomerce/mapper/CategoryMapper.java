@@ -14,6 +14,7 @@ public class CategoryMapper {
     
   
     //uso
+
     public Category categoryDtoEntity(CategoryResponse request)  {
         Category category = new Category();
         category.setId(request.getId());

@@ -53,8 +53,7 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private IImageProfileService imageProfileService;
+
 
     @Override
     public UserRegisterResponse register(UserRegisterRequest request) {
@@ -98,7 +97,7 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
     public UserAuthenticatedResponse authentication(UserAuthenticatedRequest request) {
         User user = getUser(request.getEmail());
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
-        return new UserAuthenticatedResponse(jwtUtil.generateToken(user), user.getEmail());
+        return new UserAuthenticatedResponse(jwtUtil.generateToken(user), user.getEmail(), user.getAuthorities());
     }
 
 
