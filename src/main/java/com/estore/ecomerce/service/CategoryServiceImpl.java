@@ -99,11 +99,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public CategoryResponse findById(Long id) {
+    public CategoryImage findById(Long id) {
         try {
             Optional<Category> entityById = categoryRepository.findById(id);
             if (entityById.isPresent()) {
-                CategoryResponse entityResponse = categoryMapper.categoryEntityDto(entityById.get());
+                CategoryImage entityResponse = categoryMapper.categoryImageEntityDto(entityById.get());
                 return entityResponse;
             } else {
                 throw new EntityNotFoundException(ERROR_FIND_ID);
@@ -115,13 +115,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public List<CategoryResponse> listCategoryActive() {
+    public List<CategoryImage> listCategoryActive() {
         try {
-            List<CategoryResponse> listResponse = new ArrayList<>();
+            List<CategoryImage> listResponse = new ArrayList<>();
             List<Category> entities = categoryRepository.listCategoryActive();
 
             for (Category entity : entities) {
-                listResponse.add(categoryMapper.categoryListEntityDto(entity));
+                listResponse.add(categoryMapper.categoryImageEntityDto(entity));
             }
             return listResponse;
         } catch (EntityNotFoundException e) {
@@ -131,13 +131,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public List<CategoryResponse> listCategoryInactive() {
+    public List<CategoryImage> listCategoryInactive() {
         try {
-            List<CategoryResponse> listResponse = new ArrayList<>();
+            List<CategoryImage> listResponse = new ArrayList<>();
 
             List<Category> entities = categoryRepository.listCategoryInactive();
             for (Category entity : entities) {
-                listResponse.add(categoryMapper.categoryEntityDto(entity));
+                listResponse.add(categoryMapper.categoryImageEntityDto(entity));
             }
             return listResponse;
         } catch (EntityNotFoundException e) {
