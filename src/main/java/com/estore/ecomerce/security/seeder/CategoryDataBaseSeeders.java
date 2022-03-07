@@ -18,8 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class CategoryDataBaseSeeders {
 
-    private static final String categories[] = {"Calzado", "Indumentaria", "Hogar", "Electro", "Perfume"};
-
+    private static final String categories[] = {"Calzados", "Indumentarias", "Hogar",
+        "Electros", "Perfumes", "Deportes",
+        "Autos", "Camionetas", "Camiones"};
+    private static final String listFile[] = {"image05.png", "image01.png", "image03.png",
+        "image02.png", "image04.png", "image06.png",
+        "image07.png", "image08.png", "image09.png"};
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -30,19 +34,15 @@ public class CategoryDataBaseSeeders {
         if (categorylis.isEmpty()) {
 
             String sCarpAct = System.getProperty("user.dir");
-            File file = new File(sCarpAct + "/src/main/resources/static/images/");  //carpeta donde se ejecuta codigo
-
-            File[] listFile = file.listFiles();
             for (int index = 0; index < categories.length; index++) {
                 ImageProfile image = new ImageProfile();
                 Category category = new Category();
                 category.setName(categories[index].toUpperCase());
                 category.setDescription("Descripción de " + categories[index]);
 
-                InputStream inputStream = new FileInputStream(listFile[index]);
+                InputStream inputStream = new FileInputStream(new File(sCarpAct + "/src/main/resources/static/images/" + listFile[index]));
                 //String name, @Nullable String originalFilename, @Nullable String contentType, InputStream contentStream)
-                MultipartFile partFile = new MockMultipartFile(listFile[index].getName().toString(), listFile[index].getName().toString(), "image/png", inputStream);
-
+                MultipartFile partFile = new MockMultipartFile(listFile[index], listFile[index], "image/png", inputStream);
                 image.setFileData(partFile.getBytes());
                 image.setFileType("image/png");
                 image.setName(partFile.getName());
@@ -55,7 +55,4 @@ public class CategoryDataBaseSeeders {
         }
     }
 
-   
 }
-
-
