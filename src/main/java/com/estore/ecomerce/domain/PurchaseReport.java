@@ -30,7 +30,7 @@ public class PurchaseReport {
 
     @NotEmpty
     @Column(name = "quantity", nullable = false, updatable = false)
-    private int quantity = 0;
+    private Integer quantity = 0;
 
     @NotEmpty
     @CreationTimestamp

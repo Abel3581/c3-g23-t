@@ -9,13 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import com.estore.ecomerce.domain.Cart;
-import com.estore.ecomerce.domain.Category;
-import com.estore.ecomerce.domain.Client;
-import com.estore.ecomerce.domain.ImagePost;
-import com.estore.ecomerce.domain.ImageProfile;
-import com.estore.ecomerce.domain.Product;
-import com.estore.ecomerce.domain.User;
+import com.estore.ecomerce.domain.*;
 import com.estore.ecomerce.dto.ModelDetailProduct;
 import com.estore.ecomerce.dto.ModelListProducts;
 import com.estore.ecomerce.dto.forms.FormProduct;
@@ -24,10 +18,13 @@ import com.estore.ecomerce.repository.ClientRepository;
 import com.estore.ecomerce.repository.ImageRepository;
 import com.estore.ecomerce.repository.ProductRepository;
 import com.estore.ecomerce.security.ApplicationRole;
+import com.estore.ecomerce.service.abstraction.IUserService;
 import com.estore.ecomerce.utils.build.BuilderGetProductByIdImpl;
 import com.estore.ecomerce.utils.build.BuilderGetProductsImpl;
 import com.estore.ecomerce.utils.enums.EnumState;
 
+import javassist.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,6 +39,8 @@ public class ProductServiceImpl implements ProductService{
     private final ClientRepository clientRepository;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
+    @Autowired
+    private IUserService userService;
 
     @Override
     public ResponseEntity<?> saveProduct(Client client, FormProduct product,
@@ -64,7 +63,7 @@ public class ProductServiceImpl implements ProductService{
         product.setImagePost(postImage);
 
         try {
-            productRepository.save(constructorProduct(product,client));
+            productRepository.save(constructorProduct(product));
             return new ResponseEntity<>(product, 
             HttpStatus.OK);    
         } catch (Exception e) {
@@ -150,10 +149,10 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    private Product constructorProduct(FormProduct productForm, Client client){
+    private Product constructorProduct(FormProduct productForm) throws NotFoundException{
         Product product = new Product();
+        User client = userService.getInfoUser();
         product.setCategories(productForm.getCategories());
-
         product.setClient(client);
         product.setName(productForm.getName());
         product.setContent(productForm.getContent());
@@ -322,7 +321,7 @@ public class ProductServiceImpl implements ProductService{
                         .setDiscount(product.getDiscount())
                         .setRegistration(product.getRegistration())
                         .setCategories(product.getCategories())
-                        .setClient(product.getClient())
+                        .setClient((Client) product.getClient())
                         .setImage(product.getImageProfile())
                         .setPostImages(product.getImagePost())
                         .setQuantitySold(product.getListReports())
@@ -485,10 +484,49 @@ public class ProductServiceImpl implements ProductService{
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 
+    public ResponseEntity<?> getProductByCategory(Long id) {
+        Optional<Category> category = categoryRepository.findById(id);
+        
+        if(category.isPresent()){
+            List<Product> products = category.get().getProducts();
+            
+            ArrayList<ModelListProducts> productsResponse = 
+            constructorGetProducts((ArrayList<Product>) products);
+            return new ResponseEntity<>(productsResponse,HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Category not found",HttpStatus.NOT_FOUND);
+        }
+    }
 
+    @Override
+    public ResponseEntity<?> getProductsPopularsByCategory(Long id) {
+        Optional<Category> category = categoryRepository.findById(id);
+       
+       if(category.isPresent()){
+            List<Product> products = category.get().getProducts();
+            products = products.stream()
+            .filter(p -> p.getRating() >= 4.00)
+            .collect(Collectors.toList());
 
-    
+            ArrayList<ModelListProducts> productsResponse = 
+            constructorGetProducts((ArrayList<Product>) products);
 
+            return new ResponseEntity<>(productsResponse,HttpStatus.OK);
+       }else{
+            return new ResponseEntity<>("Category not found",HttpStatus.NOT_FOUND);
+       }
+    }
 
+    @Override
+    public ResponseEntity<?> getProduct() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> getDetailProductById(Long id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
 }

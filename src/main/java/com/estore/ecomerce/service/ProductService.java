@@ -27,6 +27,10 @@ public interface ProductService {
     ResponseEntity<?> getProduct(Client client);
     ResponseEntity<?> getAllProducts(Client client, String category, Double rating);
     ResponseEntity<?> getDetailProductById(Long id, Client client);
+    ResponseEntity<?> getProduct();
+    ResponseEntity<?> getDetailProductById(Long id);
+    ResponseEntity<?> getProductByCategory(Long id);
+    ResponseEntity<?> getProductsPopularsByCategory(Long id);
     ResponseEntity<?> getProductById(Long id);
     ResponseEntity<?> deleteProduct(Long id);
     ResponseEntity<?> getProductById(Long id, User user);

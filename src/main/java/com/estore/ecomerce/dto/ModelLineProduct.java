@@ -1,6 +1,5 @@
 package com.estore.ecomerce.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

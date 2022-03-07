@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
 @MappedSuperclass
 @Getter
@@ -19,9 +18,13 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Base implements Serializable{
+
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "satus")
-    private Boolean status;  
+
+    @Column(name = "status")
+    private Boolean status;
+
+
 }

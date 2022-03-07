@@ -1,5 +1,6 @@
 package com.estore.ecomerce.controller;
 
+import com.estore.ecomerce.dto.ClientResponse;
 import com.estore.ecomerce.dto.UserRegisterRequest;
 import com.estore.ecomerce.dto.UserUpdateResponse;
 import com.estore.ecomerce.service.abstraction.IUserService;
@@ -10,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/user")
 public class UserController {
 
@@ -29,7 +30,12 @@ public class UserController {
     public ResponseEntity<UserUpdateResponse> update(@PathVariable Long id, @ModelAttribute UserRegisterRequest request) throws NotFoundException {
         UserUpdateResponse result = userService.update(id, request);
         return ResponseEntity.ok().body(result);
+    }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ClientResponse> getClientById(@PathVariable Long id){
+         ClientResponse response = userService.getById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

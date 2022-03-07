@@ -15,15 +15,7 @@ import com.estore.ecomerce.service.abstraction.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javassist.NotFoundException;
@@ -31,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductService productService;
@@ -78,6 +71,18 @@ public class ProductController {
         Client client = (Client) userService.getInfoUser();
 
         ResponseEntity<?> response = productService.getDetailProductById(id, client);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<?> getProductByCategory(@RequestParam(value="category", required = false) Long idCategory){
+        ResponseEntity<?> response = productService.getProductByCategory(idCategory);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
+    @GetMapping("popular/category")
+    public ResponseEntity<?> getProductsPopularsByCategory(@RequestParam(value="category", required = false) Long idCategory){
+        ResponseEntity<?> response = productService.getProductsPopularsByCategory(idCategory);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 

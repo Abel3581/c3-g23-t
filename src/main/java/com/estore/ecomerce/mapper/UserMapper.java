@@ -2,27 +2,25 @@ package com.estore.ecomerce.mapper;
 
 import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.ImageProfile;
+import com.estore.ecomerce.dto.ClientResponse;
 import com.estore.ecomerce.dto.UserRegisterRequest;
 import com.estore.ecomerce.dto.UserRegisterResponse;
 import com.estore.ecomerce.dto.UserUpdateResponse;
 import com.estore.ecomerce.service.FileUploadService;
-import com.estore.ecomerce.service.abstraction.IImageProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class UserMapper {
 
-    @Autowired
-    private IImageProfileService service;
 
     @Autowired
     private FileUploadService fileUploadService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
 
     public Client userDto2Entity(UserRegisterRequest request) {
         Client user = new Client();
@@ -39,9 +37,10 @@ public class UserMapper {
 
     public UserRegisterResponse userEntity2Dto(Client user) {
         UserRegisterResponse userRegisterResponse = new UserRegisterResponse();
-        userRegisterResponse.setUsername(user.getUsername());
         userRegisterResponse.setId(user.getId());
+        userRegisterResponse.setUsername(user.getUsername());
         userRegisterResponse.setEmail(user.getEmail());
+        userRegisterResponse.setName(user.getName());
         return userRegisterResponse;
     }
 
@@ -71,5 +70,20 @@ public class UserMapper {
         dto.setState(entity.getState());
         dto.setImageProfile(entity.getImageProfile());
         return dto;
+    }
+
+    public ClientResponse convertTo(Client client) {
+        ClientResponse clientResponse = new ClientResponse();
+        clientResponse.setId(client.getId());
+        clientResponse.setName(client.getName());
+        clientResponse.setUsername(client.getUsername());
+        clientResponse.setCity(client.getCity());
+        clientResponse.setCountry(client.getCountry());
+        clientResponse.setEmail(client.getEmail());
+        clientResponse.setPassword(client.getPassword());
+        clientResponse.setState(client.getState());
+        clientResponse.setSurname(clientResponse.getSurname());
+
+        return clientResponse;
     }
 }

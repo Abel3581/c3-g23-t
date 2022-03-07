@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.estore.ecomerce.domain.Cart;
+import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.Invoice;
 import com.estore.ecomerce.domain.LineProduct;
 import com.estore.ecomerce.domain.Product;

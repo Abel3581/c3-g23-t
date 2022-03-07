@@ -65,7 +65,7 @@ public class Product {
     /*Relationsip!!!*/
 
     public Product(String name, Double price, String description, int stock, String content, double rating,
-            double discount, LocalDateTime registration, List<Category> categories, Client client,
+            double discount, LocalDateTime registration, List<Category> categories, User client,
             ImageProfile imageProfile, List<ImagePost> imagePost, List<PurchaseReport> listReports) {
         this.name = name;
         this.price = price;
@@ -93,7 +93,7 @@ public class Product {
     //REFERENCIA AL DUEÑO DEL PRODUCTO
     @JsonBackReference
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)
-    private Client client;
+    private User client;
 
     @OneToOne(cascade={CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH})
     @JoinColumn(name="imageProfile")

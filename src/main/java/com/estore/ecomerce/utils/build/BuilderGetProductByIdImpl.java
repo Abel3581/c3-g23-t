@@ -114,7 +114,7 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
 
     public BuilderGetProductByIdImpl setPostImages(List<ImagePost> imagesPost){
         List<ModelImage> imagesRequest = new ArrayList<ModelImage>();
-        String url = "http://localhost:8080/api/v1/postimages/";
+        String url = "http://localhost:8080/api/v1/images/postimages/";
         if(imagesPost.size() > 0){
             for (ImagePost image : imagesPost) {
                 imagesRequest.add(

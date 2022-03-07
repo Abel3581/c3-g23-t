@@ -1,9 +1,6 @@
 package com.estore.ecomerce.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
-import com.estore.ecomerce.domain.Cart;
 import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.dto.forms.FormLineProduct;
 import com.estore.ecomerce.service.InvoiceService;
@@ -11,7 +8,6 @@ import com.estore.ecomerce.service.abstraction.IUserService;
 import com.estore.ecomerce.service.cartService.CartService;
 import com.estore.ecomerce.utils.enums.EnumState;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
