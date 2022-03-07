@@ -41,27 +41,15 @@ public class CartController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> addProducts(
+    public ResponseEntity<?> updateCart(
         @PathVariable(name = "id") Long id,
         @RequestPart(value="cart", required=true) FormLineProduct formLineProduct) 
     throws NotFoundException{
         Client client = (Client) userService.getInfoUser();
         
-        ResponseEntity<?> response = cartService.addProducts(client, id, 
+        ResponseEntity<?> response = cartService.updateCart(client, id, 
         formLineProduct.getLineProduct());
 
-        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
-    }
-
-    @PutMapping("/{id}/lineproduct/{idLine}")
-    public ResponseEntity<?> deleteProducts(
-        @PathVariable(name = "id") Long id,
-        @PathVariable(name = "idLine") Long idLine,
-        @RequestPart(value="cart", required=true) FormLineProduct formLineProduct) 
-    throws NotFoundException{
-        Client client = (Client) userService.getInfoUser();
-
-        ResponseEntity<?> response = cartService.deleteProducts(client, id, idLine);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 

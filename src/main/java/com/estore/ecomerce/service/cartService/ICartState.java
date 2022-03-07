@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 public interface ICartState {
 
     public ResponseEntity<?> closeCart(Cart cart);
-    public ResponseEntity<?> addProducts(Cart cart, List<FormCartProduct> lineProduct);
+    public ResponseEntity<?> updateCart(Cart cart, List<FormCartProduct> lineProduct);
     public ResponseEntity<?> deleteProducts(Cart cart, LineProduct line);
     public void openCart(Long id);
     public ModelDetailCart getCart(Cart cart);

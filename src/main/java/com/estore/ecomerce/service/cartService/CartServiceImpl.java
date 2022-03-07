@@ -71,7 +71,7 @@ public class CartServiceImpl implements CartService{
 
     @Transactional
     @Override
-    public ResponseEntity<?> addProducts(Client client, Long idCart, List<FormCartProduct> lineProduct){
+    public ResponseEntity<?> updateCart(Client client, Long idCart, List<FormCartProduct> lineProduct){
         final ResponseEntity<?> messageStockOfProductInvalid =
         new ResponseEntity<>("Stock insuficient", 
         HttpStatus.NOT_ACCEPTABLE);
@@ -111,55 +111,12 @@ public class CartServiceImpl implements CartService{
         if(controlAmountOfProducts(lineProduct).size() != lineProduct.size())
         return messageAmountOfProductInvalid;
 
-        ResponseEntity<?> response = actualState.addProducts(cart.get(), lineProduct);
+        ResponseEntity<?> response = actualState.updateCart(cart.get(), lineProduct);
         if(response.getStatusCodeValue() == 200){
             cartRepository.save(cart.get());
             return new ResponseEntity<>(
-                "http://localhost:8080/api/v1/carts/"+cart.get().getId(), 
+                cart.get(), 
                 HttpStatus.OK);
-        }else{
-            return response;
-        }
-    }
-
-    @Transactional
-    @Override
-    public ResponseEntity<?> deleteProducts(Client client, Long idCart, Long idLine){
-        
-        final ResponseEntity<?> messageCartisForbidden =
-        new ResponseEntity<>("Cart is not found", 
-        HttpStatus.FORBIDDEN);
-        final ResponseEntity<?> messageCartIsnotexists =
-        new ResponseEntity<>("Cart is not found", 
-        HttpStatus.NOT_FOUND);
-        final ResponseEntity<?> lineIsntinCart =
-        new ResponseEntity<>("Line is not found", 
-        HttpStatus.NOT_FOUND);
-
-        Optional<Cart> cart = cartRepository.findById(idCart);
-        
-        if(!cart.isPresent()) return messageCartIsnotexists;
-        if(cart.get().getBuyer().getId() != client.getId()) return messageCartisForbidden;
-        
-        List<LineProduct> lineProducts = cart.get().getLineProducts().stream()
-        .filter(line -> line.getId() == idLine).collect(Collectors.toList());
-
-        if(lineProducts.size() == 0) return lineIsntinCart;
-
-        asignStateCart(cart.get());
-
-        ResponseEntity<?> response = actualState.deleteProducts(cart.get(), lineProducts.get(0));
-        if(response.getStatusCodeValue() == 200){
-            if(cart.get().getLineProducts().size() == 0){
-                cartRepository.delete(cart.get());
-                return new ResponseEntity<>("Cart deleted", 
-                HttpStatus.OK);
-            }else{
-                cartRepository.save(cart.get());
-                return new ResponseEntity<>("http://localhost:8080/api/v1/carts/"+idCart, 
-                HttpStatus.OK);
-            }
-           
         }else{
             return response;
         }
@@ -205,7 +162,7 @@ public class CartServiceImpl implements CartService{
         
         createLinesCarts(cart, lineProduct);
         cartRepository.save(cart);
-        return new ResponseEntity<>("Cart created succesfully!", HttpStatus.OK);
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     private void createLinesCarts(Cart cart, List<FormCartProduct> lineProduct){
@@ -218,6 +175,8 @@ public class CartServiceImpl implements CartService{
             );
         }
     }
+
+
 
     private void updateStockByEachProduct(Cart cart){
         cart.getLineProducts().stream().forEach(line ->

@@ -41,25 +41,21 @@ public class CartOpened implements ICartState{
     }
 
     @Override
-    public ResponseEntity<?> addProducts(Cart cart, List<FormCartProduct> lineProduct) {
+    public ResponseEntity<?> updateCart(Cart cart, List<FormCartProduct> lineProduct) {
         cart.setEnumState(EnumState.ACTIVE);
-        int flag = 0;
-        for (FormCartProduct productUpdate : lineProduct) {
-            for (LineProduct line : cart.getLineProducts()) {
-                if(productUpdate.getId() == line.getProduct().getId()){
-                    line.setAmount(productUpdate.getAmount());
-                    flag = flag + 1;       
-                }
-            }
-            if(flag == 0){
-                System.out.println("Añado un nuevo producto");
-                Product product = productRepository.findById(productUpdate.getId()).get();
-                cart.getLineProducts().add(
-                new LineProduct(productUpdate.getAmount(), product, cart));
-            }
-            flag = 0;
-        }
+        updateCart(cart, lineProduct);  
         return new ResponseEntity<>(cart, HttpStatus.OK);
+    }
+
+    private void updateLinesCarts(Cart cart, List<FormCartProduct> lineProduct){
+        List<LineProduct> lineProducts = new ArrayList<LineProduct>();
+        for (FormCartProduct line : lineProduct) {
+            Product product = productRepository.findById(line.getId()).get();
+            lineProducts.add(
+                new LineProduct(line.getAmount(), product, cart)
+            );  
+        }
+        cart.setLineProducts(lineProducts);
     }
 
     @Override

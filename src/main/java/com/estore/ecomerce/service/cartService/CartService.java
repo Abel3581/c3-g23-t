@@ -11,8 +11,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface CartService {
     public ResponseEntity<?> createCart(Client client, List<FormCartProduct> lineProduct);
-    public ResponseEntity<?> addProducts(Client client, Long idCart, List<FormCartProduct> lineProduct);
-    public ResponseEntity<?> deleteProducts(Client client, Long idCart, Long idLine);
+    public ResponseEntity<?> updateCart(Client client, Long idCart, List<FormCartProduct> lineProduct);
     public ResponseEntity<?> closeCart(Client client, Long id);
     public ResponseEntity<?> deleteCartById(Long id, Client client);
 

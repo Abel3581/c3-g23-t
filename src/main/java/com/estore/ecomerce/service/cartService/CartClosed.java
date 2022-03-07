@@ -25,7 +25,7 @@ public class CartClosed implements ICartState{
     }
 
     @Override
-    public ResponseEntity<?> addProducts(Cart cart, List<FormCartProduct> lineProduct) {
+    public ResponseEntity<?> updateCart(Cart cart, List<FormCartProduct> lineProduct) {
         return new ResponseEntity<>("Error the cart is closed", 
         HttpStatus.FORBIDDEN);
     }
