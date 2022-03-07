@@ -8,8 +8,8 @@ import com.estore.ecomerce.domain.Category;
 import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
+import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.domain.PurchaseReport;
-import com.estore.ecomerce.domain.User;
 import com.estore.ecomerce.dto.ModelCategory;
 import com.estore.ecomerce.dto.ModelClient;
 import com.estore.ecomerce.dto.ModelDetailProduct;
@@ -30,6 +30,8 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
     private ModelImage imageProfile;
     private ArrayList<ModelImage> imagesPost;
     private int quantitySold;
+    private String optDeleteUpdateProduct; 
+    private String setOptCreateUpdateCartWithProduct;
 
     public BuilderGetProductByIdImpl setId(Long id){
         this.id = id;
@@ -134,6 +136,37 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
         return this;
     }
 
+    public BuilderGetProductByIdImpl setOptDeleteProduct(Product product, 
+    Long idCliAuthenticated){
+        if(product.getClient().getId() == idCliAuthenticated){
+            //Es dueño del producto
+            String url = "http://localhost:8080/api/v1/products/"+product.getId();
+            this.optDeleteUpdateProduct = url;
+        }else{
+            this.optDeleteUpdateProduct = null;
+        }
+        return this;
+    }
+
+    public BuilderGetProductByIdImpl setOptCreateUpdateCartWithProduct(Long idClientProduct, 
+    Long idCliAuthenticated, Long idCartOpen){
+        if(idClientProduct != idCliAuthenticated){
+            String url;
+            //Se debe pasar un arreglo de objetos con el id del producto y la cantidad
+            // id y amount
+            if(idCartOpen == null){
+                url = "http://localhost:8080/api/v1/carts";
+            }else{
+                url = "http://localhost:8080/api/v1/carts/"+idCartOpen;
+            }
+            this.setOptCreateUpdateCartWithProduct = url;
+        }else{
+            this.setOptCreateUpdateCartWithProduct = null;
+        }
+        return this;
+    }
+
+
     @Override
     public ModelDetailProduct modelDetailProduct() {
         ModelDetailProduct modelDetailProduct = new ModelDetailProduct();
@@ -152,6 +185,8 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
         modelDetailProduct.setImageProfile(this.imageProfile);
         modelDetailProduct.setImagesPost(this.imagesPost);
         modelDetailProduct.setQuantitySold(this.quantitySold);
+        modelDetailProduct.setSetOptCreateUpdateCartWithProduct(this.setOptCreateUpdateCartWithProduct);
+        modelDetailProduct.setOptDeleteUpdateProduct(this.optDeleteUpdateProduct);
 
         return modelDetailProduct;
     }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.estore.ecomerce.domain.Cart;
 import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.LineProduct;
 import com.estore.ecomerce.dto.ModelClient;
@@ -17,6 +18,9 @@ public class BuilderGetCartByIdImpl implements BuilderGetCartById{
     private EnumState enumState;
     private LocalDateTime registration;
     private ModelClient client;
+    private String optCloseCart;
+    private String optCleanCart;
+    private String invoice;
     private List<ModelLineProduct> lineProduct = new ArrayList<ModelLineProduct>();
     private double total;
 
@@ -55,7 +59,7 @@ public class BuilderGetCartByIdImpl implements BuilderGetCartById{
     }
 
 
-    public BuilderGetCartByIdImpl setLineProduct(List<LineProduct> lineProduct) {
+    public BuilderGetCartByIdImpl setLineProduct(Cart cart, List<LineProduct> lineProduct) {
         String nameImage;
         String urlImage;
         for (LineProduct line : lineProduct) {
@@ -69,6 +73,8 @@ public class BuilderGetCartByIdImpl implements BuilderGetCartById{
             }
             this.lineProduct.add(
                 new ModelLineProduct(
+                    line.getId(),
+                    this.id,
                     line.getProduct().getName(),
                     new ModelImage(nameImage,urlImage),
                     line.getProduct().getPrice() - 
@@ -78,7 +84,15 @@ public class BuilderGetCartByIdImpl implements BuilderGetCartById{
                 )
             );
         }
-        
+        if(cart.getEnumState() == EnumState.ACTIVE){
+            for (ModelLineProduct line : this.lineProduct) {
+                line.setClearProduct("http://localhost:8080/api/v1/carts/"+this.id);
+                line.setClearProduct("http://localhost:8080/api/v1/carts/"+this.id
+                +"/lineproduct/"+line.getIdLineProduct());
+                line.setUpdateAmountProduct(
+                    "http://localhost:8080/api/v1/carts/");
+            }
+        }
         return this;
     }
 
@@ -91,6 +105,46 @@ public class BuilderGetCartByIdImpl implements BuilderGetCartById{
         return this;
     }
 
+
+    /**
+     * @param optCloseCart the optCloseCart to set
+     */
+    public BuilderGetCartByIdImpl setOptCloseCart(Long idCart, EnumState state) {
+        if(state == EnumState.ACTIVE){
+            String url = "http://localhost:8080/api/v1/carts/";
+            this.optCloseCart = url+idCart.toString()+"/close";
+        }else{
+            this.optCloseCart = null;
+        }
+        return this;
+    }
+    /**
+     * @param optCloseCart the optCloseCart to set
+     */
+    public BuilderGetCartByIdImpl setOptCleanCart(Long idCart, EnumState state) {
+        if(state == EnumState.ACTIVE){
+            String url = "http://localhost:8080/api/v1/carts/";
+            this.optCleanCart = url+idCart.toString();
+        }else{
+            this.optCleanCart = null;
+        }
+        return this;
+    }
+
+        /**
+     * @param invoice the invoice to set
+     */
+    public BuilderGetCartByIdImpl setInvoice(Long idCart, EnumState state) {
+        if(state == EnumState.CLOSED){
+            String url = "http://localhost:8080/api/v1/carts/";
+            this.invoice = url+idCart.toString()+"/invoice";
+        }else{
+            this.invoice = null;
+        }
+
+        return this;
+    }
+
     @Override
     public ModelDetailCart builderGetCartById() {
         ModelDetailCart modelDetailCart = new ModelDetailCart();
@@ -99,6 +153,9 @@ public class BuilderGetCartByIdImpl implements BuilderGetCartById{
         modelDetailCart.setId(this.id);
         modelDetailCart.setLineProduct(this.lineProduct);
         modelDetailCart.setRegistration(this.registration);
+        modelDetailCart.setOptCloseCart(this.optCloseCart);
+        modelDetailCart.setOptCleanCart(this.optCleanCart);
+        modelDetailCart.setInvoice(this.invoice);
         modelDetailCart.setTotal(this.total);
         return modelDetailCart;
     }

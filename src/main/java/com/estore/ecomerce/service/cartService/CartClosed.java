@@ -1,8 +1,12 @@
 package com.estore.ecomerce.service.cartService;
 
+import java.util.List;
+
 import com.estore.ecomerce.domain.Cart;
-import com.estore.ecomerce.domain.Invoice;
+import com.estore.ecomerce.domain.LineProduct;
 import com.estore.ecomerce.dto.ModelDetailCart;
+import com.estore.ecomerce.dto.forms.FormCartProduct;
+import com.estore.ecomerce.utils.build.BuilderGetCartByIdImpl;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,21 +25,37 @@ public class CartClosed implements ICartState{
     }
 
     @Override
-    public void updateCart(Cart cart) {
-        // TODO Auto-generated method stub
-        
+    public ResponseEntity<?> addProducts(Cart cart, List<FormCartProduct> lineProduct) {
+        return new ResponseEntity<>("Error the cart is closed", 
+        HttpStatus.FORBIDDEN);
     }
 
     @Override
-    public void openCart(Long id) {
-        // TODO Auto-generated method stub
-        
+    public ResponseEntity<?> deleteProducts(Cart cart, LineProduct line) {
+        return new ResponseEntity<>("Error the cart is closed", 
+        HttpStatus.FORBIDDEN);
     }
+
+    @Override
+    public void openCart(Long id) {}
 
     @Override
     public ModelDetailCart getCart(Cart cart) {
-        // TODO Auto-generated method stub
-        return null;
+        BuilderGetCartByIdImpl builder = new BuilderGetCartByIdImpl();
+        ModelDetailCart cartRequest = new ModelDetailCart();
+        cartRequest = builder.setId(cart.getId())
+        .setClient(cart.getBuyer())
+        .setEnumState(cart.getEnumState())
+        .setLineProduct(cart, cart.getLineProducts())
+        .setRegistration(cart.getRegistration())
+        .setOptCleanCart(cart.getId(), cart.getEnumState())
+        .setOptCloseCart(cart.getId(), cart.getEnumState())
+        .setInvoice(cart.getId(), cart.getEnumState())
+        .setTotal(cart.getLineProducts())
+        .builderGetCartById();
+
+        return cartRequest;
     }
+    
     
 }

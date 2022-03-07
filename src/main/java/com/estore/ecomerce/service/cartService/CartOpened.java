@@ -8,7 +8,9 @@ import com.estore.ecomerce.domain.Invoice;
 import com.estore.ecomerce.domain.LineProduct;
 import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.dto.ModelDetailCart;
+import com.estore.ecomerce.dto.forms.FormCartProduct;
 import com.estore.ecomerce.repository.LineRepository;
+import com.estore.ecomerce.repository.ProductRepository;
 import com.estore.ecomerce.utils.build.BuilderGetCartByIdImpl;
 import com.estore.ecomerce.utils.enums.EnumState;
 
@@ -22,11 +24,15 @@ public class CartOpened implements ICartState{
     @Autowired
     private LineRepository lineRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     @Override
     public ResponseEntity<?> closeCart(Cart cart) {
         //TODO añadir el reporte de cada cliente y su producto
         cart.setEnumState(EnumState.CLOSED);
         discountStockOfProducts(cart);
+        updateProducts(cart);
         confirmLineOfCart(cart);
         generateInvoice(cart);
         return new ResponseEntity<>(generateInvoice(cart), 
@@ -34,10 +40,25 @@ public class CartOpened implements ICartState{
     }
 
     @Override
-    public void updateCart(Cart cart) {
+    public ResponseEntity<?> addProducts(Cart cart, List<FormCartProduct> lineProduct) {
         cart.setEnumState(EnumState.ACTIVE);
-        createLineOfProduct(cart);
-        System.out.println("\n Lineas del carrito : "+ cart.getLineProducts());
+        int flag = 0;
+        for (FormCartProduct productUpdate : lineProduct) {
+            for (LineProduct line : cart.getLineProducts()) {
+                if(productUpdate.getId() == line.getProduct().getId()){
+                    line.setAmount(productUpdate.getAmount());
+                    flag = flag + 1;       
+                }
+            }
+            if(flag == 0){
+                System.out.println("Añado un nuevo producto");
+                Product product = productRepository.findById(productUpdate.getId()).get();
+                cart.getLineProducts().add(
+                new LineProduct(productUpdate.getAmount(), product, cart));
+            }
+            flag = 0;
+        }
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @Override
@@ -53,6 +74,16 @@ public class CartOpened implements ICartState{
             );
         }
     }  
+
+    private void updateProducts(Cart cart){
+        for (LineProduct line : cart.getLineProducts()) {
+            if(line.getProduct().getRating() < 5.0){
+                line.getProduct().setRating((line.getProduct().getRating() + 0.05));
+                productRepository.save(line.getProduct());
+            }
+            
+        }
+    }
 
     private Invoice generateInvoice(Cart cart){
         Invoice invoice = new Invoice();
@@ -103,12 +134,21 @@ public class CartOpened implements ICartState{
         cartRequest = builder.setId(cart.getId())
         .setClient(cart.getBuyer())
         .setEnumState(cart.getEnumState())
-        .setLineProduct(cart.getLineProducts())
+        .setLineProduct(cart, cart.getLineProducts())
         .setRegistration(cart.getRegistration())
+        .setOptCleanCart(cart.getId(), cart.getEnumState())
+        .setOptCloseCart(cart.getId(), cart.getEnumState())
+        .setInvoice(cart.getId(), cart.getEnumState())
         .setTotal(cart.getLineProducts())
         .builderGetCartById();
 
         return cartRequest;
+    }
+
+    @Override
+    public ResponseEntity<?> deleteProducts(Cart cart, LineProduct line) {
+        cart.getLineProducts().remove(line);
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
 

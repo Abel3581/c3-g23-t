@@ -15,6 +15,9 @@ public class ModelDetailCart {
     private EnumState enumState;
     private LocalDateTime registration;
     private ModelClient client;
+    private String invoice;
+    private String optCloseCart;
+    private String optCleanCart;
     private List<ModelLineProduct> lineProduct;
     private double total;
     

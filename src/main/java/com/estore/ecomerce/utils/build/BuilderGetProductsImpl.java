@@ -9,6 +9,7 @@ public class BuilderGetProductsImpl implements BuilderGetProducts{
     private Long id;
     private String title;
     private ModelImage image;
+    private String detailProduct;
     private double price;
     private double discount;
     private double rating;
@@ -47,7 +48,11 @@ public class BuilderGetProductsImpl implements BuilderGetProducts{
         return this;
     }
 
-
+    public BuilderGetProductsImpl setDetailProduct(String id){
+        String url = "http://localhost:8080/api/v1/products/"+id;
+        this.detailProduct = url;
+        return this;
+    }
 
     @Override
     public ModelListProducts ModelListProducts() {
@@ -55,6 +60,7 @@ public class BuilderGetProductsImpl implements BuilderGetProducts{
         modelListProducts.setId(this.id);
         modelListProducts.setTitle(this.title);
         modelListProducts.setRating(this.rating);
+        modelListProducts.setDetailProduct(this.detailProduct);
         modelListProducts.setDiscount(this.discount);
         modelListProducts.setPrice(this.price);
         modelListProducts.setImage(this.image);

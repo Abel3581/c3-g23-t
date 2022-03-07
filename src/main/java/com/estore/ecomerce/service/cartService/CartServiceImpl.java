@@ -15,10 +15,12 @@ import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.Invoice;
 import com.estore.ecomerce.domain.LineProduct;
 import com.estore.ecomerce.domain.Product;
+import com.estore.ecomerce.dto.ModelListCart;
 import com.estore.ecomerce.dto.forms.FormCartProduct;
 import com.estore.ecomerce.repository.CartRepository;
 import com.estore.ecomerce.repository.InvoiceRepository;
 import com.estore.ecomerce.repository.ProductRepository;
+import com.estore.ecomerce.utils.build.BuilderGetCartsImpl;
 import com.estore.ecomerce.utils.enums.EnumState;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,23 +69,100 @@ public class CartServiceImpl implements CartService{
         }
     }
 
+    @Transactional
     @Override
-    public ResponseEntity<?> updateCart(Cart cart, List<FormCartProduct> lineProduct){
-        //Si el amount de algun producto en carrito es 0, se lo elimina de cart. 
-        //Si lineProduct es 0 significa que no quiere modificarse nada. 
+    public ResponseEntity<?> addProducts(Client client, Long idCart, List<FormCartProduct> lineProduct){
         final ResponseEntity<?> messageStockOfProductInvalid =
         new ResponseEntity<>("Stock insuficient", 
         HttpStatus.NOT_ACCEPTABLE);
-        asignStateCart(cart);
+        final ResponseEntity<?> messageAmountOfProductInvalid =
+        new ResponseEntity<>("The amount of products must be major to zero", 
+        HttpStatus.NOT_ACCEPTABLE);
+        final ResponseEntity<?> messageProductNotExists =
+        new ResponseEntity<>("One product or more is not exists", 
+        HttpStatus.NOT_FOUND);
+        final ResponseEntity<?> messageCartisForbidden =
+        new ResponseEntity<>("Cart is not found", 
+        HttpStatus.FORBIDDEN);
+        final ResponseEntity<?> messageCartIsnotexists =
+        new ResponseEntity<>("Cart is not found", 
+        HttpStatus.NOT_FOUND);
 
-        //Controlar actualizar los productos del carrito
-        if(lineProduct.size() != 0){
-            //tratar lista de productos
-            if(controlStockOfProducts(lineProduct).size() != lineProduct.size())
-            return messageStockOfProductInvalid;
-            
-        } 
-        return null;
+        Optional<Cart> cart = cartRepository.findById(idCart);
+        if(!cart.isPresent()) return messageCartIsnotexists;
+        if(cart.get().getBuyer().getId() != client.getId()) return messageCartisForbidden;
+        
+        asignStateCart(cart.get());
+        
+        if(lineProduct == null)
+        return new ResponseEntity<>("List of products is not acceptable", 
+        HttpStatus.NOT_ACCEPTABLE);
+        
+        if(lineProduct.size() == 0)
+        return new ResponseEntity<>("List of products is not acceptable", 
+        HttpStatus.NOT_ACCEPTABLE);
+        
+        if(controlProducts(lineProduct).size() != lineProduct.size())
+        return messageProductNotExists;
+
+        if(controlStockOfProducts(lineProduct).size() != lineProduct.size())
+        return messageStockOfProductInvalid;
+
+        if(controlAmountOfProducts(lineProduct).size() != lineProduct.size())
+        return messageAmountOfProductInvalid;
+
+        ResponseEntity<?> response = actualState.addProducts(cart.get(), lineProduct);
+        if(response.getStatusCodeValue() == 200){
+            cartRepository.save(cart.get());
+            return new ResponseEntity<>(
+                "http://localhost:8080/api/v1/carts/"+cart.get().getId(), 
+                HttpStatus.OK);
+        }else{
+            return response;
+        }
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<?> deleteProducts(Client client, Long idCart, Long idLine){
+        
+        final ResponseEntity<?> messageCartisForbidden =
+        new ResponseEntity<>("Cart is not found", 
+        HttpStatus.FORBIDDEN);
+        final ResponseEntity<?> messageCartIsnotexists =
+        new ResponseEntity<>("Cart is not found", 
+        HttpStatus.NOT_FOUND);
+        final ResponseEntity<?> lineIsntinCart =
+        new ResponseEntity<>("Line is not found", 
+        HttpStatus.NOT_FOUND);
+
+        Optional<Cart> cart = cartRepository.findById(idCart);
+        
+        if(!cart.isPresent()) return messageCartIsnotexists;
+        if(cart.get().getBuyer().getId() != client.getId()) return messageCartisForbidden;
+        
+        List<LineProduct> lineProducts = cart.get().getLineProducts().stream()
+        .filter(line -> line.getId() == idLine).collect(Collectors.toList());
+
+        if(lineProducts.size() == 0) return lineIsntinCart;
+
+        asignStateCart(cart.get());
+
+        ResponseEntity<?> response = actualState.deleteProducts(cart.get(), lineProducts.get(0));
+        if(response.getStatusCodeValue() == 200){
+            if(cart.get().getLineProducts().size() == 0){
+                cartRepository.delete(cart.get());
+                return new ResponseEntity<>("Cart deleted", 
+                HttpStatus.OK);
+            }else{
+                cartRepository.save(cart.get());
+                return new ResponseEntity<>("http://localhost:8080/api/v1/carts/"+idCart, 
+                HttpStatus.OK);
+            }
+           
+        }else{
+            return response;
+        }
     }
 
     @Transactional
@@ -235,26 +314,78 @@ public class CartServiceImpl implements CartService{
         return listIdProducts;
     }
 
+    @Transactional
     @Override
-    public ResponseEntity<?> getCart() {
-        // TODO Auto-generated method stub
-        return null;
+    public ResponseEntity<?> getCart(Client cliente, EnumState state) {
+        List<Cart> listCart = (List<Cart>) cartRepository.findAll();
+
+        listCart = listCart.stream()
+        .filter(cart -> cart.getBuyer().getId() == cliente.getId())
+        .collect(Collectors.toList());
+
+        if(state != null){
+            listCart = listCart.stream()
+            .filter(cart -> cart.getEnumState() == state)
+            .collect(Collectors.toList());
+        }
+        
+        return new ResponseEntity<>(constructorModelListCart(listCart), HttpStatus.OK);
+    }
+
+    private List<ModelListCart> constructorModelListCart(List<Cart> listCart){
+        BuilderGetCartsImpl builder = new BuilderGetCartsImpl();
+        List<ModelListCart> listModelCart = new ArrayList<ModelListCart>();
+
+        for (Cart cart : listCart) {
+            listModelCart.add(
+                builder
+                .setId(cart.getId())
+                .setState(cart.getEnumState()) 
+                .setQuantity(cart.getLineProducts())
+                .setTotal(cart.getLineProducts()) 
+                .setDetailCart(cart.getId())
+                .BuilderGetCarts()
+                    
+            );
+        }
+        return listModelCart;
     }
     
     @Transactional
     @Override
-    public ResponseEntity<?> getCartById(Long id) {
-        Cart cart = cartRepository.findById(id).get();
-        asignStateCart(cart);
-        
-        return new ResponseEntity<>(actualState.getCart(cart), HttpStatus.OK);
+    public ResponseEntity<?> getCartById(Long id,Client cliente) {
+        Optional<Cart> cart = cartRepository.findById(id);
+        if(cart.isPresent()){
+            if(cart.get().getBuyer().getId() != cliente.getId())
+            return new ResponseEntity<>("Cart is not exists", 
+            HttpStatus.FORBIDDEN);
+
+            asignStateCart(cart.get());
+
+            return new ResponseEntity<>(actualState.getCart(cart.get()), 
+            HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Cart is not exists", 
+            HttpStatus.NOT_FOUND);
+        }
     }
 
-
+    @Transactional
     @Override
-    public ResponseEntity<?> deleteCartById(Long id) {
-        cartRepository.deleteById(id);
-        return new ResponseEntity<>("Deleted cart sucesfully!", HttpStatus.OK);
+    public ResponseEntity<?> deleteCartById(Long id, Client client) {
+        Optional<Cart> cart = cartRepository.findById(id);
+        
+        if(cart.isPresent()){
+            if(cart.get().getBuyer().getId() != client.getId())
+            return new ResponseEntity<>("Cart is not exists", 
+            HttpStatus.FORBIDDEN);
+
+            cartRepository.delete(cart.get());
+            return new ResponseEntity<>("Deleted cart sucesfully!", HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Cart is not exists", 
+            HttpStatus.NOT_FOUND);
+        }
     }
 
     @Transactional
@@ -280,12 +411,29 @@ public class CartServiceImpl implements CartService{
             Invoice invoice = (Invoice) response.getBody();
             cartRepository.save(cart.get());
             invoiceRepository.save(invoice);
-            return new ResponseEntity<>("Cart is closed sucesfully!", 
+            return new ResponseEntity<>(invoice, 
             HttpStatus.OK);
         }else{
             return response;
         }
         
+        
+    }
+
+    @Transactional
+    @Override
+    public ResponseEntity<?> getCartByOpened(Client cliente) {
+        List<Cart> listCarts = cliente.getCart().stream()
+        .filter(cart -> cart.getEnumState() == EnumState.ACTIVE)
+        .collect(Collectors.toList());
+
+        if(listCarts.size() > 0){
+            Long idCart = listCarts.get(0).getId();
+            return new ResponseEntity<>("http://localhost:8080/api/v1/carts/"+idCart, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("Already you haven't a cart active", 
+            HttpStatus.OK);
+        }
         
     }
 
