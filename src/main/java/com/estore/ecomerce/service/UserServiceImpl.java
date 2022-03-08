@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
         user.setRoles(roles);
 
         Client userCreate = clientRepository.save(user);
+        System.out.println("Usuario creado : "+userCreate.getSurname());
         UserRegisterResponse userRegisterResponse = userMapper.userEntity2Dto(userCreate);
         userRegisterResponse.setToken(jwtUtil.generateToken(userCreate));
         return userRegisterResponse;

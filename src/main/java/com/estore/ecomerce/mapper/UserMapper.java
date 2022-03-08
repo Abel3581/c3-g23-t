@@ -82,7 +82,7 @@ public class UserMapper {
         clientResponse.setEmail(client.getEmail());
         clientResponse.setPassword(client.getPassword());
         clientResponse.setState(client.getState());
-        clientResponse.setSurname(clientResponse.getSurname());
+        clientResponse.setSurname(client.getSurname());
 
         return clientResponse;
     }
