@@ -37,4 +37,5 @@ public class PurchaseReport {
     @Column(name = "creationDate", updatable = false, nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime creationDate = LocalDateTime.now();
+    
 }

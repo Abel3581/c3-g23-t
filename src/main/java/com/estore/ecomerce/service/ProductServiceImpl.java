@@ -23,6 +23,7 @@ import com.estore.ecomerce.utils.build.BuilderGetProductByIdImpl;
 import com.estore.ecomerce.utils.build.BuilderGetProductsImpl;
 
 import javassist.NotFoundException;
+import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -460,7 +461,21 @@ public class ProductServiceImpl implements ProductService{
 
     
 
-
+@Transactional
+ public Product productById(Long id) {
+        
+     try {
+            Optional<Product> entityById = productRepository.findById(id);
+            if (entityById.isPresent()) {                
+                return entityById.get();
+            } else {
+                throw new EntityNotFoundException("error al crear");
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException("error de coneccion");
+        }
+     
+    }
 
     
 

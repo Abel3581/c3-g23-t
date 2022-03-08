@@ -6,6 +6,7 @@ import com.estore.ecomerce.dto.ModelPurchaseReport;
 import com.estore.ecomerce.dto.PurchaseReportRequest;
 import com.estore.ecomerce.mapper.PurchaseReportMapper;
 import com.estore.ecomerce.repository.PurchaseRepository;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
@@ -43,9 +44,12 @@ public class PurchaseReportServiceImpl implements PurchaseReportService {
         try {
             
             PurchaseReportRequest newReport = mapperPurchase.PurchaseReportRequest(quantity, product); 
-            
-            PurchaseReport report= mapperPurchase.purchaseReportDtoEntity(newReport);
-            purchaseRepository.save(report);            
+           
+           PurchaseReport report= mapperPurchase.purchaseReportDtoEntity(newReport);    
+           
+           System.out.println(newReport.getCreationDate().format(DateTimeFormatter.ISO_DATE));
+            System.out.println(report.getCreationDate());
+        //    purchaseRepository.save(report);            
            
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException(ERROR_CONECTION);
