@@ -25,7 +25,7 @@ public interface ProductService {
         ImageProfile image);
 
     ResponseEntity<?> getProduct(Client client);
-    ResponseEntity<?> getAllProducts(String category, Double price);
+    ResponseEntity<?> getAllProducts(String category, Double price, String name);
     ResponseEntity<?> getDetailProductById(Long id, Client client);
     ResponseEntity<?> getProduct();
     ResponseEntity<?> getDetailProductById(Long id);

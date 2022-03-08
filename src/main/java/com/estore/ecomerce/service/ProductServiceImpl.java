@@ -215,40 +215,40 @@ public class ProductServiceImpl implements ProductService{
 
     @Transactional
     @Override
-    public ResponseEntity<?> getAllProducts(String category, Double price) {
+    public ResponseEntity<?> getAllProducts(String category, Double price,String name) {
         List<Product> listProducts =  (List<Product>) productRepository.findAll();
-
         listProducts = listProducts.stream()
         .sorted(Comparator.comparingDouble(Product::getRating).reversed())
         .collect(Collectors.toList());
 
-        
         if(category != null){
+            List<Product> productsByCategory =  new ArrayList<>();
+            Optional<Category> categories = categoryRepository.findByNameIgnoreCase(name);
+            
+            if(categories.isPresent()){
+                productsByCategory = categories.get().getProducts();
+                listProducts = listProducts.stream().filter(productsByCategory::contains)
+                .collect(Collectors.toList());
+            }
+        }
 
-            List<Category> categoryFilter = categoryRepository.findAll();
-        
-            categoryFilter = categoryFilter.stream()
-            .filter(c -> c.getName() == category.toUpperCase())
-            .collect(Collectors.toList());
-
-            Category categoryId = categoryFilter.get(0); 
-            listProducts = listProducts.stream()
-            .filter(product -> product.getCategories().contains(categoryId))
+        if(name != null){
+           ArrayList<Product> products = productRepository.findByNameContainingIgnoreCase(name);
+           listProducts = listProducts.stream().filter(products::contains)
             .collect(Collectors.toList());
         }
 
         if(price != null){
-            System.out.println("Si entre");
+            
             listProducts = listProducts.stream()
             .filter(product -> 
             (product.getPrice() - ((product.getDiscount()/100)*product.getPrice())) <= price)
             .collect(Collectors.toList());
         }
-        
+
         return (listProducts.size() > 0)?
         new ResponseEntity<>(constructorGetProducts(listProducts), HttpStatus.OK):
         new ResponseEntity<>("No exists products", HttpStatus.NOT_FOUND);
-        
     }
 
     private ArrayList<ModelListProducts> constructorGetProducts(List<Product> listProducts) {

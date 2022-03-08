@@ -51,9 +51,10 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllProducts(
         @RequestParam(value="category", required = false) String category,
-        @RequestParam(value="price", required = false) Double price
+        @RequestParam(value="price", required = false) Double price,
+        @RequestParam(value="name", required = false) String name
     ){
-        ResponseEntity<?> response = productService.getAllProducts(category,price);
+        ResponseEntity<?> response = productService.getAllProducts(category,price,name);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
