@@ -43,6 +43,7 @@ public class PurchaseReportServiceImpl implements PurchaseReportService {
         try {
             
             PurchaseReportRequest newReport = mapperPurchase.PurchaseReportRequest(quantity, product); 
+            
             PurchaseReport report= mapperPurchase.purchaseReportDtoEntity(newReport);
             purchaseRepository.save(report);            
            

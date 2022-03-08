@@ -1,6 +1,7 @@
 
 package com.estore.ecomerce.dto;
 
+import com.estore.ecomerce.domain.Product;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -15,16 +16,9 @@ import org.hibernate.annotations.CreationTimestamp;
 @Getter
 @Setter
 public class PurchaseReportRequest {
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
-
-    @NotEmpty
-    @Column(name = "quantity", nullable = false, updatable = false)
+    
+    private Long id;    
     private Integer quantity = 0;
-
-    @NotEmpty
-    @CreationTimestamp   
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Product product;     
     private LocalDateTime creationDate = LocalDateTime.now();
 }

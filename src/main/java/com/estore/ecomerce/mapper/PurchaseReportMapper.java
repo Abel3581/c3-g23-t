@@ -15,20 +15,23 @@ public class PurchaseReportMapper {
         ModelPurchaseReport reportResponse = new ModelPurchaseReport();
         reportResponse.setId(entity.getId());
         reportResponse.setQuantity(entity.getQuantity());
-        reportResponse.setCreationDate(entity.getCreationDate());        
+        reportResponse.setCreationDate(LocalDateTime.MIN);
+//        reportResponse.setCreationDate(entity.getCreationDate());        
         return reportResponse;
     }
     public PurchaseReport purchaseReportDtoEntity(PurchaseReportRequest request) {
         PurchaseReport report = new PurchaseReport();
         report.setId(request.getId());
         report.setQuantity(report.getQuantity());
-        report.setCreationDate(request.getCreationDate());          
+//        report.setCreationDate(request.getCreationDate());        
+        report.setCreationDate(LocalDateTime.MIN);
         return report;
     }
     public PurchaseReportRequest PurchaseReportRequest(Integer quantity, Product product) {
         PurchaseReportRequest report = new PurchaseReportRequest();        
         report.setQuantity(quantity);
-        report.setCreationDate(LocalDateTime.now());        
+//        report.setCreationDate(LocalDateTime.now()); 
+        report.setProduct(product);
         return report;
     }
 }
