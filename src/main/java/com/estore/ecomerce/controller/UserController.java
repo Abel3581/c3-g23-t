@@ -1,5 +1,6 @@
 package com.estore.ecomerce.controller;
 
+import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.dto.ClientResponse;
 import com.estore.ecomerce.dto.UserRegisterRequest;
 import com.estore.ecomerce.dto.UserUpdateResponse;
@@ -35,6 +36,13 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<ClientResponse> getClientById(@PathVariable Long id){
          ClientResponse response = userService.getById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ClientResponse> getMyClient() throws NotFoundException{
+        Client client = (Client) userService.getInfoUser();
+        ClientResponse response = userService.getById(client.getId());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

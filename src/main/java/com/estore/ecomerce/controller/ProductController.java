@@ -51,10 +51,9 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllProducts(
         @RequestParam(value="category", required = false) String category,
-        @RequestParam(value="price", required = false) Double rating
-    ) throws NotFoundException{
-        Client client = (Client) userService.getInfoUser();
-        ResponseEntity<?> response = productService.getAllProducts(client,category,rating);
+        @RequestParam(value="price", required = false) Double price
+    ){
+        ResponseEntity<?> response = productService.getAllProducts(category,price);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
@@ -68,21 +67,13 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable(name = "id") Long id) throws NotFoundException{
-        Client client = (Client) userService.getInfoUser();
-
+        try {
+            Client client = (Client) userService.getInfoUser();    
+        } catch (Exception e) {
+            System.out.println("Client is null");
+        }
+        Client client = null;
         ResponseEntity<?> response = productService.getDetailProductById(id, client);
-        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
-    }
-
-    @GetMapping("/category")
-    public ResponseEntity<?> getProductByCategory(@RequestParam(value="category", required = false) Long idCategory){
-        ResponseEntity<?> response = productService.getProductByCategory(idCategory);
-        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
-    }
-
-    @GetMapping("popular/category")
-    public ResponseEntity<?> getProductsPopularsByCategory(@RequestParam(value="category", required = false) Long idCategory){
-        ResponseEntity<?> response = productService.getProductsPopularsByCategory(idCategory);
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 

@@ -15,6 +15,5 @@ public interface IUserService {
 
     UserUpdateResponse update(Long id, UserRegisterRequest request)throws NotFoundException;
 
-
     ClientResponse getById(Long id);
 }

@@ -84,15 +84,6 @@ public class BuilderGetCartByIdImpl implements BuilderGetCartById{
                 )
             );
         }
-        if(cart.getEnumState() == EnumState.ACTIVE){
-            for (ModelLineProduct line : this.lineProduct) {
-                line.setClearProduct("http://localhost:8080/api/v1/carts/"+this.id);
-                line.setClearProduct("http://localhost:8080/api/v1/carts/"+this.id
-                +"/lineproduct/"+line.getIdLineProduct());
-                line.setUpdateAmountProduct(
-                    "http://localhost:8080/api/v1/carts/");
-            }
-        }
         return this;
     }
 

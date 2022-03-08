@@ -20,6 +20,7 @@ import com.estore.ecomerce.repository.ProductRepository;
 import com.estore.ecomerce.security.ApplicationRole;
 import com.estore.ecomerce.service.abstraction.IUserService;
 import com.estore.ecomerce.utils.build.BuilderGetProductByIdImpl;
+import com.estore.ecomerce.utils.build.BuilderGetProductByIdNoLogued;
 import com.estore.ecomerce.utils.build.BuilderGetProductsImpl;
 import com.estore.ecomerce.utils.enums.EnumState;
 
@@ -214,7 +215,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Transactional
     @Override
-    public ResponseEntity<?> getAllProducts(Client client,String category, Double price) {
+    public ResponseEntity<?> getAllProducts(String category, Double price) {
         List<Product> listProducts =  (List<Product>) productRepository.findAll();
 
         listProducts = listProducts.stream()
@@ -286,9 +287,12 @@ public class ProductServiceImpl implements ProductService{
         Optional<Product> product = productRepository.findById(id);
         
         if(product.isPresent()){
+
+            if(client == null) 
+            return new ResponseEntity<>(constructorGetProductById(product.get()),HttpStatus.OK); 
+            
             return new ResponseEntity<>(
-                                         constructorGetProductById(product.get()
-                                         ,client), 
+                                         constructorGetProductById(product.get(),client), 
                                          HttpStatus.OK);
         }else{
             return messageProductNotExists;
@@ -331,6 +335,32 @@ public class ProductServiceImpl implements ProductService{
                         .modelDetailProduct();
         return requestProduct;
     }
+
+    private ModelDetailProduct constructorGetProductById(Product product) {
+        BuilderGetProductByIdNoLogued builder = new BuilderGetProductByIdNoLogued();
+        ModelDetailProduct requestProduct = new ModelDetailProduct();
+
+
+        requestProduct = builder.setId(product.getId())
+                        .setName(product.getName())
+                        .setPrice(product.getPrice(), product.getDiscount())
+                        .setDescription(product.getDescription())
+                        .setStock(product.getStock())
+                        .setContent(product.getContent())
+                        .setRating(product.getRating())
+                        .setDiscount(product.getDiscount())
+                        .setRegistration(product.getRegistration())
+                        .setCategories(product.getCategories())
+                        .setClient((Client) product.getClient())
+                        .setImage(product.getImageProfile())
+                        .setPostImages(product.getImagePost())
+                        .setQuantitySold(product.getListReports())
+                        .setOptDeleteProduct()
+                        .setOptCreateUpdateCartWithProduct()
+                        .modelDetailProduct();
+        return requestProduct;
+    }
+    
 
     @Transactional
     @Override

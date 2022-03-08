@@ -5,13 +5,10 @@ import lombok.Data;
 @Data
 public class ModelLineProduct {
     private Long idLineProduct;
-    private Long idCart;
     private String nameProduct;
     private ModelImage image;
     private double price;
     private int amount;
-    private String updateAmountProduct;
-    private String clearProduct;
     private String url; 
 
     public ModelLineProduct() {
