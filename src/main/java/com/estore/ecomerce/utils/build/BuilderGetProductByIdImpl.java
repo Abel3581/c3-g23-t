@@ -15,6 +15,8 @@ import com.estore.ecomerce.dto.ModelClient;
 import com.estore.ecomerce.dto.ModelDetailProduct;
 import com.estore.ecomerce.dto.ModelImage;
 
+import org.apache.commons.math3.util.Precision;
+
 public class BuilderGetProductByIdImpl implements BuilderGetProductById{
     private Long id;
     private String name;
@@ -44,7 +46,8 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
     }
 
     public BuilderGetProductByIdImpl setPrice(Double price, Double discount){
-        this.price = price - ((discount/100)*price);
+        Double finalPrice = (price - ((discount/100)*price));
+        this.price = Precision.round(finalPrice,2);
         return this;
     }
 

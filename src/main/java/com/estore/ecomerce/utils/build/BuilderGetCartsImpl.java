@@ -6,6 +6,8 @@ import com.estore.ecomerce.domain.LineProduct;
 import com.estore.ecomerce.dto.ModelListCart;
 import com.estore.ecomerce.utils.enums.EnumState;
 
+import org.apache.commons.math3.util.Precision;
+
 public class BuilderGetCartsImpl implements BuilderGetCarts{
     private Long id;
     private EnumState state;
@@ -50,9 +52,11 @@ public class BuilderGetCartsImpl implements BuilderGetCarts{
      */
     public BuilderGetCartsImpl setTotal(List<LineProduct> lineProducts) {
         this.total = 0.0;
+        Double finalPrice = 0.0;
         for (LineProduct line : lineProducts) {
-            this.total = this.total + ((line.getProduct().getPrice() - (line.getProduct().getDiscount() / 100)*line.getProduct().getPrice())*line.getAmount());
+            finalPrice = finalPrice + ((line.getProduct().getPrice() - (line.getProduct().getDiscount() / 100)*line.getProduct().getPrice())*line.getAmount());
         }
+        this.total = Precision.round(finalPrice,2);
         return this;
     }
 

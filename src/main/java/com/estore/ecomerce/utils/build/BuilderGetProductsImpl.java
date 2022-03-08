@@ -3,6 +3,8 @@ import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.dto.ModelImage;
 import com.estore.ecomerce.dto.ModelListProducts;
 
+import org.apache.commons.math3.util.Precision;
+
 
 public class BuilderGetProductsImpl implements BuilderGetProducts{
     
@@ -26,7 +28,8 @@ public class BuilderGetProductsImpl implements BuilderGetProducts{
     }
     
     public BuilderGetProductsImpl setPrice(double price, double discount){
-        this.price = (price - ((discount/100)*price));
+        Double finalPrice = (price - ((discount/100)*price)); 
+        this.price = Precision.round(finalPrice,2); 
         return this;
     }
 

@@ -13,6 +13,8 @@ import com.estore.ecomerce.dto.ModelImage;
 import com.estore.ecomerce.dto.ModelLineProduct;
 import com.estore.ecomerce.utils.enums.EnumState;
 
+import org.apache.commons.math3.util.Precision;
+
 public class BuilderGetCartByIdImpl implements BuilderGetCartById{
     private Long id;
     private EnumState enumState;
@@ -88,11 +90,13 @@ public class BuilderGetCartByIdImpl implements BuilderGetCartById{
     }
 
     public BuilderGetCartByIdImpl setTotal(List<LineProduct> lineProduct) {
+        this.total = 0.0;
+        Double finalPrice = 0.0;
         for (LineProduct line : lineProduct) {
-            this.total = this.total + line.getProduct().getPrice() - 
+            finalPrice = finalPrice + line.getProduct().getPrice() - 
             ((line.getProduct().getDiscount()/100)*line.getProduct().getPrice());
         }
-        
+        this.total = Precision.round(finalPrice,2);
         return this;
     }
 
