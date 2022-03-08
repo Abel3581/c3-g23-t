@@ -217,28 +217,19 @@ public class ProductServiceImpl implements ProductService{
 
     @Transactional
     @Override
-    public ResponseEntity<?> getAllProducts(String category, Double price,String name) {
+    public ResponseEntity<?> getAllProducts(Long idCategory, Double price,String name) {
         List<Product> listProducts =  (List<Product>) productRepository.findAll();
         listProducts = listProducts.stream()
         .sorted(Comparator.comparingDouble(Product::getRating).reversed())
         .collect(Collectors.toList());
 
-        if(category != null){
+        if(idCategory != null){
             List<Product> productsByCategory =  new ArrayList<>();
-            ArrayList<Category> categories = (ArrayList<Category>) categoryRepository.findAll();
-            
-            for (Category element : categories) {
-                System.out.println(element.getName());
-            }
-
-            categories = (ArrayList<Category>) categories.stream()
-            .filter(c -> c.getName() == category)
-            .collect(Collectors.toList());
-
-            
-            System.out.println(categories);
-            if(categories.size() > 0){
-                productsByCategory = categories.get(0).getProducts();
+            Optional<Category> categories = categoryRepository.findById(idCategory);
+            System.out.println(categories.get());
+            if(categories.isPresent()){
+                System.out.println("ENTRANDO A CONDICIONAL");
+                productsByCategory = categories.get().getProducts();
                 listProducts = listProducts.stream().filter(productsByCategory::contains)
                 .collect(Collectors.toList());
             }
