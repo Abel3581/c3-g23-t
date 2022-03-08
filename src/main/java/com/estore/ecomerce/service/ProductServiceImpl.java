@@ -13,6 +13,7 @@ import com.estore.ecomerce.domain.*;
 import com.estore.ecomerce.dto.ModelDetailProduct;
 import com.estore.ecomerce.dto.ModelListProducts;
 import com.estore.ecomerce.dto.forms.FormProduct;
+import com.estore.ecomerce.repository.CartRepository;
 import com.estore.ecomerce.repository.CategoryRepository;
 import com.estore.ecomerce.repository.ClientRepository;
 import com.estore.ecomerce.repository.ImageRepository;
@@ -40,6 +41,7 @@ public class ProductServiceImpl implements ProductService{
     private final ClientRepository clientRepository;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
+    private final CartRepository cartRepository;
     @Autowired
     private IUserService userService;
 
@@ -367,14 +369,22 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<?> deleteProduct(Long id) {
         ResponseEntity<?> request = getProductById(id);
         
-        if(request.getStatusCodeValue() == 200){
-            Product product = (Product) request.getBody();
+        Product product = (Product) request.getBody();
+        deleteProductByCart(product);
+        productRepository.delete(product);
+        return new ResponseEntity<>("Product deleted",HttpStatus.OK);
+    }
 
-            productRepository.delete(product);
-
-            return new ResponseEntity<>("Product deleted",HttpStatus.OK);
-        }else{
-            return request;
+    private void deleteProductByCart(Product product){
+        List<Cart> listCarts = (List<Cart>) cartRepository.findAll();
+        for (Cart cart : listCarts) {
+            List <LineProduct> listProducts = cart.getLineProducts();
+            listProducts = listProducts.stream().filter(line -> line.getProduct().getId() == product.getId()).collect(Collectors.toList());
+            if(listProducts.size() > 0){
+                
+                cart.getLineProducts().removeAll(listProducts);
+                cartRepository.save(cart);
+            }
         }
     }
 
@@ -388,7 +398,7 @@ public class ProductServiceImpl implements ProductService{
         
         if(product.isPresent()){
             
-            return new ResponseEntity<>(product,HttpStatus.OK);
+            return new ResponseEntity<>(product.get(),HttpStatus.OK);
         }else{
             return messageProductNotExists;
         }
@@ -503,13 +513,13 @@ public class ProductServiceImpl implements ProductService{
     public ResponseEntity<?> getProductById(Long id, User user) {
         Optional<Product> product = productRepository.findById(id);
         
-        if(!user.getRoles().contains(ApplicationRole.ADMIN)){
-            if(!product.isPresent())
-            return new ResponseEntity<>("No exists products", HttpStatus.NOT_FOUND);
+       
+        if(!product.isPresent())
+        return new ResponseEntity<>("No exists products", HttpStatus.NOT_FOUND);
         
-            if(product.get().getId() != id)
-            return new ResponseEntity<>("No exists products", HttpStatus.FORBIDDEN);
-        }
+        if(product.get().getId() != id)
+        return new ResponseEntity<>("No exists products", HttpStatus.FORBIDDEN);
+        
         
         return new ResponseEntity<>("", HttpStatus.OK);
     }
