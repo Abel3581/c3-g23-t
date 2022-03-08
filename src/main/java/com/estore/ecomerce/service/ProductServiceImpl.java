@@ -225,10 +225,20 @@ public class ProductServiceImpl implements ProductService{
 
         if(category != null){
             List<Product> productsByCategory =  new ArrayList<>();
-            Optional<Category> categories = categoryRepository.findByNameIgnoreCase(name);
+            ArrayList<Category> categories = (ArrayList<Category>) categoryRepository.findAll();
             
-            if(categories.isPresent()){
-                productsByCategory = categories.get().getProducts();
+            for (Category element : categories) {
+                System.out.println(element.getName());
+            }
+
+            categories = (ArrayList<Category>) categories.stream()
+            .filter(c -> c.getName() == category)
+            .collect(Collectors.toList());
+
+            
+            System.out.println(categories);
+            if(categories.size() > 0){
+                productsByCategory = categories.get(0).getProducts();
                 listProducts = listProducts.stream().filter(productsByCategory::contains)
                 .collect(Collectors.toList());
             }
