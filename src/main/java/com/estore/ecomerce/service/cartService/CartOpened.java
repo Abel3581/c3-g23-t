@@ -33,7 +33,7 @@ public class CartOpened implements ICartState{
         //TODO añadir el reporte de cada cliente y su producto
         cart.setEnumState(EnumState.CLOSED);
         discountStockOfProducts(cart);
-        updateProducts(cart);
+        updateRatingProducts(cart);
         confirmLineOfCart(cart);
         generateInvoice(cart);
         return new ResponseEntity<>(generateInvoice(cart), 
@@ -72,7 +72,7 @@ public class CartOpened implements ICartState{
         }
     }  
 
-    private void updateProducts(Cart cart){
+    private void updateRatingProducts(Cart cart){
         for (LineProduct line : cart.getLineProducts()) {
             if(line.getProduct().getRating() < 5.0){
                 line.getProduct().setRating((line.getProduct().getRating() + 0.05));
