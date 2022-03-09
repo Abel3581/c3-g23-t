@@ -31,6 +31,7 @@ public class CartOpened implements ICartState{
     @Autowired
     private ProductRepository productRepository;
 
+    @Transactional
     @Override
     public ResponseEntity<?> closeCart(Cart cart) {
         //TODO añadir el reporte de cada cliente y su producto
@@ -171,7 +172,7 @@ public class CartOpened implements ICartState{
         int stock = 0;
         for (LineProduct line : cart.getLineProducts()){
             stock = line.getProduct().getStock();
-            stock = stock - line.getProduct().getStock();
+            stock = stock - line.getAmount();
             line.getProduct().setStock(stock);
         }
     }

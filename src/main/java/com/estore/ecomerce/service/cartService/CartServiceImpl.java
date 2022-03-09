@@ -185,9 +185,9 @@ public class CartServiceImpl implements CartService{
         List<Cart> carts = new ArrayList<Cart>();
         carts = client.getCart();
         if(carts.size() != 0){
-            carts.stream().filter(
+            carts = carts.stream().filter(
                 cart -> cart.getEnumState() == EnumState.ACTIVE
-            );
+            ).collect(Collectors.toList());
         }else{
             return false;
         }
