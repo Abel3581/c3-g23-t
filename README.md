@@ -1,24 +1,31 @@
 # GC3-G23-T
 # MY STORE - Pagina de compra venta 
-Aqui presentamos el proyecto MY STORE, compras y ventas en linea desde donde sea que estes.
+Aquí presentamos el proyecto MY STORE, compras y ventas en linea desde donde sea que estés.
+
+Here we present the MY STORE project, online purchases and sales from wherever you are.
 
 ## Iniciemos :boom:
 
-Las siguientes instrucciones te permitiran tener una copia del proyecto funcionando en tu maquina local. En la seccion de **despliegue** tendrás
-las instrucciones para desplegar el proeycto
+Las siguientes instrucciones te permitirán tener una copia del proyecto funcionando en tu maquina local. En la sección de **despliegue** tendrás
+las instrucciones para desplegar el proyecto
 
-### Descripcion :technologist:
+The following instructions will allow you to have a working copy of the project on your local machine. In the **deploy** section you will have
+instructions for deploying the project
 
-El proyecto presentado es una tienda en linea de compra y venta de articulos.Cada cliente podrá navegar en los diferentes perfiles de clientes vendedores-compradores, podrá ver los articulos que se venden y sus categorias, generar un carrito con productos de su interes y finalmente comprar los productos (Solo si este inicia sesion). 
+### Descripción :technologist:
 
-## Las tecnologias ocupadas con :neckbeard:
+El proyecto presentado es una tienda en linea de compra y venta de artículos. Cada cliente podrá navegar en los diferentes perfiles de clientes vendedores-compradores, podrá ver los artículos que se venden y sus categorías, generar un carrito con productos de su interés y finalmente comprar los productos (Solo si este inicia sesión). 
+
+The project presented is an online store for buying and selling items. Each client will be able to browse the different seller-buyer client profiles, they will be able to see the items that are sold and their categories, generate a cart with products of their interest and finally buy the products (Only if they are logged in).
+
+## Las tecnologías ocupadas con :neckbeard:
 
 ### BACKEND
 
 - [PostgreSQL 12.9](https://www.postgresql.org/download/) - Base de datos
-- [Dbeaver-ce](https://dbeaver.io/download/) - Herramienta de administracion de datos 
-- [DbVisualizer](https://www.dbvis.com/) - Herramienta de administracion de datos 
-- [Pgadmin 4](https://www.pgadmin.org/download/) - Herramienta de administracion de datos (Herramienta de postgres)
+- [Dbeaver-ce](https://dbeaver.io/download/) - Herramienta de administraćión de datos 
+- [DbVisualizer](https://www.dbvis.com/) - Herramienta de administración de datos 
+- [Pgadmin 4](https://www.pgadmin.org/download/) - Herramienta de administración de datos (Herramienta de postgres)
 - [Java 11](https://www.oracle.com/ar/java/technologies/javase/jdk11-archive-downloads.html) - Lenguaje de programacion
 - [Maven 4.0.0](https://maven.apache.org/index.html) - Manejador de dependencias
 - [Spring-Boot](https://spring.io/projects/spring-boot) - Framework
@@ -48,7 +55,10 @@ El proyecto presentado es una tienda en linea de compra y venta de articulos.Cad
 
 ## Despedida
 
-Fue un gusto para nostros trabajar en este proyecto, compartir nuestros conocimientos y sobre todo aprender. Con :heart: 
+Fue un gusto para nosotros trabajar en este proyecto, compartir nuestros conocimientos y sobre todo aprender. Con :heart: 
+
+It was a pleasure for us to work on this project, share our knowledge and above all learn technologies
+
 ### Linkedin 
 - :alien:[Ian](https://www.linkedin.com/in/ian-fern%C3%A1ndez-a72598179/)
 - :robot:[Tomás](https://www.linkedin.com/in/padillatom/)
