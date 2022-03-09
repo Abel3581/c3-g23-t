@@ -29,7 +29,8 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserUpdateResponse> update(@PathVariable Long id, @ModelAttribute UserRegisterRequest request) throws NotFoundException {
-        UserUpdateResponse result = userService.update(id, request);
+        Client client = (Client) userService.getInfoUser();
+        UserUpdateResponse result = userService.update(client, id, request);
         return ResponseEntity.ok().body(result);
     }
 

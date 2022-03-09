@@ -121,14 +121,17 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
     }
 
     @Override
-    public UserUpdateResponse update(Long id, UserRegisterRequest request) throws NotFoundException {
+    public UserUpdateResponse update(Client client, Long id, UserRegisterRequest request) throws NotFoundException {
         Optional<Client> entity = clientRepository.findById(id);
         if(!entity.isPresent()){
-            throw new ParamNotFound("error: id de Cliente no valido");
+            throw new ParamNotFound("error: Invalid Id Client");
         }
-        userMapper.clientEntityRefreshValues(entity.get(), request);
+        if(client.getId() != entity.get().getId()){
+            throw new ParamNotFound("error: Invalid Id Client");
+        }
+        userMapper.clientEntityRefreshValues(client, request);
 
-        Client entitySaved = clientRepository.save(entity.get());
+        Client entitySaved = clientRepository.save(client);
         UserUpdateResponse result = userMapper.userEntity2DtoRefresh(entitySaved);
         return result;
     }
