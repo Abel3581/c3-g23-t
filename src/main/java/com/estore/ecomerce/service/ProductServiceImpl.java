@@ -469,16 +469,12 @@ public class ProductServiceImpl implements ProductService{
             if (entityById.isPresent()) {                
                 return entityById.get();
             } else {
-                throw new EntityNotFoundException("error al crear");
+                throw new EntityNotFoundException("No se encuentra el producto");
             }
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException("error de coneccion");
+            throw new EntityNotFoundException("No se pudo concectar con BD");
         }
      
-    }
-
-    
-
-
+    }  
     
 }

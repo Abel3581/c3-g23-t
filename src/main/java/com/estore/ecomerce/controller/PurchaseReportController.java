@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,22 +32,18 @@ public class PurchaseReportController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
         }
     }
-
+    
+    //Modo de prueba
     @GetMapping("/{id}")
     public String createReport(@PathVariable Long id) {
-
+         Integer cantidad = 4;
         try {
-
-            Product entityById = serviceProduct.productById(id);          
-            Integer cantidad = 4;
-
+            Product entityById = serviceProduct.productById(id);       
             servicePurchaseReport.savePurchaseReport(cantidad, entityById);
          
             return entityById.getName().toString();
         } catch (Exception e) {
             return e.getMessage();
         }
-
     }
-
 }
