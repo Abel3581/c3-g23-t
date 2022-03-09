@@ -13,7 +13,9 @@ import com.estore.ecomerce.domain.*;
 import com.estore.ecomerce.dto.ClientResponse;
 import com.estore.ecomerce.dto.ModelDetailProduct;
 import com.estore.ecomerce.dto.ModelListProducts;
+import com.estore.ecomerce.dto.ProductReportResponse;
 import com.estore.ecomerce.dto.forms.FormProduct;
+import com.estore.ecomerce.mapper.ProductReportMapper;
 import com.estore.ecomerce.repository.CategoryRepository;
 import com.estore.ecomerce.repository.ClientRepository;
 import com.estore.ecomerce.repository.ImageRepository;
@@ -39,6 +41,8 @@ public class ProductServiceImpl implements ProductService{
     private final ClientRepository clientRepository;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
+    @Autowired 
+    private ProductReportMapper reportProdcutMapper;
     @Autowired
     private IUserService userService;
 
@@ -476,5 +480,5 @@ public class ProductServiceImpl implements ProductService{
         }
      
     }  
-    
+ 
 }
