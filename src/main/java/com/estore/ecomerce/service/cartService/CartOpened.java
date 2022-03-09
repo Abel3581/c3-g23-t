@@ -3,6 +3,8 @@ package com.estore.ecomerce.service.cartService;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import com.estore.ecomerce.domain.Cart;
 import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.Invoice;
@@ -10,6 +12,7 @@ import com.estore.ecomerce.domain.LineProduct;
 import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.dto.ModelDetailCart;
 import com.estore.ecomerce.dto.forms.FormCartProduct;
+import com.estore.ecomerce.repository.CartRepository;
 import com.estore.ecomerce.repository.LineRepository;
 import com.estore.ecomerce.repository.ProductRepository;
 import com.estore.ecomerce.utils.build.BuilderGetCartByIdImpl;
@@ -40,22 +43,28 @@ public class CartOpened implements ICartState{
         HttpStatus.OK);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<?> updateCart(Cart cart, List<FormCartProduct> lineProduct) {
+        System.out.println("Entrando a actualizar!");
         cart.setEnumState(EnumState.ACTIVE);
-        updateCart(cart, lineProduct);  
+        updateLinesCarts(cart, lineProduct);  
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
+    
     private void updateLinesCarts(Cart cart, List<FormCartProduct> lineProduct){
-        List<LineProduct> lineProducts = new ArrayList<LineProduct>();
-        for (FormCartProduct line : lineProduct) {
-            Product product = productRepository.findById(line.getId()).get();
-            lineProducts.add(
-                new LineProduct(line.getAmount(), product, cart)
-            );  
+        
+        if(lineProduct.size() > 0){
+            for (FormCartProduct line : lineProduct) {
+                for (LineProduct lineCart : cart.getLineProducts()) {
+                    if(lineCart.getProduct().getId() == line.getId()){
+                        lineCart.setAmount(line.getAmount());
+                        lineRepository.save(lineCart);
+                    }    
+                }
+            }
         }
-        cart.setLineProducts(lineProducts);
     }
 
     @Override

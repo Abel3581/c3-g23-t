@@ -93,8 +93,9 @@ public class BuilderGetCartByIdImpl implements BuilderGetCartById{
         this.total = 0.0;
         Double finalPrice = 0.0;
         for (LineProduct line : lineProduct) {
-            finalPrice = finalPrice + line.getProduct().getPrice() - 
-            ((line.getProduct().getDiscount()/100)*line.getProduct().getPrice());
+            finalPrice = finalPrice + 
+            ((line.getProduct().getPrice() - 
+            (line.getProduct().getDiscount() / 100)*line.getProduct().getPrice())*line.getAmount());
         }
         this.total = Precision.round(finalPrice,2);
         return this;

@@ -113,9 +113,11 @@ public class CartServiceImpl implements CartService{
 
         ResponseEntity<?> response = actualState.updateCart(cart.get(), lineProduct);
         if(response.getStatusCodeValue() == 200){
-            cartRepository.save(cart.get());
+            Cart cartUpdate = (Cart) response.getBody();
+          
+            cartRepository.save(cartUpdate);
             return new ResponseEntity<>(
-                cart.get(), 
+                cartUpdate, 
                 HttpStatus.OK);
         }else{
             return response;
