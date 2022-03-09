@@ -1,7 +1,6 @@
 package com.estore.ecomerce.common;
 
 import com.estore.ecomerce.domain.Client;
-import com.estore.ecomerce.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -64,6 +64,24 @@ public class Product {
 
     /*Relationsip!!!*/
 
+    public Product(String name, Double price, String description, int stock, String content, double rating,
+            double discount, LocalDateTime registration, List<Category> categories, User client,
+            ImageProfile imageProfile, List<ImagePost> imagePost, List<PurchaseReport> listReports) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+        this.stock = stock;
+        this.content = content;
+        this.rating = rating;
+        this.discount = discount;
+        this.registration = registration;
+        this.categories = categories;
+        this.client = client;
+        this.imageProfile = imageProfile;
+        this.imagePost = imagePost;
+        this.listReports = listReports;
+    }
+
     @ManyToMany
     @JoinTable(
     name = "product_whit_category", 

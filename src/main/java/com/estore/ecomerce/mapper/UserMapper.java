@@ -7,7 +7,6 @@ import com.estore.ecomerce.dto.UserRegisterRequest;
 import com.estore.ecomerce.dto.UserRegisterResponse;
 import com.estore.ecomerce.dto.UserUpdateResponse;
 import com.estore.ecomerce.service.FileUploadService;
-import com.estore.ecomerce.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -16,15 +15,12 @@ import org.springframework.stereotype.Component;
 public class UserMapper {
 
 
-
     @Autowired
     private FileUploadService fileUploadService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private ImageService imageService;
 
     public Client userDto2Entity(UserRegisterRequest request) {
         Client user = new Client();
@@ -86,7 +82,7 @@ public class UserMapper {
         clientResponse.setEmail(client.getEmail());
         clientResponse.setPassword(client.getPassword());
         clientResponse.setState(client.getState());
-        clientResponse.setSurname(clientResponse.getSurname());
+        clientResponse.setSurname(client.getSurname());
 
         return clientResponse;
     }

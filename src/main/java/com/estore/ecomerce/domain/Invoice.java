@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -28,14 +26,12 @@ public class Invoice {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
     @CreationTimestamp
     @Column(name = "creationDate", updatable = false, nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime creationDate = LocalDateTime.now();
 
-    @Column(name = "observation", updatable = true, nullable = true, length=20)
-    @Size(max=20)
+    @Column(name = "observation", updatable = true, nullable = true, length=150)
     private String observation;
 
     /*Relationship!! */
