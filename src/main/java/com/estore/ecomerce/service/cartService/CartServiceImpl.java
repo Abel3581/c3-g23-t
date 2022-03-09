@@ -98,10 +98,6 @@ public class CartServiceImpl implements CartService{
         return new ResponseEntity<>("List of products is not acceptable", 
         HttpStatus.NOT_ACCEPTABLE);
         
-        if(lineProduct.size() == 0)
-        return new ResponseEntity<>("List of products is not acceptable", 
-        HttpStatus.NOT_ACCEPTABLE);
-        
         if(controlProducts(lineProduct).size() != lineProduct.size())
         return messageProductNotExists;
 
@@ -200,68 +196,69 @@ public class CartServiceImpl implements CartService{
 
     private List<FormCartProduct> controlProducts(List<FormCartProduct> lineProduct){
         //Control de existencia del producto
-
-        Predicate<FormCartProduct> condition = new Predicate<FormCartProduct>(){
-            @Override
-            public boolean test(FormCartProduct line){
-                if(productRepository.findById(line.getId()).isPresent()){
-                    //Si producto existe
-                    return true;
+        if(lineProduct.size() > 0){
+            Predicate<FormCartProduct> condition = new Predicate<FormCartProduct>(){
+                @Override
+                public boolean test(FormCartProduct line){
+                    if(productRepository.findById(line.getId()).isPresent()){
+                        //Si producto existe
+                        return true;
+                    }
+                        //Si producto no existe
+                        return false;
                 }
-                    //Si producto no existe
-                    return false;
-            }
-        };
-        lineProduct = lineProduct.stream()
-        .filter(condition)
-        .collect(Collectors.toList());
-        
+            };
+            lineProduct = lineProduct.stream()
+            .filter(condition)
+            .collect(Collectors.toList());
+        }
         return lineProduct;
         //Control del stock del producto.
     }
 
     private List<FormCartProduct> controlStockOfProducts(List<FormCartProduct> lineProduct){
         //Control de existencia del producto
-
-        Predicate<FormCartProduct> condition = new Predicate<FormCartProduct>(){
-            @Override
-            public boolean test(FormCartProduct line){
-                if(productRepository.
-                        findById(line.getId())
-                        .get().getStock() >= line.getAmount()){
-                        //Si producto existe
-                        return true;
+        if(lineProduct.size() > 0){
+            Predicate<FormCartProduct> condition = new Predicate<FormCartProduct>(){
+                @Override
+                public boolean test(FormCartProduct line){
+                    if(productRepository.
+                            findById(line.getId())
+                            .get().getStock() >= line.getAmount()){
+                            //Si producto existe
+                            return true;
+                        }
+                    
+                        //Si producto no existe
+                        return false;
                     }
-                
-                    //Si producto no existe
-                    return false;
-                }
-            };
-        lineProduct = lineProduct.stream()
-        .filter(condition)
-        .collect(Collectors.toList());
-        
+                };
+            lineProduct = lineProduct.stream()
+            .filter(condition)
+            .collect(Collectors.toList());
+        }
         return lineProduct;
         //Control del stock del producto.
     }
 
     private List<FormCartProduct> controlAmountOfProducts(List<FormCartProduct> lineProduct){
-        Predicate<FormCartProduct> condition = new Predicate<FormCartProduct>(){
-            @Override
-            public boolean test(FormCartProduct line){
-                if(line.getAmount() > 0){
-                        //Si producto existe
-                        return true;
+        if(lineProduct.size() > 0){
+            Predicate<FormCartProduct> condition = new Predicate<FormCartProduct>(){
+                @Override
+                public boolean test(FormCartProduct line){
+                    if(line.getAmount() > 0){
+                            //Si producto existe
+                            return true;
+                        }
+                        //Si producto no existe
+                        return false;
                     }
-                    //Si producto no existe
-                    return false;
-                }
-            };
-        lineProduct = lineProduct.stream()
-        .filter(condition)
-        .collect(Collectors.toList());
-        
-        return lineProduct;
+                };
+            lineProduct = lineProduct.stream()
+            .filter(condition)
+            .collect(Collectors.toList());
+        }
+        return lineProduct; 
     }
 
     private List<Long> controlUniqueProductByList(List<FormCartProduct> lineProduct){

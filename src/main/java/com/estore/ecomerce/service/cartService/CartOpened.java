@@ -48,13 +48,56 @@ public class CartOpened implements ICartState{
     public ResponseEntity<?> updateCart(Cart cart, List<FormCartProduct> lineProduct) {
         System.out.println("Entrando a actualizar!");
         cart.setEnumState(EnumState.ACTIVE);
-        updateLinesCarts(cart, lineProduct);  
+        updateAddProductsByCart(cart,lineProduct);
+        updateDeleteProductsByCart(cart,lineProduct);
+        updateAmounOfLinesCarts(cart, lineProduct);  
         return new ResponseEntity<>(cart, HttpStatus.OK);
+    } 
+
+    private void updateAddProductsByCart(Cart cart, List<FormCartProduct> lineProduct){
+        List<Product> listProducts = new ArrayList<Product>();
+        List<LineProduct> listOfnewProducts = new ArrayList<LineProduct>();
+        for (LineProduct line : cart.getLineProducts()){
+            Product product = productRepository.
+            findById(line.getProduct().getId())
+            .get();
+            listProducts.add(product);
+        }
+        for (FormCartProduct line : lineProduct) {
+            Product product = productRepository.findById(line.getId()).get();
+            listOfnewProducts.add(
+                new LineProduct(line.getAmount(),product,cart)
+            );
+        }
+        for (LineProduct product : listOfnewProducts) {
+            if(!listProducts.contains(product.getProduct())){
+                cart.getLineProducts().add(product);     
+            }
+        }
+    }
+
+    private void updateDeleteProductsByCart(Cart cart, List<FormCartProduct> lineProduct){
+        List<Product> listProducts = new ArrayList<Product>();
+        List<LineProduct> listOfLineProducts = new ArrayList<LineProduct>();
+        
+        for (FormCartProduct line : lineProduct) {
+            Product product = productRepository.findById(line.getId()).get();
+            listProducts.add(product);
+        }
+        for (LineProduct line : cart.getLineProducts()) {
+            if(!listProducts.contains(line.getProduct())){
+                listOfLineProducts.add(line);
+            }   
+        }
+        if(listOfLineProducts.size() > 0){
+            cart.getLineProducts().removeAll(listOfLineProducts);
+            //lineRepository.deleteAll(listOfLineProducts);
+        }
+        
     }
 
     
-    private void updateLinesCarts(Cart cart, List<FormCartProduct> lineProduct){
-        
+    private void updateAmounOfLinesCarts(Cart cart, List<FormCartProduct> lineProduct){
         if(lineProduct.size() > 0){
             for (FormCartProduct line : lineProduct) {
                 for (LineProduct lineCart : cart.getLineProducts()) {
