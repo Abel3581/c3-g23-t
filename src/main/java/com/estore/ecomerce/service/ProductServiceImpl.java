@@ -13,7 +13,9 @@ import com.estore.ecomerce.domain.*;
 import com.estore.ecomerce.dto.ClientResponse;
 import com.estore.ecomerce.dto.ModelDetailProduct;
 import com.estore.ecomerce.dto.ModelListProducts;
+import com.estore.ecomerce.dto.ProductReportResponse;
 import com.estore.ecomerce.dto.forms.FormProduct;
+import com.estore.ecomerce.mapper.ProductReportMapper;
 import com.estore.ecomerce.repository.CategoryRepository;
 import com.estore.ecomerce.repository.ClientRepository;
 import com.estore.ecomerce.repository.ImageRepository;
@@ -23,6 +25,7 @@ import com.estore.ecomerce.utils.build.BuilderGetProductByIdImpl;
 import com.estore.ecomerce.utils.build.BuilderGetProductsImpl;
 
 import javassist.NotFoundException;
+import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +41,8 @@ public class ProductServiceImpl implements ProductService{
     private final ClientRepository clientRepository;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
+    @Autowired 
+    private ProductReportMapper reportProdcutMapper;
     @Autowired
     private IUserService userService;
 
@@ -460,10 +465,20 @@ public class ProductServiceImpl implements ProductService{
 
     
 
-
-
-    
-
-
-    
+@Transactional
+ public Product productById(Long id) {
+        
+     try {
+            Optional<Product> entityById = productRepository.findById(id);
+            if (entityById.isPresent()) {                
+                return entityById.get();
+            } else {
+                throw new EntityNotFoundException("No se encuentra el producto");
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException("No se pudo concectar con BD");
+        }
+     
+    }  
+ 
 }
