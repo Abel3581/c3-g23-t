@@ -7,6 +7,7 @@ import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.dto.forms.FormProduct;
+import com.estore.ecomerce.dto.forms.FormProductUpdate;
 import com.estore.ecomerce.service.FileUploadService;
 import com.estore.ecomerce.service.ImageService;
 import com.estore.ecomerce.service.ProductService;
@@ -104,7 +105,7 @@ public class ProductController {
     public ResponseEntity<?> updateProduct(@PathVariable(name = "id") Long id,
         @RequestPart(value="profileimage",required=false) MultipartFile image,
         @RequestPart(value="postimages",required=false)  ArrayList<MultipartFile> postImage,
-        @RequestPart(value="product", required=true) FormProduct product)
+        @RequestPart(value="product", required=true) FormProductUpdate product)
         throws URISyntaxException, NotFoundException{
         
         Client client = (Client) userService.getInfoUser();

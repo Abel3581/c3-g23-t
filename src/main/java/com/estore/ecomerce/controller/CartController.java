@@ -1,7 +1,10 @@
 package com.estore.ecomerce.controller;
 
 
+import java.util.List;
+
 import com.estore.ecomerce.domain.Client;
+import com.estore.ecomerce.dto.forms.FormCartProduct;
 import com.estore.ecomerce.dto.forms.FormLineProduct;
 import com.estore.ecomerce.service.InvoiceService;
 import com.estore.ecomerce.service.abstraction.IUserService;
@@ -32,8 +35,11 @@ public class CartController {
 
     @PostMapping
     public ResponseEntity<?> createCart(
-        @RequestPart(value="cart", required=true) FormLineProduct formLineProduct) 
+        @RequestPart(value="cart", required=true) List<FormCartProduct> formLineCart) 
     throws NotFoundException{
+        FormLineProduct formLineProduct = new FormLineProduct();
+        formLineProduct.setLineProduct(formLineCart);
+
         Client client = (Client) userService.getInfoUser();
 
         ResponseEntity<?> response = cartService.createCart(client, formLineProduct.getLineProduct());
@@ -43,8 +49,11 @@ public class CartController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCart(
         @PathVariable(name = "id") Long id,
-        @RequestPart(value="cart", required=true) FormLineProduct formLineProduct) 
+        @RequestPart(value="cart", required=true) List<FormCartProduct> formLineCart) 
     throws NotFoundException{
+        FormLineProduct formLineProduct = new FormLineProduct();
+        formLineProduct.setLineProduct(formLineCart);
+
         Client client = (Client) userService.getInfoUser();
         
         ResponseEntity<?> response = cartService.updateCart(client, id, 

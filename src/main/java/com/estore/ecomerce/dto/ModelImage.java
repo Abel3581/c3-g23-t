@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ModelImage {
+    private String idImage;
     private String imageName;
     private String urlImage;
 }

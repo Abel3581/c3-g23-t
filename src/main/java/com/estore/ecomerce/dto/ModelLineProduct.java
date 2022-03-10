@@ -14,7 +14,7 @@ public class ModelLineProduct {
     public ModelLineProduct() {
     }
 
-    public ModelLineProduct(Long idCart,Long idLineProduct,String nameProduct, ModelImage image, double price, int amount, String url) {
+    public ModelLineProduct(Long idLineProduct,String nameProduct, ModelImage image, double price, int amount, String url) {
         this.idLineProduct = idLineProduct;
         this.nameProduct = nameProduct;
         this.image = image;
