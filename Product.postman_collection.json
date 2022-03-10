@@ -6,8 +6,18 @@
 	},
 	"item": [
 		{
-			"name": "Create Product",
+			"name": "Create product",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiaWFuY2Fwb0BnbWFpbC5jb20iLCJpYXQiOjE2NDY4Nzg2NjAsImV4cCI6MTY0NjkxNDY2MH0.xl_Ax6Cwvc2rxJF7bTE6mbF9rY-M0wVLOBBaQ2PlA1M",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -15,24 +25,27 @@
 					"formdata": [
 						{
 							"key": "product",
-							"value": "{\n  \"name\" : \"Mouse\",\n  \"price\" : 200.0,\n  \"description\":\"Mouse de ultima generacion\",\n  \"stock\": 500,\n  \"content\":\"El contenido del post es este\",\n  \"discount\":10.0,\n\"categories\":[{\"id\":1},{\"id\":2}]\n}",
+							"value": "{\n  \"name\" : \"Auriculares\",\n  \"price\" : 120.0,\n  \"description\":\"Auriculares sony\",\n  \"stock\": 40,\n  \"content\":\"El contenido del post es este\",\n  \"discount\":70.0,\n  \"categories\":[{\"id\":9}]\n}",
 							"contentType": "application/json",
 							"type": "text"
 						},
 						{
 							"key": "profileimage",
 							"type": "file",
-							"src": "/home/administrador/Imágenes/Screenshot from 2022-01-04 09-11-38.png"
+							"src": "/home/administrador/Imágenes/Screenshot from 2022-01-04 09-11-41.png",
+							"disabled": true
 						},
 						{
 							"key": "postimages",
 							"type": "file",
-							"src": "/home/administrador/Imágenes/29625-pacman.jpg"
+							"src": "/home/administrador/Imágenes/Screenshot from 2022-01-04 09-11-38.png",
+							"disabled": true
 						},
 						{
 							"key": "postimages",
 							"type": "file",
-							"src": "/home/administrador/Imágenes/17017-4k.jpg"
+							"src": [],
+							"disabled": true
 						}
 					]
 				},
@@ -98,6 +111,16 @@
 		{
 			"name": "Delete product by id",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiaWFuY2Fwb0BnbWFpbC5jb20iLCJpYXQiOjE2NDY4MDEyOTUsImV4cCI6MTY0NjgzNzI5NX0.LxhfCByAlqtOZQC5AHLCIPb5AxAmfUuIw9T3e4VFliQ",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
@@ -120,6 +143,16 @@
 		{
 			"name": "Update Product",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiaWFuY2Fwb0BnbWFpbC5jb20iLCJpYXQiOjE2NDY4MDA3MzksImV4cCI6MTY0NjgzNjczOX0.G2I58tZIY0u6L4hOt0YcfH9MhS57mFJ0yUxvdOL47T8",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"body": {
@@ -127,7 +160,7 @@
 					"formdata": [
 						{
 							"key": "product",
-							"value": "{\n  \"name\" : \"Computadora\",\n  \"price\" : 500.0,\n  \"description\":\"Computadora de ultima generacion\",\n  \"stock\": 800,\n  \"content\":\"El contenido del post es esta actualizado\",\n  \"discount\":50.0,\n\"categories\":[{\"id\":1},{\"id\":2}]\n}",
+							"value": "{\n  \"name\" : \"Mate\",\n  \"price\" : 200.0,\n  \"description\":\"Computadora de ultima generacion\",\n  \"stock\": 300,\n  \"content\":\"El contenido del post es esta actualizado\",\n  \"discount\":50.0\n}",
 							"contentType": "application/json",
 							"type": "text"
 						},
@@ -152,7 +185,7 @@
 					]
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/products/4",
+					"raw": "http://localhost:8080/api/v1/products/3",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -162,7 +195,111 @@
 						"api",
 						"v1",
 						"products",
-						"4"
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/products/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"all"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "m",
+							"disabled": true
+						},
+						{
+							"key": "price",
+							"value": "160.0",
+							"disabled": true
+						},
+						{
+							"key": "category",
+							"value": "9",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get my products",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiaWFuY2Fwb0BnbWFpbC5jb20iLCJpYXQiOjE2NDY4OTAxMjYsImV4cCI6MTY0NjkyNjEyNn0.Nq-o9P8Ne3kQLY1cfXumIrSo14jV8a6BR2vaa5iug58",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/products/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Gets Reports By Id Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiaWFuY2Fwb0BnbWFpbC5jb20iLCJpYXQiOjE2NDY4OTA3NzgsImV4cCI6MTY0NjkyNjc3OH0.iEuuI7bY1aDGXh3iTaxyBeig5kvRezq2guaaLIRGADs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/products/6/reports",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"6",
+						"reports"
 					]
 				}
 			},
