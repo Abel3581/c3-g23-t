@@ -1,8 +1,5 @@
 package com.estore.ecomerce.dto;
 
-import com.estore.ecomerce.domain.Cart;
-import com.estore.ecomerce.domain.ImageProfile;
-import com.estore.ecomerce.domain.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter

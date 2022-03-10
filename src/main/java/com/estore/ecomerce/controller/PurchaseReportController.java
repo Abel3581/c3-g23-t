@@ -1,4 +1,3 @@
-
 package com.estore.ecomerce.controller;
 
 import com.estore.ecomerce.service.PurchaseReportServiceImpl;
@@ -14,9 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "/api/v1/purchasereport")
 public class PurchaseReportController {
-    @Autowired 
-     private     PurchaseReportServiceImpl servicePurchase;
-    
+
+    @Autowired
+    private PurchaseReportServiceImpl servicePurchase;
+
     @GetMapping("")
     public ResponseEntity<?> findAll() {
         try {
@@ -25,6 +25,5 @@ public class PurchaseReportController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e);
         }
     }
-   
-            
+    
 }

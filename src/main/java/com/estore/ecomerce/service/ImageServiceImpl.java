@@ -1,6 +1,8 @@
 package com.estore.ecomerce.service;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import com.estore.ecomerce.domain.Image;
 import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.Product;
@@ -28,12 +30,11 @@ public class ImageServiceImpl implements ImageService{
                .body(new ByteArrayResource(image.getFileData()));
     }
 
+    @Transactional
     @Override
     public void deleteImageByProduct(ResponseEntity<?> request) {
         if(request.getStatusCodeValue() == 200){
             Product product = (Product) request.getBody();
-            System.out.println(product.getId());
-            System.out.println(product.getName());
 
             if(product.getImageProfile() != null) 
             deleteImage(product.getImageProfile());
@@ -46,7 +47,7 @@ public class ImageServiceImpl implements ImageService{
     private void deleteImage(Image image){imageRepository.delete(image);}
     
     private void deleteImagePost(List<ImagePost> images){
-        System.out.println("A eliminar todo!");
+
         for (Image image : images){
             System.out.println(image);
             deleteImage(image);}

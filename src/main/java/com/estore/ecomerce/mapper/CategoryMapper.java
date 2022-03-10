@@ -2,9 +2,9 @@ package com.estore.ecomerce.mapper;
 
 import com.estore.ecomerce.domain.Category;
 import com.estore.ecomerce.domain.Product;
+import com.estore.ecomerce.dto.CategoryImage;
 import com.estore.ecomerce.dto.CategoryResponse;
-import com.estore.ecomerce.service.FileUploadService;
-import com.estore.ecomerce.service.ImageProfileServiceImpl;
+import com.estore.ecomerce.dto.ModelImage;
 import java.util.ArrayList;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CategoryMapper {
     
-    private FileUploadService fileUploadService;
-    private ImageProfileServiceImpl imageService;
-    
+  
+    //uso
+
     public Category categoryDtoEntity(CategoryResponse request)  {
         Category category = new Category();
         category.setId(request.getId());
@@ -47,15 +47,21 @@ public class CategoryMapper {
         categoryResponse.setImageProfile(category.getImageProfile());        
         return categoryResponse;
     }
-
-    public Category categoryDtoEntityResponse(CategoryResponse response) {
-        Category category = new Category();
-        category.setId(response.getId());
-        category.setName(response.getName());
-        category.setDescription(response.getDescription());
-        category.setStatus(Boolean.TRUE);
-        category.setProducts(response.getProducts());
-        return category;
+    //uso
+    public CategoryImage categoryImageEntityDto(Category category){
+            String url="http://localhost:8080/api/v1/images/profileimage/";
+            CategoryImage categoryImageRespose=new CategoryImage();
+            categoryImageRespose.setId(category.getId());
+            categoryImageRespose.setDescription(category.getDescription());
+            categoryImageRespose.setName(category.getName());
+            categoryImageRespose.setStatus(category.getStatus());      
+           
+            ModelImage modelImage=new ModelImage();
+            modelImage.setImageName(category.getImageProfile().getName());           
+            modelImage.setUrlImage(url+category.getImageProfile().getId());//      
+            categoryImageRespose.setImage(modelImage);
+        return categoryImageRespose;
     }
+ 
 
 }

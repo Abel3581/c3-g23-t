@@ -7,9 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotEmpty;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +21,6 @@ public class LineProduct {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
     @Column(name = "amount", nullable = false, updatable = true)
     private int amount;
 
@@ -32,8 +28,12 @@ public class LineProduct {
     @OneToOne(cascade = {})
     private Product product;
 
-    @JsonBackReference
     @ManyToOne(cascade = {})
     private Cart cart;
 
+    public LineProduct(int amount, Product product, Cart cart) {
+        this.amount = amount;
+        this.product = product;
+        this.cart = cart;
+    }
 }

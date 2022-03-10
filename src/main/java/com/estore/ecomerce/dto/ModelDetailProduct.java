@@ -25,6 +25,8 @@ public class ModelDetailProduct {
     private ModelImage imageProfile;
     private ArrayList<ModelImage> imagesPost;
     private int quantitySold;
+    private String optDeleteUpdateProduct; 
+    private String setOptCreateUpdateCartWithProduct;
 
     public ModelDetailProduct(){}
 

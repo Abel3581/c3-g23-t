@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
         user.setRoles(roles);
 
         Client userCreate = clientRepository.save(user);
+        System.out.println("Usuario creado : "+userCreate.getSurname());
         UserRegisterResponse userRegisterResponse = userMapper.userEntity2Dto(userCreate);
         userRegisterResponse.setToken(jwtUtil.generateToken(userCreate));
         return userRegisterResponse;
@@ -97,7 +98,7 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
     public UserAuthenticatedResponse authentication(UserAuthenticatedRequest request) {
         User user = getUser(request.getEmail());
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
-        return new UserAuthenticatedResponse(jwtUtil.generateToken(user), user.getEmail());
+        return new UserAuthenticatedResponse(jwtUtil.generateToken(user), user.getEmail(), user.getAuthorities());
     }
 
 
@@ -120,14 +121,17 @@ public class UserServiceImpl implements UserDetailsService, IRegisterUserService
     }
 
     @Override
-    public UserUpdateResponse update(Long id, UserRegisterRequest request) throws NotFoundException {
+    public UserUpdateResponse update(Client client, Long id, UserRegisterRequest request) throws NotFoundException {
         Optional<Client> entity = clientRepository.findById(id);
         if(!entity.isPresent()){
-            throw new ParamNotFound("error: id de Cliente no valido");
+            throw new ParamNotFound("error: Invalid Id Client");
         }
-        userMapper.clientEntityRefreshValues(entity.get(), request);
+        if(client.getId() != entity.get().getId()){
+            throw new ParamNotFound("error: Invalid Id Client");
+        }
+        userMapper.clientEntityRefreshValues(client, request);
 
-        Client entitySaved = clientRepository.save(entity.get());
+        Client entitySaved = clientRepository.save(client);
         UserUpdateResponse result = userMapper.userEntity2DtoRefresh(entitySaved);
         return result;
     }
