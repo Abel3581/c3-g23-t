@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import com.estore.ecomerce.domain.*;
 import com.estore.ecomerce.dto.ModelDetailProduct;
 import com.estore.ecomerce.dto.ModelListProducts;
+import com.estore.ecomerce.dto.ModelListReport;
 import com.estore.ecomerce.dto.ProductReportResponse;
 import com.estore.ecomerce.dto.forms.FormProduct;
 import com.estore.ecomerce.repository.CartRepository;
@@ -591,6 +592,34 @@ public class ProductServiceImpl implements ProductService{
             throw new EntityNotFoundException("No se pudo concectar con BD");
         }
      
-    }  
+    }
+
+@Override
+public ResponseEntity<?> getReportsByIdProduct(Client client, Long id) {
+    Optional<Product> product = productRepository.findById(id);
+    if(!product.isPresent()) 
+    return new ResponseEntity<>("Product not found",HttpStatus.NOT_FOUND);
+
+    if(product.get().getClient().getId() != client.getId())
+    return new ResponseEntity<>("Product not found",HttpStatus.NOT_FOUND); 
+
+    ArrayList<ModelListReport> listReports = new ArrayList<ModelListReport>();
+    
+    for (PurchaseReport purcharse : product.get().getListReports()) {
+        Double finalPrice = (product.get().getPrice() - ( product.get().getDiscount() /100)*product.get().getPrice());
+        Double total = (product.get().getPrice() - (product.get().getDiscount()/100)*product.get().getPrice())*purcharse.getQuantity();
+
+        listReports.add(
+            new ModelListReport(
+                purcharse.getCreationDate(), 
+                purcharse.getQuantity(), 
+                product.get().getName(), 
+                finalPrice, 
+                total)
+        );
+    }
+
+    return new ResponseEntity<>(listReports,HttpStatus.OK);
+}  
  
 }

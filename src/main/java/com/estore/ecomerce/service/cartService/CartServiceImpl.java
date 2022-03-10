@@ -15,11 +15,15 @@ import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.Invoice;
 import com.estore.ecomerce.domain.LineProduct;
 import com.estore.ecomerce.domain.Product;
+import com.estore.ecomerce.dto.ModelDetailCart;
+import com.estore.ecomerce.dto.ModelDetailInvoice;
 import com.estore.ecomerce.dto.ModelListCart;
 import com.estore.ecomerce.dto.forms.FormCartProduct;
 import com.estore.ecomerce.repository.CartRepository;
 import com.estore.ecomerce.repository.InvoiceRepository;
+import com.estore.ecomerce.repository.LineRepository;
 import com.estore.ecomerce.repository.ProductRepository;
+import com.estore.ecomerce.service.InvoiceService;
 import com.estore.ecomerce.utils.build.BuilderGetCartsImpl;
 import com.estore.ecomerce.utils.enums.EnumState;
 
@@ -35,18 +39,23 @@ public class CartServiceImpl implements CartService{
     private ProductRepository productRepository;
     private CartRepository cartRepository;
     private InvoiceRepository invoiceRepository;
+    private LineRepository lineRepository;
+    private InvoiceService invoiceService;
     private CartOpened cartOpened;
     private ICartState actualState;
     private CartClosed cartClosed;
 
+
     @Autowired
     public CartServiceImpl(ProductRepository productRepository, CartRepository cartRepository, CartOpened cartOpened
-    ,CartClosed cartClosed,InvoiceRepository invoiceRepository){
+    ,CartClosed cartClosed,InvoiceRepository invoiceRepository, LineRepository lineRepository, InvoiceService invoiceService){
         this.productRepository = productRepository;
         this.invoiceRepository = invoiceRepository;
         this.cartRepository = cartRepository;
+        this.lineRepository = lineRepository;
         this.cartOpened = cartOpened;
         this.cartClosed = cartClosed;
+        this.invoiceService = invoiceService;
     }
 
 
@@ -93,8 +102,12 @@ public class CartServiceImpl implements CartService{
         if(cart.get().getBuyer().getId() != client.getId()) return messageCartisForbidden;
         
         asignStateCart(cart.get());
-        
+
         if(lineProduct == null)
+        return new ResponseEntity<>("List of products is not acceptable", 
+        HttpStatus.NOT_ACCEPTABLE);
+
+        if(lineProduct.size() == 0)
         return new ResponseEntity<>("List of products is not acceptable", 
         HttpStatus.NOT_ACCEPTABLE);
         
@@ -113,7 +126,7 @@ public class CartServiceImpl implements CartService{
           
             cartRepository.save(cartUpdate);
             return new ResponseEntity<>(
-                cartUpdate, 
+                actualState.getCart(cartUpdate),
                 HttpStatus.OK);
         }else{
             return response;
@@ -158,9 +171,11 @@ public class CartServiceImpl implements CartService{
         if(controlStockOfProducts(lineProduct).size() != lineProduct.size())
         return messageStockOfProductInvalid;
         
+        
         createLinesCarts(cart, lineProduct);
         cartRepository.save(cart);
-        return new ResponseEntity<>(cart, HttpStatus.OK);
+        asignStateCart(cart);
+        return new ResponseEntity<>(actualState.getCart(cart), HttpStatus.OK);
     }
 
     private void createLinesCarts(Cart cart, List<FormCartProduct> lineProduct){
@@ -172,13 +187,7 @@ public class CartServiceImpl implements CartService{
                 new LineProduct(productLine.getAmount(), product, cart)
             );
         }
-    }
-
-
-
-    private void updateStockByEachProduct(Cart cart){
-        cart.getLineProducts().stream().forEach(line ->
-        productRepository.save(line.getProduct()));
+        lineRepository.saveAll(cart.getLineProducts());
     }
 
     private boolean controlUniqueCartOpen(Client client){
@@ -367,9 +376,13 @@ public class CartServiceImpl implements CartService{
         ResponseEntity<?> response = actualState.closeCart(cart.get());
         if(response.getStatusCodeValue() == 200){
             Invoice invoice = (Invoice) response.getBody();
-            cartRepository.save(cart.get());
             invoiceRepository.save(invoice);
-            return new ResponseEntity<>(invoice, 
+            cartRepository.save(cart.get());
+            
+            ResponseEntity<?> modelInvoice = 
+            invoiceService.getInvoiceByIdCart(client, invoice.getId());
+            
+            return new ResponseEntity<>(modelInvoice.getBody(), 
             HttpStatus.OK);
         }else{
             return response;

@@ -17,9 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.estore.ecomerce.utils.enums.EnumState;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -50,12 +48,10 @@ public class Cart {
     /*--Relationship--!!*/
     
     //REFERENCIA AL DUEÑO DEL CARRITO
-    @JsonBackReference
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)
     private Client buyer;
 
     //REFERENCIA A LA LINEAS DE PRODUCTOS
-    @JsonManagedReference
     @OneToMany(mappedBy = "cart",cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH}, orphanRemoval = true)
     private List<LineProduct> lineProducts = new ArrayList<>();
     

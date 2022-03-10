@@ -2,7 +2,6 @@ package com.estore.ecomerce.service.cartService;
 
 import java.util.List;
 
-import com.estore.ecomerce.domain.Cart;
 import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.dto.forms.FormCartProduct;
 import com.estore.ecomerce.utils.enums.EnumState;
