@@ -46,7 +46,7 @@ public class BuilderGetProductsImpl implements BuilderGetProducts{
     public BuilderGetProductsImpl setImage(ImageProfile image){
         if(image != null){
             String url = "http://localhost:8080/api/v1/images/profileimage/";
-            this.image = new ModelImage(image.getName(), url+image.getId());
+            this.image = new ModelImage(image.getId(),image.getName(), url+image.getId());
         }
         return this;
     }
