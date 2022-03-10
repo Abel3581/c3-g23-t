@@ -19,6 +19,8 @@ import javax.persistence.OneToMany;
 import com.estore.ecomerce.utils.enums.EnumState;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
@@ -29,13 +31,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@ApiModel("Model Cart")
 public class Cart {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @ApiModelProperty(value = "the cart id", required = true)
     private Long id;
 
     @Column(name = "state", nullable = false, updatable = true)
     @Enumerated(value = EnumType.STRING)
+    @ApiModelProperty(value = "the cart state", required = true)
     private EnumState enumState;
 
     @CreationTimestamp
@@ -49,6 +54,7 @@ public class Cart {
     
     //REFERENCIA AL DUEÑO DEL CARRITO
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)
+    @ApiModelProperty(value = "the client id", required = true)
     private Client buyer;
 
     //REFERENCIA A LA LINEAS DE PRODUCTOS

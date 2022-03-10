@@ -12,6 +12,9 @@ import com.estore.ecomerce.service.ImageService;
 import com.estore.ecomerce.service.ProductService;
 import com.estore.ecomerce.service.abstraction.IUserService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/products")
+@Api(value = "Product Controller", description = "Crud for products")
 public class ProductController {
     private final ProductService productService;
     private final IUserService userService; 
@@ -32,6 +36,7 @@ public class ProductController {
     private final ImageService imageService;
 
     @PostMapping(consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "Create Product", notes = "Return Product" )
     public ResponseEntity<?> createProduct(
         @RequestPart(value="profileimage",required=false) MultipartFile image,
         @RequestPart(value="postimages",required=false)  ArrayList<MultipartFile> postImage,
@@ -49,6 +54,7 @@ public class ProductController {
     }
 
     @GetMapping("/all")
+    @ApiOperation(value = "Get All Products", notes = "Return Products" )
     public ResponseEntity<?> getAllProducts(
         @RequestParam(value="category", required = false) Long idCategory,
         @RequestParam(value="price", required = false) Double price,
@@ -60,6 +66,7 @@ public class ProductController {
 
     
     @GetMapping("/me")
+    @ApiOperation(value = "Get Product client", notes = "Return Product client" )
     public ResponseEntity<?> getProducts() throws NotFoundException{
         Client client = (Client) userService.getInfoUser();
         ResponseEntity<?> response = productService.getProduct(client);
@@ -67,6 +74,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation(value = "Get Product for by id", notes = "Return Product" )
     public ResponseEntity<?> getProductById(@PathVariable(name = "id") Long id) throws NotFoundException{
         try {
             Client client = (Client) userService.getInfoUser();    
@@ -79,6 +87,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/reports")
+    @ApiOperation(value = "Get report by id Product", notes = "Return Product" )
     public ResponseEntity<?> getReportsByIdProduct(@PathVariable(name = "id") Long id) throws NotFoundException{
         Client client = (Client) userService.getInfoUser();
        
@@ -87,6 +96,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "Deleted Product", notes = "Return Product" )
     public ResponseEntity<?> deleteProduct(@PathVariable(name = "id") Long id) throws NotFoundException{
         Client client = (Client) userService.getInfoUser();
         
@@ -101,6 +111,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @ApiOperation(value = "Updated Product", notes = "Return Product updated" )
     public ResponseEntity<?> updateProduct(@PathVariable(name = "id") Long id,
         @RequestPart(value="profileimage",required=false) MultipartFile image,
         @RequestPart(value="postimages",required=false)  ArrayList<MultipartFile> postImage,

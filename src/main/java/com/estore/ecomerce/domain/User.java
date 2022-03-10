@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.*;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,19 +24,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
+@ApiModel("Model User")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(value = "the user's", required = true)
     private Long id;
 
     @Column(name = "username", nullable = false, updatable = true)
+    @ApiModelProperty(value = "the user's username", required = true)
     private String username;
 
     @Column(name = "password", nullable = false, updatable = true)
+    @ApiModelProperty(value = "the user's password", required = true)
     private String password;
 
     @Column(name = "email", nullable = false, updatable = true)
+    @ApiModelProperty(value = "the user's email", required = true)
     private String email;
 
     @CreationTimestamp
