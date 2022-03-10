@@ -110,7 +110,7 @@ public class BuilderGetProductByIdNoLogued implements BuilderGetProductById{
     public BuilderGetProductByIdNoLogued setImage(ImageProfile image){
         if(image != null){
             String url = "http://localhost:8080/api/v1/images/profileimage/";
-            this.imageProfile = new ModelImage(image.getName(), url+image.getId());
+            this.imageProfile = new ModelImage(image.getId(),image.getName(), url+image.getId());
         }
         return this;
     }
@@ -121,7 +121,7 @@ public class BuilderGetProductByIdNoLogued implements BuilderGetProductById{
         if(imagesPost.size() > 0){
             for (ImagePost image : imagesPost) {
                 imagesRequest.add(
-                    new ModelImage(image.getName(), url+image.getId())
+                    new ModelImage(image.getId(),image.getName(), url+image.getId())
                 );
             }
         }

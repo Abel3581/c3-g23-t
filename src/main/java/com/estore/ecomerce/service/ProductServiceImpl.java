@@ -15,10 +15,14 @@ import com.estore.ecomerce.dto.ModelListProducts;
 import com.estore.ecomerce.dto.ModelListReport;
 import com.estore.ecomerce.dto.ProductReportResponse;
 import com.estore.ecomerce.dto.forms.FormProduct;
+import com.estore.ecomerce.dto.forms.FormProductUpdate;
 import com.estore.ecomerce.repository.CartRepository;
 import com.estore.ecomerce.mapper.ProductReportMapper;
 import com.estore.ecomerce.repository.CategoryRepository;
 import com.estore.ecomerce.repository.ClientRepository;
+import com.estore.ecomerce.repository.IImageProfileRepository;
+import com.estore.ecomerce.repository.ImagePostRepository;
+import com.estore.ecomerce.repository.ImageProfileRepository;
 import com.estore.ecomerce.repository.ImageRepository;
 import com.estore.ecomerce.repository.ProductRepository;
 import com.estore.ecomerce.security.ApplicationRole;
@@ -45,6 +49,8 @@ public class ProductServiceImpl implements ProductService{
     private final ClientRepository clientRepository;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
+    private final ImagePostRepository imagePostRepository;
+    private final ImageProfileRepository imageProfileRepository;
     private final CartRepository cartRepository;
     @Autowired 
     private ProductReportMapper reportProdcutMapper;
@@ -413,12 +419,15 @@ public class ProductServiceImpl implements ProductService{
     
     @Transactional
     @Override
-    public ResponseEntity<?> updateProduct(FormProduct productUpdated, 
+    public ResponseEntity<?> updateProduct(FormProductUpdate productUpdated, 
                                             Long id,
                                             ArrayList<ImagePost> postImage, 
                                             ImageProfile image) {
         final ResponseEntity<?> messageProductNotExists = 
         new ResponseEntity<>("The product not exists", 
+        HttpStatus.NOT_FOUND); 
+        final ResponseEntity<?> messageProductImageNotExists = 
+        new ResponseEntity<>("The image not exists", 
         HttpStatus.NOT_FOUND); 
 
         if(getProductById(id).getStatusCodeValue() != 200) 
@@ -438,30 +447,74 @@ public class ProductServiceImpl implements ProductService{
         controlCategoriesUpdated(productUpdated,productRequest))
         return messageCategoryNotExists;                                        
         
-        controlImagesProfile(productUpdated, productRequest, postImage, image);
-        if(postImage != null){
-            //TODO QUEDA PENDIENTE MEJORAR EL UPDATE DE IMAGENES
-            productRequest.setImagePost(postImage);
+        if(controlImagesProfile(productUpdated, productRequest, image)){
+            return messageProductImageNotExists;
         }                                        
-                                                
+        controlImagesPost(productUpdated, productRequest, postImage);                                        
+
         productRepository.save(productRequest);                                        
         return new ResponseEntity<>("Updated Sucessfully",HttpStatus.OK);
     }
 
-    private void controlImagesProfile(
-        FormProduct productUpdated,
-        Product productRequest,ArrayList<ImagePost> postImage, 
-        ImageProfile image)
-        {
+    private void controlImagesPost(FormProductUpdate productUpdated,
+    Product product,
+    ArrayList<ImagePost> postImage){
 
-            if(image != productRequest.getImageProfile()){
-                if(productRequest.getImageProfile() != null)
-                imageRepository.delete(productRequest.getImageProfile());
-                productRequest.setImageProfile(image);
+        if(productUpdated.getImagePost() != null){
+            List<ImagePost> listImages = new ArrayList<ImagePost>();
+            List<ImagePost> removeImages = new ArrayList<ImagePost>();
+            for (String image : productUpdated.getImagePost()) {
+                Optional<ImagePost> imagePost = imagePostRepository.findById(image);
+                if(imagePost.isPresent()){
+                    System.out.println("Encontrado : "+ imagePost.get().getId());
+                    listImages.add(imagePost.get());
+                }
             }
+            
+            for (ImagePost image : product.getImagePost()) {
+                if(!listImages.contains(image)){
+                    System.out.println("Eliminado : "+ image.getId());
+                    removeImages.add(image);
+                }
+            }
+
+            product.getImagePost().removeAll(removeImages);
+            imagePostRepository.deleteAll(removeImages);
+        }else{
+            product.setImagePost(new ArrayList<ImagePost>());
+        }
+
+        if(postImage != null){
+            for (ImagePost image : postImage) {
+                product.getImagePost().add(image);     
+            }
+        }
+        
     }
 
-    private void controlUpdateFields(FormProduct productUpdated, 
+    private boolean controlImagesProfile(
+        FormProductUpdate productUpdated,
+        Product productRequest, 
+        ImageProfile image){
+            
+        if(productUpdated.getImageProfile() != null){
+            Optional<ImageProfile> imageRequest = imageProfileRepository.findById(productUpdated.getImageProfile());
+            if(imageRequest.isPresent()){
+                productRequest.setImageProfile(imageRequest.get());
+            }else{
+                return true;
+            }
+        }else{
+            productRequest.setImageProfile(null);
+        }    
+        if(image != null){
+            productRequest.setImageProfile(image);
+        }
+
+        return false;
+    }
+
+    private void controlUpdateFields(FormProductUpdate productUpdated, 
                                         Product productRequest){
 
         if(productUpdated.getName() != null) 
@@ -489,7 +542,7 @@ public class ProductServiceImpl implements ProductService{
         productRequest.setContent(productUpdated.getContent());
     }
 
-    private boolean controlCategoriesUpdated(FormProduct productUpdated, Product productRequest){
+    private boolean controlCategoriesUpdated(FormProductUpdate productUpdated, Product productRequest){
         List<Category> categoriesUpdated = new ArrayList<Category>(); 
         if(productUpdated.getCategories().size() > 0){                       
             Optional<Category> categoryRequest;

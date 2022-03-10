@@ -7,6 +7,7 @@ import com.estore.ecomerce.domain.ImagePost;
 import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.domain.User;
 import com.estore.ecomerce.dto.forms.FormProduct;
+import com.estore.ecomerce.dto.forms.FormProductUpdate;
 
 import org.springframework.http.ResponseEntity;
 
@@ -19,7 +20,7 @@ public interface ProductService {
 
     ResponseEntity<?> updateProduct(
         
-        FormProduct product,
+        FormProductUpdate product,
         Long id,
         ArrayList<ImagePost> postImage,
         ImageProfile image);
