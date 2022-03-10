@@ -3,12 +3,15 @@ import com.estore.ecomerce.domain.ImageProfile;
 import com.estore.ecomerce.dto.ModelImage;
 import com.estore.ecomerce.dto.ModelListProducts;
 
+import org.apache.commons.math3.util.Precision;
+
 
 public class BuilderGetProductsImpl implements BuilderGetProducts{
     
     private Long id;
     private String title;
     private ModelImage image;
+    private String detailProduct;
     private double price;
     private double discount;
     private double rating;
@@ -25,7 +28,8 @@ public class BuilderGetProductsImpl implements BuilderGetProducts{
     }
     
     public BuilderGetProductsImpl setPrice(double price, double discount){
-        this.price = (price - ((discount/100)*price));
+        Double finalPrice = (price - ((discount/100)*price)); 
+        this.price = Precision.round(finalPrice,2); 
         return this;
     }
 
@@ -47,7 +51,11 @@ public class BuilderGetProductsImpl implements BuilderGetProducts{
         return this;
     }
 
-
+    public BuilderGetProductsImpl setDetailProduct(String id){
+        String url = "http://localhost:8080/api/v1/products/"+id;
+        this.detailProduct = url;
+        return this;
+    }
 
     @Override
     public ModelListProducts ModelListProducts() {
@@ -55,6 +63,7 @@ public class BuilderGetProductsImpl implements BuilderGetProducts{
         modelListProducts.setId(this.id);
         modelListProducts.setTitle(this.title);
         modelListProducts.setRating(this.rating);
+        modelListProducts.setDetailProduct(this.detailProduct);
         modelListProducts.setDiscount(this.discount);
         modelListProducts.setPrice(this.price);
         modelListProducts.setImage(this.image);

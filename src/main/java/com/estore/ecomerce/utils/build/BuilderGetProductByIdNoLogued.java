@@ -17,7 +17,7 @@ import com.estore.ecomerce.dto.ModelImage;
 
 import org.apache.commons.math3.util.Precision;
 
-public class BuilderGetProductByIdImpl implements BuilderGetProductById{
+public class BuilderGetProductByIdNoLogued implements BuilderGetProductById{
     private Long id;
     private String name;
     private Double price;
@@ -35,52 +35,52 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
     private String optDeleteUpdateProduct; 
     private String setOptCreateUpdateCartWithProduct;
 
-    public BuilderGetProductByIdImpl setId(Long id){
+    public BuilderGetProductByIdNoLogued setId(Long id){
         this.id = id;
         return this;
     }
 
-    public BuilderGetProductByIdImpl setName(String name){
+    public BuilderGetProductByIdNoLogued setName(String name){
         this.name = name;
         return this;
     }
 
-    public BuilderGetProductByIdImpl setPrice(Double price, Double discount){
-        Double finalPrice = (price - ((discount/100)*price));
+    public BuilderGetProductByIdNoLogued setPrice(Double price, Double discount){
+        Double finalPrice = (price - ((discount/100)*price)); 
         this.price = Precision.round(finalPrice,2);
         return this;
     }
 
-    public BuilderGetProductByIdImpl setDescription(String description){
+    public BuilderGetProductByIdNoLogued setDescription(String description){
         this.description = description;
         return this;
     }
-    public BuilderGetProductByIdImpl setStock(int stock){
+    public BuilderGetProductByIdNoLogued setStock(int stock){
         this.stock = stock;
         return this;
     }
 
-    public BuilderGetProductByIdImpl setContent(String content){
+    public BuilderGetProductByIdNoLogued setContent(String content){
         this.content = content;
         return this;
     }
 
-    public BuilderGetProductByIdImpl setRating(double rating){
+    public BuilderGetProductByIdNoLogued setRating(double rating){
         this.rating = rating;
         return this;
     }
 
-    public BuilderGetProductByIdImpl setDiscount(double discount){
+    public BuilderGetProductByIdNoLogued setDiscount(double discount){
         this.discount = discount;
         return this;
     }
 
-    public BuilderGetProductByIdImpl setRegistration(LocalDateTime registration){
+    public BuilderGetProductByIdNoLogued setRegistration(LocalDateTime registration){
         this.registration = registration;
         return this;
     }
 
-    public BuilderGetProductByIdImpl setCategories(List<Category> categories){
+    public BuilderGetProductByIdNoLogued setCategories(List<Category> categories){
         List<ModelCategory> categoriesRequest = new ArrayList<ModelCategory>();
         String url = "http://localhost:8080/api/v1/category/";
         if(categories.size() > 0){
@@ -94,7 +94,7 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
         return this;
     }
 
-    public BuilderGetProductByIdImpl setClient(Client client){
+    public BuilderGetProductByIdNoLogued setClient(Client client){
         if(client != null){
             String url = "http://localhost:8080/api/v1/client/";
             ModelClient clientRequest = new ModelClient(url+client.getId(), 
@@ -107,7 +107,7 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
         return this;
     }
 
-    public BuilderGetProductByIdImpl setImage(ImageProfile image){
+    public BuilderGetProductByIdNoLogued setImage(ImageProfile image){
         if(image != null){
             String url = "http://localhost:8080/api/v1/images/profileimage/";
             this.imageProfile = new ModelImage(image.getName(), url+image.getId());
@@ -115,7 +115,7 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
         return this;
     }
 
-    public BuilderGetProductByIdImpl setPostImages(List<ImagePost> imagesPost){
+    public BuilderGetProductByIdNoLogued setPostImages(List<ImagePost> imagesPost){
         List<ModelImage> imagesRequest = new ArrayList<ModelImage>();
         String url = "http://localhost:8080/api/v1/images/postimages/";
         if(imagesPost.size() > 0){
@@ -129,9 +129,9 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
         return this;
     }
 
-    public BuilderGetProductByIdImpl setQuantitySold(List<PurchaseReport> listReports){
+    public BuilderGetProductByIdNoLogued setQuantitySold(List<PurchaseReport> listReports){
 
-        if(listReports.size() > 0){
+        if(listReports != null){
             for (PurchaseReport purchase : listReports) {
                 this.quantitySold = this.quantitySold + purchase.getQuantity();
             }
@@ -139,33 +139,14 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
         return this;
     }
 
-    public BuilderGetProductByIdImpl setOptDeleteProduct(Product product, 
-    Long idCliAuthenticated){
-        if(product.getClient().getId() == idCliAuthenticated){
-            //Es dueño del producto
-            String url = "http://localhost:8080/api/v1/products/"+product.getId();
-            this.optDeleteUpdateProduct = url;
-        }else{
-            this.optDeleteUpdateProduct = null;
-        }
+    public BuilderGetProductByIdNoLogued setOptDeleteProduct(){
+        this.optDeleteUpdateProduct = null;
         return this;
     }
 
-    public BuilderGetProductByIdImpl setOptCreateUpdateCartWithProduct(Long idClientProduct, 
-    Long idCliAuthenticated, Long idCartOpen){
-        if(idClientProduct != idCliAuthenticated){
-            String url;
-            //Se debe pasar un arreglo de objetos con el id del producto y la cantidad
-            // id y amount
-            if(idCartOpen == null){
-                url = "http://localhost:8080/api/v1/carts";
-            }else{
-                url = "http://localhost:8080/api/v1/carts/"+idCartOpen;
-            }
-            this.setOptCreateUpdateCartWithProduct = url;
-        }else{
-            this.setOptCreateUpdateCartWithProduct = null;
-        }
+    public BuilderGetProductByIdNoLogued setOptCreateUpdateCartWithProduct(){
+    
+        this.setOptCreateUpdateCartWithProduct = null;
         return this;
     }
 
@@ -190,8 +171,10 @@ public class BuilderGetProductByIdImpl implements BuilderGetProductById{
         modelDetailProduct.setQuantitySold(this.quantitySold);
         modelDetailProduct.setSetOptCreateUpdateCartWithProduct(this.setOptCreateUpdateCartWithProduct);
         modelDetailProduct.setOptDeleteUpdateProduct(this.optDeleteUpdateProduct);
-
         return modelDetailProduct;
     }
+
+
+    
     
 }

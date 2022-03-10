@@ -1,28 +1,31 @@
 package com.estore.ecomerce.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import com.estore.ecomerce.domain.*;
-import com.estore.ecomerce.dto.ClientResponse;
 import com.estore.ecomerce.dto.ModelDetailProduct;
 import com.estore.ecomerce.dto.ModelListProducts;
 import com.estore.ecomerce.dto.ProductReportResponse;
 import com.estore.ecomerce.dto.forms.FormProduct;
+import com.estore.ecomerce.repository.CartRepository;
 import com.estore.ecomerce.mapper.ProductReportMapper;
 import com.estore.ecomerce.repository.CategoryRepository;
 import com.estore.ecomerce.repository.ClientRepository;
 import com.estore.ecomerce.repository.ImageRepository;
 import com.estore.ecomerce.repository.ProductRepository;
+import com.estore.ecomerce.security.ApplicationRole;
 import com.estore.ecomerce.service.abstraction.IUserService;
 import com.estore.ecomerce.utils.build.BuilderGetProductByIdImpl;
+import com.estore.ecomerce.utils.build.BuilderGetProductByIdNoLogued;
 import com.estore.ecomerce.utils.build.BuilderGetProductsImpl;
+import com.estore.ecomerce.utils.enums.EnumState;
 
 import javassist.NotFoundException;
 import javax.persistence.EntityNotFoundException;
@@ -41,13 +44,14 @@ public class ProductServiceImpl implements ProductService{
     private final ClientRepository clientRepository;
     private final CategoryRepository categoryRepository;
     private final ImageRepository imageRepository;
+    private final CartRepository cartRepository;
     @Autowired 
     private ProductReportMapper reportProdcutMapper;
     @Autowired
     private IUserService userService;
 
     @Override
-    public ResponseEntity<?> saveProduct(FormProduct product,
+    public ResponseEntity<?> saveProduct(Client client, FormProduct product,
                                ArrayList<ImagePost> postImage,
                                ImageProfile image) {
         ResponseEntity<?> controlFieldsEmpty = controlFieldsEmpty(product);
@@ -61,13 +65,14 @@ public class ProductServiceImpl implements ProductService{
         
         ResponseEntity<?> controlCategories = controlCategories(product);
         if(controlCategories != null) return controlCategories;
-
+        
+    
         product.setImageProfile(image);          
         product.setImagePost(postImage);
 
         try {
             productRepository.save(constructorProduct(product));
-            return new ResponseEntity<>("Product created succesfully!", 
+            return new ResponseEntity<>(product, 
             HttpStatus.OK);    
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,8 +157,7 @@ public class ProductServiceImpl implements ProductService{
         }
     }
 
-    private Product constructorProduct(FormProduct productForm) throws NotFoundException {
-        //TODO ENCONTRAR LA MANERA DE OBTENER EL USUARIO LOGUEADO Y ASIGNARSELO AL PRODUCTO                
+    private Product constructorProduct(FormProduct productForm) throws NotFoundException{
         Product product = new Product();
         User client = userService.getInfoUser();
         product.setCategories(productForm.getCategories());
@@ -167,10 +171,7 @@ public class ProductServiceImpl implements ProductService{
         product.setImageProfile(productForm.getImageProfile());
         product.setImagePost(productForm.getImagePost());
         product.setStock(productForm.getStock());
-        product.setRating(0.0);
-
-        System.out.println("Tamaño categoria : "+product.getCategories().size());
-        System.out.println("Tamaño categoria : "+product.getCategories());
+        product.setRating(0.0);  
         return product;
     }
 
@@ -202,17 +203,63 @@ public class ProductServiceImpl implements ProductService{
 
     @Transactional
     @Override
-    public ResponseEntity<?> getProduct() {
-        ArrayList<Product> listProducts = 
-        (ArrayList<Product>) productRepository.findAll();
+    public ResponseEntity<?> getProduct(Client client) {
+        List<Product> listProducts =  (List<Product>) productRepository.findAll();
+        
+        
+        System.out.println(listProducts.get(0).getClient());
+        System.out.println(client);
 
+        listProducts = listProducts.stream()
+        .filter(product -> product.getClient().getId() == client.getId())
+        .collect(Collectors.toList());
+        
         return (listProducts.size() > 0)?
         new ResponseEntity<>(constructorGetProducts(listProducts), HttpStatus.OK):
         new ResponseEntity<>("No exists products", HttpStatus.NOT_FOUND);
         
     }
 
-    private ArrayList<ModelListProducts> constructorGetProducts(ArrayList<Product> listProducts) {
+    @Transactional
+    @Override
+    public ResponseEntity<?> getAllProducts(Long idCategory, Double price,String name) {
+        List<Product> listProducts =  (List<Product>) productRepository.findAll();
+        listProducts = listProducts.stream()
+        .sorted(Comparator.comparingDouble(Product::getRating).reversed())
+        .collect(Collectors.toList());
+
+        if(idCategory != null){
+            List<Product> productsByCategory =  new ArrayList<>();
+            Optional<Category> categories = categoryRepository.findById(idCategory);
+            System.out.println(categories.get());
+            if(categories.isPresent()){
+                System.out.println("ENTRANDO A CONDICIONAL");
+                productsByCategory = categories.get().getProducts();
+                listProducts = listProducts.stream().filter(productsByCategory::contains)
+                .collect(Collectors.toList());
+            }
+        }
+
+        if(name != null){
+           ArrayList<Product> products = productRepository.findByNameContainingIgnoreCase(name);
+           listProducts = listProducts.stream().filter(products::contains)
+            .collect(Collectors.toList());
+        }
+
+        if(price != null){
+            
+            listProducts = listProducts.stream()
+            .filter(product -> 
+            (product.getPrice() - ((product.getDiscount()/100)*product.getPrice())) <= price)
+            .collect(Collectors.toList());
+        }
+
+        return (listProducts.size() > 0)?
+        new ResponseEntity<>(constructorGetProducts(listProducts), HttpStatus.OK):
+        new ResponseEntity<>("No exists products", HttpStatus.NOT_FOUND);
+    }
+
+    private ArrayList<ModelListProducts> constructorGetProducts(List<Product> listProducts) {
         BuilderGetProductsImpl builder = new BuilderGetProductsImpl();
         
         ArrayList<ModelListProducts> requestProducts = 
@@ -225,6 +272,7 @@ public class ProductServiceImpl implements ProductService{
                        .setDiscount(product.getDiscount())
                        .setPrice(product.getPrice(), product.getDiscount())
                        .setImage(product.getImageProfile())
+                       .setDetailProduct(product.getId().toString())
                        .setRating(product.getRating())
                        .ModelListProducts()
                        
@@ -235,29 +283,46 @@ public class ProductServiceImpl implements ProductService{
 
     @Transactional
     @Override
-    public ResponseEntity<?> getDetailProductById(Long id) {
+    public ResponseEntity<?> getDetailProductById(Long id, Client client) {
         final ResponseEntity<?> messageProductNotExists = 
         new ResponseEntity<>("The product not exists", 
         HttpStatus.NOT_FOUND);
-        //Optional<Product> product = productRepository.findById(id);
-
-        // TODO ELIMINAR EL SIGUIENTE METODO Y HACER LA CONSULTA POR REPOSITORY. 
-        Product product = temporalMethodOfRequestProductById(id);
+        /*
+        final ResponseEntity<?> messageProductNotFound = 
+        new ResponseEntity<>("The product not found", 
+        HttpStatus.FORBIDDEN);
+        */
+        Optional<Product> product = productRepository.findById(id);
         
-        if(product != null){
-            System.out.println(product);
+        if(product.isPresent()){
+
+            if(client == null) 
+            return new ResponseEntity<>(constructorGetProductById(product.get()),HttpStatus.OK); 
+            
             return new ResponseEntity<>(
-                                         constructorGetProductById(product), 
+                                         constructorGetProductById(product.get(),client), 
                                          HttpStatus.OK);
         }else{
             return messageProductNotExists;
         }
     }
 
-    private ModelDetailProduct constructorGetProductById(Product product) {
+    private ModelDetailProduct constructorGetProductById(Product product, Client client) {
+        //TODO PONER VARIABLES PARA AÑADIR PRODUCTO O ACTUALIZAR CARRITO
+        //TODO PONER VARIABLES PARA ACTUALIZAR EL PRODUCTO O ELIMINARLO SI ES EL DUEÑO
         BuilderGetProductByIdImpl builder = new BuilderGetProductByIdImpl();
         ModelDetailProduct requestProduct = new ModelDetailProduct();
-   
+        Long idCart;
+
+        List<Cart> listOfCarts = client.getCart().stream()
+        .filter(c -> c.getEnumState() == EnumState.ACTIVE).collect(Collectors.toList());
+
+        if(listOfCarts.size() > 0){
+            idCart = listOfCarts.get(0).getId();
+        }else{
+            idCart = null;
+        }
+
         requestProduct = builder.setId(product.getId())
                         .setName(product.getName())
                         .setPrice(product.getPrice(), product.getDiscount())
@@ -272,36 +337,60 @@ public class ProductServiceImpl implements ProductService{
                         .setImage(product.getImageProfile())
                         .setPostImages(product.getImagePost())
                         .setQuantitySold(product.getListReports())
+                        .setOptDeleteProduct(product,client.getId())
+                        .setOptCreateUpdateCartWithProduct(
+                        product.getClient().getId(),client.getId(),idCart)
                         .modelDetailProduct();
         return requestProduct;
     }
 
-    private Product temporalMethodOfRequestProductById(Long id) {
-        ArrayList<Product> listProducts = 
-        (ArrayList<Product>) productRepository.findAll();
-        
-        if(listProducts.stream().filter(p -> p.getId() == id).collect(Collectors.toList()).size() > 0){
-            Product product = 
-            listProducts.stream().filter(p -> p.getId() == id).collect(Collectors.toList()).get(0);
-            return product;
-        }else{
-            return null;
-        }
+    private ModelDetailProduct constructorGetProductById(Product product) {
+        BuilderGetProductByIdNoLogued builder = new BuilderGetProductByIdNoLogued();
+        ModelDetailProduct requestProduct = new ModelDetailProduct();
+
+
+        requestProduct = builder.setId(product.getId())
+                        .setName(product.getName())
+                        .setPrice(product.getPrice(), product.getDiscount())
+                        .setDescription(product.getDescription())
+                        .setStock(product.getStock())
+                        .setContent(product.getContent())
+                        .setRating(product.getRating())
+                        .setDiscount(product.getDiscount())
+                        .setRegistration(product.getRegistration())
+                        .setCategories(product.getCategories())
+                        .setClient((Client) product.getClient())
+                        .setImage(product.getImageProfile())
+                        .setPostImages(product.getImagePost())
+                        .setQuantitySold(product.getListReports())
+                        .setOptDeleteProduct()
+                        .setOptCreateUpdateCartWithProduct()
+                        .modelDetailProduct();
+        return requestProduct;
     }
+    
 
     @Transactional
     @Override
     public ResponseEntity<?> deleteProduct(Long id) {
         ResponseEntity<?> request = getProductById(id);
         
-        if(request.getStatusCodeValue() == 200){
-            Product product = (Product) request.getBody();
+        Product product = (Product) request.getBody();
+        deleteProductByCart(product);
+        productRepository.delete(product);
+        return new ResponseEntity<>("Product deleted",HttpStatus.OK);
+    }
 
-            productRepository.delete(product);
-
-            return new ResponseEntity<>("Product deleted",HttpStatus.OK);
-        }else{
-            return request;
+    private void deleteProductByCart(Product product){
+        List<Cart> listCarts = (List<Cart>) cartRepository.findAll();
+        for (Cart cart : listCarts) {
+            List <LineProduct> listProducts = cart.getLineProducts();
+            listProducts = listProducts.stream().filter(line -> line.getProduct().getId() == product.getId()).collect(Collectors.toList());
+            if(listProducts.size() > 0){
+                
+                cart.getLineProducts().removeAll(listProducts);
+                cartRepository.save(cart);
+            }
         }
     }
 
@@ -311,14 +400,11 @@ public class ProductServiceImpl implements ProductService{
         final ResponseEntity<?> messageProductNotExists = 
         new ResponseEntity<>("The product not exists", 
         HttpStatus.NOT_FOUND);
-        //Optional<Product> product = productRepository.findById(id);
-
-        // TODO ELIMINAR EL SIGUIENTE METODO Y HACER LA CONSULTA POR REPOSITORY. 
-        Product product = temporalMethodOfRequestProductById(id);
+        Optional<Product> product = productRepository.findById(id);
         
-        if(product != null){
-            System.out.println(product);
-            return new ResponseEntity<>(product,HttpStatus.OK);
+        if(product.isPresent()){
+            
+            return new ResponseEntity<>(product.get(),HttpStatus.OK);
         }else{
             return messageProductNotExists;
         }
@@ -430,6 +516,20 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    public ResponseEntity<?> getProductById(Long id, User user) {
+        Optional<Product> product = productRepository.findById(id);
+        
+       
+        if(!product.isPresent())
+        return new ResponseEntity<>("No exists products", HttpStatus.NOT_FOUND);
+        
+        if(product.get().getId() != id)
+        return new ResponseEntity<>("No exists products", HttpStatus.FORBIDDEN);
+        
+        
+        return new ResponseEntity<>("", HttpStatus.OK);
+    }
+
     public ResponseEntity<?> getProductByCategory(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
         
@@ -463,8 +563,20 @@ public class ProductServiceImpl implements ProductService{
        }
     }
 
-    
 
+    @Override
+    public ResponseEntity<?> getProduct() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<?> getDetailProductById(Long id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    
 @Transactional
  public Product productById(Long id) {
         
