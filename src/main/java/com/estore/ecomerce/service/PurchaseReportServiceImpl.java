@@ -4,13 +4,13 @@ package com.estore.ecomerce.service;
 import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.domain.PurchaseReport;
 import com.estore.ecomerce.dto.ModelPurchaseReport;
-import com.estore.ecomerce.dto.ProductReportResponse;
-import com.estore.ecomerce.dto.PurchaseReportRequest;
-import com.estore.ecomerce.mapper.ProductReportMapper;
 import com.estore.ecomerce.mapper.PurchaseReportMapper;
 import com.estore.ecomerce.repository.ProductRepository;
 import com.estore.ecomerce.repository.PurchaseRepository;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,6 @@ public class PurchaseReportServiceImpl implements PurchaseReportService {
     private PurchaseRepository purchaseRepository;    
     @Autowired
     private PurchaseReportMapper mapperPurchase;
-    @Autowired
-    private ProductReportMapper mapperProductReport;
     @Autowired 
     private ProductRepository repositoryProduct; 
    
@@ -50,16 +48,14 @@ public class PurchaseReportServiceImpl implements PurchaseReportService {
     public void savePurchaseReport(Integer quantity, Product product)  {
         try {
            if (quantity.intValue()>0) {
-
-           PurchaseReportRequest newReport = mapperPurchase.PurchaseReportRequest(quantity, product);   
-           PurchaseReport report= mapperPurchase.purchaseReportDtoEntity(newReport); 
-           PurchaseReport reportA=purchaseRepository.save(report);
-           ProductReportResponse newProduct=mapperProductReport.productReportEntity2Dto(product);           
-           List<PurchaseReport> list=newProduct.getListReports();
-           list.add(reportA);
-           newProduct.setListReports(list); 
-           repositoryProduct.save(mapperProductReport.productReportDto2Entity(newProduct));
-                  
+           PurchaseReport purchase = new PurchaseReport();
+           purchase.setQuantity(quantity);
+           LocalDateTime dateTime=LocalDateTime.now();
+           purchase.setCreationDate(Timestamp.valueOf(dateTime));
+           purchaseRepository.save(purchase);
+           product.getListReports().add(purchase);
+           repositoryProduct.save(product);
+           
             }else  throw new ExceptionInInitializerError(ERROR_ADD_REPORT);
             
         } catch (EntityNotFoundException e) {

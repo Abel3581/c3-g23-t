@@ -1,0 +1,42 @@
+{
+	"info": {
+		"_postman_id": "fc7e002b-fcc4-4e0f-ab09-a3e8cb7bd0af",
+		"name": "Invoice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get invoice by id cart",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwic3ViIjoiaWFuM0BnbWFpbC5jb20iLCJpYXQiOjE2NDY4ODk4ODAsImV4cCI6MTY0NjkyNTg4MH0.JUzLk1hwUiXgYvdjhTxeese5x8eY5VUeCThVCO_Bsqc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/carts/42/invoice",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"carts",
+						"42",
+						"invoice"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

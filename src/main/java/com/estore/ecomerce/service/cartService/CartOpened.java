@@ -6,15 +6,14 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import com.estore.ecomerce.domain.Cart;
-import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.domain.Invoice;
 import com.estore.ecomerce.domain.LineProduct;
 import com.estore.ecomerce.domain.Product;
 import com.estore.ecomerce.dto.ModelDetailCart;
 import com.estore.ecomerce.dto.forms.FormCartProduct;
-import com.estore.ecomerce.repository.CartRepository;
 import com.estore.ecomerce.repository.LineRepository;
 import com.estore.ecomerce.repository.ProductRepository;
+import com.estore.ecomerce.service.PurchaseReportService;
 import com.estore.ecomerce.utils.build.BuilderGetCartByIdImpl;
 import com.estore.ecomerce.utils.enums.EnumState;
 
@@ -31,17 +30,26 @@ public class CartOpened implements ICartState{
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private PurchaseReportService purchaseReportService;
+
     @Transactional
     @Override
     public ResponseEntity<?> closeCart(Cart cart) {
-        //TODO añadir el reporte de cada cliente y su producto
         cart.setEnumState(EnumState.CLOSED);
         discountStockOfProducts(cart);
         updateRatingProducts(cart);
+        generateReportByEachProduct(cart.getLineProducts());
         confirmLineOfCart(cart);
         generateInvoice(cart);
         return new ResponseEntity<>(generateInvoice(cart), 
         HttpStatus.OK);
+    }
+
+    private void generateReportByEachProduct(List<LineProduct> listProducts){
+        for (LineProduct line : listProducts) {
+            purchaseReportService.savePurchaseReport(line.getAmount(), line.getProduct());
+        }
     }
 
     @Transactional
@@ -113,17 +121,6 @@ public class CartOpened implements ICartState{
 
     @Override
     public void openCart(Long id) {}
-
-    private void createLineOfProduct(Cart cart){
-        List<LineProduct> listLineProducts = cart.getLineProducts();
-        cart.setLineProducts(new ArrayList<LineProduct>());
-        
-        for (LineProduct line : listLineProducts){
-            cart.getLineProducts().add(
-                new LineProduct(line.getAmount(), line.getProduct(), cart)
-            );
-        }
-    }  
 
     private void updateRatingProducts(Cart cart){
         for (LineProduct line : cart.getLineProducts()) {

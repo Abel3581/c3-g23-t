@@ -21,7 +21,6 @@ public class PurchaseReportMapper {
     }
     public PurchaseReport purchaseReportDtoEntity(PurchaseReportRequest request) {
         PurchaseReport report = new PurchaseReport();
-        report.setId(request.getId());
         report.setQuantity(request.getQuantity());   
         report.setCreationDate(request.getCreationDate());
         

@@ -78,6 +78,14 @@ public class ProductController {
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
+    @GetMapping("/{id}/reports")
+    public ResponseEntity<?> getReportsByIdProduct(@PathVariable(name = "id") Long id) throws NotFoundException{
+        Client client = (Client) userService.getInfoUser();
+       
+        ResponseEntity<?> response = productService.getReportsByIdProduct(client, id);
+        return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable(name = "id") Long id) throws NotFoundException{
         Client client = (Client) userService.getInfoUser();
