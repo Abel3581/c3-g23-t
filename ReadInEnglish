@@ -1,0 +1,76 @@
+# GC3-G23-T
+# MY STORE - buy sale page
+Here we present the MY STORE project, purchases and sales online from wherever you are.
+
+## let's start :boom:
+
+The following instructions will allow you to have a working copy of the project on your local machine. In the **deployment** section you will have
+the instructions to deploy the project.
+
+### Description :technologist:
+
+The project presented is an online store for the purchase and sale of articles. Each client will be able to browse the different seller-buyer client profiles, 
+will be able to see the articles that are sold and their categories, generate a cart with products of interest and finally buy the products (Only if he logs in).
+
+## technologies busy with :neckbeard:
+
+### BACKEND
+
+- [PostgreSQL 12.9](https://www.postgresql.org/download/) - Database
+- [Dbeaver-ce](https://dbeaver.io/download/) - Data management tool
+- [DbVisualizer](https://www.dbvis.com/) -Data management tool
+- [Pgadmin 4](https://www.pgadmin.org/download/) -Data Management Tool (Postgres Tool)
+- [Java 11](https://www.oracle.com/ar/java/technologies/javase/jdk11-archive-downloads.html) - Programming language
+- [Maven 4.0.0](https://maven.apache.org/index.html) -dependency handler
+- [Spring-Boot](https://spring.io/projects/spring-boot) - Framework
+
+### FRONTEND
+
+- HTML
+- CSS
+- JAVASCRIPT
+- ANGULAR
+
+
+### Class diagram (bypassing methods)
+![class diagram](https://i.imgur.com/e7eM80f.jpeg)
+### Data Layer (Entity Relationship Model)
+![entity relationship model](https://i.imgur.com/X163eaT.jpeg)
+
+## Authors :star_struck:
+
+- Fernández Ian - *Backend Developer, Tester, Documentation* - :alien:[ianklebold](https://github.com/ianklebold)
+- Tomas Padilla - *Frontend Developer* - :robot:[PadillaTom](https://github.com/PadillaTom)
+- Abel Acevedo- *Backend Developer, Tester, Documentation* - :space_invader:[Abel3581](https://github.com/Abel3581)
+- Gabriel Navarro - *Backend Developer, Tester* - :brain:[gabynavarro](https://github.com/gabynavarro)
+
+## Link Swagger: http://localhost:8080/swagger-ui/index.html
+## Link Deploy: Soon..
+
+## Despedida
+
+It was a pleasure for us to work on this project, share our knowledge and above all learn. With :heart:
+### Linkedin
+- :alien:[Ian](https://www.linkedin.com/in/ian-fern%C3%A1ndez-a72598179/)
+- :robot:[Tomás](https://www.linkedin.com/in/padillatom/)
+- :space_invader:[Abel](https://www.linkedin.com/in/abel-fernando-acevedo/)
+- :brain:[Gabriel](https://www.linkedin.com/in/gabriel-navarro-233388219/)
+
+## SEDDERS
+
+### USERS SEED
+
+| email              | role  |  
+|--------------------|-------|
+| ADMIN{id}@test.com | admin | 
+| USER{id}@test.com  | user  | 
+
+By default, 10 users with admin role and 10 users with user role will be created where the {id} in
+the email is a number from 0 to 10 per role. All the users have "tienda1234" as password.
+
+### ROLES SEED
+
+| id |  description |  name   |
+|----|--------------|---------| 
+| 1  |  ROLE_USER   |  USER   |
+| 2  |  ROLE_ADMIN  |  ADMIN  | 
