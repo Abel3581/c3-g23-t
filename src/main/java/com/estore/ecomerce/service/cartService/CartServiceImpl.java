@@ -380,7 +380,7 @@ public class CartServiceImpl implements CartService{
             cartRepository.save(cart.get());
             
             ResponseEntity<?> modelInvoice = 
-            invoiceService.getInvoiceByIdCart(client, invoice.getId());
+            invoiceService.getInvoiceByIdCart(client, invoice.getCart().getId());
             
             return new ResponseEntity<>(modelInvoice.getBody(), 
             HttpStatus.OK);
