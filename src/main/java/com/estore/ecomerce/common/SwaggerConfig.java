@@ -13,10 +13,12 @@ import springfox.documentation.spring.web.plugins.Docket;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 @Configuration
 @EnableWebMvc
 public class SwaggerConfig {
+
 
     @Bean
     public Docket api() {
@@ -28,6 +30,7 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build();
+
     }
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo("Tienda Online", "No Country .", "1.0", "Terms of service",

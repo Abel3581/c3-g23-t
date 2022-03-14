@@ -62,23 +62,25 @@ public class BuilderGetCartByIdImpl implements BuilderGetCartById{
 
 
     public BuilderGetCartByIdImpl setLineProduct(Cart cart, List<LineProduct> lineProduct) {
+        String idImage;
         String nameImage;
         String urlImage;
         for (LineProduct line : lineProduct) {
             if(line.getProduct().getImageProfile() != null){
+                idImage = line.getProduct().getImageProfile().getId();
                 nameImage = line.getProduct().getImageProfile().getName();
                 urlImage = "http://localhost:8080/api/v1/images/profileimage/"+
                 line.getProduct().getImageProfile().getId();
             }else{
+                idImage = "";
                 nameImage = "No Image";
                 urlImage = "";
             }
             this.lineProduct.add(
                 new ModelLineProduct(
                     line.getId(),
-                    this.id,
                     line.getProduct().getName(),
-                    new ModelImage(nameImage,urlImage),
+                    new ModelImage(idImage,nameImage,urlImage),
                     line.getProduct().getPrice() - 
                     ((line.getProduct().getDiscount()/100)*line.getProduct().getPrice()),
                     line.getAmount(),

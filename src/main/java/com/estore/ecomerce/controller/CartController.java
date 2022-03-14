@@ -1,39 +1,42 @@
 package com.estore.ecomerce.controller;
 
 
+import java.util.List;
+
 import com.estore.ecomerce.domain.Client;
+import com.estore.ecomerce.dto.forms.FormCartProduct;
 import com.estore.ecomerce.dto.forms.FormLineProduct;
 import com.estore.ecomerce.service.InvoiceService;
 import com.estore.ecomerce.service.abstraction.IUserService;
 import com.estore.ecomerce.service.cartService.CartService;
 import com.estore.ecomerce.utils.enums.EnumState;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+
 @RequestMapping("/api/v1/carts")
+@Api(value = "Cart Controller", description = "Crud for carts")
 public class CartController {
     private final CartService cartService;
     private final IUserService userService;
     private final InvoiceService invoiceService;
 
     @PostMapping
+    @ApiOperation(value = "Create cart", notes = "Return cart" )
     public ResponseEntity<?> createCart(
-        @RequestPart(value="cart", required=true) FormLineProduct formLineProduct) 
+        @RequestPart(value="cart", required=true) List<FormCartProduct> formLineCart) 
     throws NotFoundException{
+        FormLineProduct formLineProduct = new FormLineProduct();
+        formLineProduct.setLineProduct(formLineCart);
+
         Client client = (Client) userService.getInfoUser();
 
         ResponseEntity<?> response = cartService.createCart(client, formLineProduct.getLineProduct());
@@ -41,10 +44,14 @@ public class CartController {
     }
 
     @PutMapping("/{id}")
+    @ApiOperation(value = "Update cart for id", notes = "Return cart updated" )
     public ResponseEntity<?> updateCart(
         @PathVariable(name = "id") Long id,
-        @RequestPart(value="cart", required=true) FormLineProduct formLineProduct) 
+        @RequestPart(value="cart", required=true) List<FormCartProduct> formLineCart) 
     throws NotFoundException{
+        FormLineProduct formLineProduct = new FormLineProduct();
+        formLineProduct.setLineProduct(formLineCart);
+
         Client client = (Client) userService.getInfoUser();
         
         ResponseEntity<?> response = cartService.updateCart(client, id, 
@@ -54,6 +61,7 @@ public class CartController {
     }
 
     @PutMapping("/{id}/close")
+    @ApiOperation(value = "Close cart", notes = "Return cart closed" )
     public ResponseEntity<?> closeCart(@PathVariable(name = "id") Long id) 
     throws NotFoundException{
         Client client = (Client) userService.getInfoUser();
@@ -63,6 +71,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{id}")
+    @ApiOperation(value = "Deleted cart", notes = "Return cart deleted" )
     public ResponseEntity<?> clearCart(@PathVariable(name = "id") Long id) 
     throws NotFoundException{
         Client client = (Client) userService.getInfoUser();
@@ -72,6 +81,7 @@ public class CartController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation(value = "Get cart for id", notes = "Return cart" )
     public ResponseEntity<?> getCartById(@PathVariable(name = "id") Long id) 
     throws NotFoundException{
         Client client = (Client) userService.getInfoUser();
@@ -81,6 +91,7 @@ public class CartController {
     }
 
     @GetMapping("/active")
+    @ApiOperation(value = "Active cart", notes = "Return cart" )
     public ResponseEntity<?> getCartOpened() 
     throws NotFoundException{
         Client client = (Client) userService.getInfoUser();
@@ -91,6 +102,7 @@ public class CartController {
     }
 
     @GetMapping
+    @ApiOperation(value = "GetCart ", notes = "Return cart" )
     public ResponseEntity<?> getCart(
         @RequestParam(value="state", required = false) EnumState state
     ) throws NotFoundException{
@@ -101,6 +113,7 @@ public class CartController {
     }
 
     @GetMapping("/{id}/invoice")
+    @ApiOperation(value = "Get invoice by id cart", notes = "Return cart" )
     public ResponseEntity<?> getInvoiceByIdCart(@PathVariable(name = "id") Long id) throws NotFoundException{
         Client client = (Client) userService.getInfoUser();
         
