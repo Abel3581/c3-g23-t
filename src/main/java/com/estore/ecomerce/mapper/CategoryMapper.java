@@ -57,6 +57,7 @@ public class CategoryMapper {
             categoryImageRespose.setStatus(category.getStatus());      
            
             ModelImage modelImage=new ModelImage();
+            modelImage.setIdImage(category.getImageProfile().getId());
             modelImage.setImageName(category.getImageProfile().getName());           
             modelImage.setUrlImage(url+category.getImageProfile().getId());//      
             categoryImageRespose.setImage(modelImage);

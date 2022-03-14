@@ -23,6 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private static final String ERROR_FIND_ID = "No se econtro la categoria";
     private static final String ERROR_CONECTION = "Error al intentar conectar con la BD";
+    private static final String ERROR_NOT_LIST_CATEGORY = "No se encontro categorias";
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -57,23 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
                         HttpStatus.NOT_ACCEPTABLE);
         return (category.getName() == null
                 || category.getName().trim().isEmpty()) ? messageFieldsEmpty : null;
-    }
-
-    @Transactional
-    @Override
-    public List<CategoryImage> findAll() {
-        try {
-            List<CategoryImage> listResponse = new ArrayList<>();
-            List<Category> entities = categoryRepository.findAll();
-            for (Category entity : entities) {
-                listResponse.add(categoryMapper.categoryImageEntityDto(entity));
-            }
-            return listResponse;
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(ERROR_CONECTION);
-        }
-
-    }
+    }   
 
     @Transactional
     @Override
@@ -112,37 +97,34 @@ public class CategoryServiceImpl implements CategoryService {
             throw new EntityNotFoundException(ERROR_CONECTION);
         }
     }
+   
+    @Transactional
+    @Override
+    public List<CategoryImage> findAll() {
+        return listZizeCategory(categoryRepository.findAll());
+    }
 
     @Transactional
     @Override
     public List<CategoryImage> listCategoryActive() {
-        try {
-            List<CategoryImage> listResponse = new ArrayList<>();
-            List<Category> entities = categoryRepository.listCategoryActive();
-
-            for (Category entity : entities) {
-                listResponse.add(categoryMapper.categoryImageEntityDto(entity));
-            }
-            return listResponse;
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(ERROR_CONECTION);
-        }
+        return listZizeCategory(categoryRepository.listCategoryActive());
     }
 
     @Transactional
     @Override
     public List<CategoryImage> listCategoryInactive() {
-        try {
-            List<CategoryImage> listResponse = new ArrayList<>();
+        return listZizeCategory(categoryRepository.listCategoryInactive());
+    }
 
-            List<Category> entities = categoryRepository.listCategoryInactive();
-            for (Category entity : entities) {
-                listResponse.add(categoryMapper.categoryImageEntityDto(entity));
-            }
-            return listResponse;
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException(ERROR_CONECTION);
+    public List<CategoryImage> listZizeCategory(List<Category> entities) {
+        List<CategoryImage> listResponse = new ArrayList<>();
+        if (entities.size() == 0) {
+            throw new EntityNotFoundException(ERROR_NOT_LIST_CATEGORY);
         }
+        for (Category entity : entities) {
+            listResponse.add(categoryMapper.categoryImageEntityDto(entity));
+        }
+        return listResponse;
     }
 
     @Transactional

@@ -6,11 +6,9 @@ import com.estore.ecomerce.mapper.ImageMapper;
 import com.estore.ecomerce.repository.IImageProfileRepository;
 import com.estore.ecomerce.service.abstraction.IImageProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
+
 import java.util.Optional;
 
 @Service
@@ -34,7 +32,7 @@ public class ImageProfileServiceImpl implements IImageProfileService {
     @Override
     public ImageProfile getImageProfile(String imageProfileId) {
         Optional<ImageProfile> imageProfileOptional = imageProfileRepository.findByName(imageProfileId);
-        if (imageProfileOptional.isEmpty() || imageProfileOptional.get().isSoftDelete()) {
+        if (imageProfileOptional.isEmpty()) {
             throw new EntityNotFoundException(IMAGE_PROFILE_NOT_FOUND_MESSAGE);
         }
         return imageProfileOptional.get();

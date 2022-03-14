@@ -1,12 +1,8 @@
 package com.estore.ecomerce.controller;
 
-import com.estore.ecomerce.domain.Client;
 import com.estore.ecomerce.dto.CategoryResponse;
-import com.estore.ecomerce.security.ApplicationRole;
 import com.estore.ecomerce.service.CategoryService;
 import com.estore.ecomerce.service.FileUploadService;
-import com.estore.ecomerce.service.abstraction.IUserService;
-
 import java.net.URISyntaxException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +13,6 @@ import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
-
 import javassist.NotFoundException;
 
 @RestController
@@ -29,21 +24,16 @@ public class CategoryController {
     @Autowired
     private CategoryService service;
     private final FileUploadService fileUploadService;
-    private final IUserService userService; 
+
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createCategory(
             @RequestPart(value = "image", required = false) MultipartFile image,
             @RequestPart(value = "category", required = true) CategoryResponse category)
             throws URISyntaxException, NotFoundException {
-        Client client = (Client) userService.getInfoUser();    
-
-        if(client.getAuthorities().contains(ApplicationRole.ADMIN)){
+       
             ResponseEntity<?> response = service.addCategory(category, fileUploadService.uploadImageProfileToDB(image));
-            return new ResponseEntity<>(response.getBody(), response.getStatusCode());
-        }else{
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Request is FORBIDDEN. You havent the permission enough for the action");
-        }   
+            return new ResponseEntity<>(response.getBody(), response.getStatusCode());       
     }
 
     @GetMapping("")
@@ -65,34 +55,19 @@ public class CategoryController {
 
     }
 
-   
-    
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, 
              @RequestPart(value="image",required=false) MultipartFile image,
              @RequestPart(value="category", required=true) CategoryResponse entity) 
-            throws URISyntaxException, NotFoundException{
-        Client client = (Client) userService.getInfoUser();    
-
-        if(client.getAuthorities().contains(ApplicationRole.ADMIN)){
+            throws URISyntaxException, NotFoundException{       
             ResponseEntity<?> response = service.update( id,entity,fileUploadService.uploadImageProfileToDB(image));
-            return new ResponseEntity<>(response.getBody(), response.getStatusCode());
-        }else{
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Request is FORBIDDEN. You havent the permission enough for the action");
-        }   
+            return new ResponseEntity<>(response.getBody(), response.getStatusCode());       
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) throws EntityNotFoundException, NotFoundException {
-        Client client = (Client) userService.getInfoUser();
-
-        if(client.getAuthorities().contains(ApplicationRole.ADMIN)){
+    public ResponseEntity<?> delete(@PathVariable Long id) throws EntityNotFoundException, NotFoundException {       
             service.delete(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }else{
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Request is FORBIDDEN. You havent the permission enough for the action");
-        }
-        
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();   
     }
 
     @GetMapping("/active")
